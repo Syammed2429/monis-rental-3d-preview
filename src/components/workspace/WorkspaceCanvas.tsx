@@ -17,6 +17,8 @@ import {
   Moon,
   ArrowUpDown,
   Sparkles,
+  Lock,
+  Unlock,
   ZoomIn,
   ZoomOut,
   ChevronUp,
@@ -45,6 +47,7 @@ export function WorkspaceCanvas({
   const [stageScale, setStageScale] = useState<number>(1);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const [layoutKey, setLayoutKey] = useState<number>(0);
+  const [isViewLocked, setIsViewLocked] = useState<boolean>(false);
   const isStanding = config.deskHeightState === "standing";
   const currentHeight = config.deskHeightCm || (isStanding ? 108 : 74);
 
@@ -114,6 +117,7 @@ export function WorkspaceCanvas({
 
   // Pointer Event Handlers for 3D Drag Orbit
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (isViewLocked) return;
     if (e.button !== 0 && e.pointerType === "mouse") return;
     isPointerDownRef.current = true;
     hasDraggedRef.current = false;
@@ -201,10 +205,25 @@ export function WorkspaceCanvas({
 
   const handleToggleAutoTour = () => {
     sound.playSelect();
-    setIsAutoRotating((prev) => !prev);
-    if (!isAutoRotating) {
-      setActivePreset("custom");
-    }
+    setIsAutoRotating((prev) => {
+      const next = !prev;
+      if (next) {
+        setIsViewLocked(false);
+        setActivePreset("custom");
+      }
+      return next;
+    });
+  };
+
+  const handleToggleLockView = () => {
+    sound.playClick();
+    setIsViewLocked((prev) => {
+      const next = !prev;
+      if (next && isAutoRotating) {
+        setIsAutoRotating(false);
+      }
+      return next;
+    });
   };
 
   // Toggle desk height preset (74cm / 108cm)
@@ -329,12 +348,37 @@ export function WorkspaceCanvas({
             </button>
           </div>
 
+          {/* Lock View Button (Desktop & Mobile) */}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleToggleLockView}
+            className={`backdrop-blur-md text-[11px] h-7.5 px-2 sm:px-2.5 gap-1.5 shadow-lg transition-all ${
+              isViewLocked
+                ? "bg-amber-500/20 border-amber-500/50 text-amber-300 hover:bg-amber-500/30 ring-1 ring-amber-400/40 font-semibold"
+                : "bg-neutral-900/85 border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800"
+            }`}
+            title={
+              isViewLocked
+                ? "Unlock View (Allow 3D Orbit)"
+                : "Lock View (Disable 3D rotation so you can arrange desk items freely)"
+            }
+          >
+            {isViewLocked ? (
+              <Lock className="w-3 h-3 text-amber-400 stroke-[2.5]" />
+            ) : (
+              <Unlock className="w-3 h-3 text-neutral-400" />
+            )}
+            <span className="hidden xs:inline">{isViewLocked ? "View Locked" : "Lock View"}</span>
+            <span className="xs:hidden">{isViewLocked ? "Locked" : "Lock"}</span>
+          </Button>
+
           {/* Quick Desk Items Layout Reset Button */}
           <Button
             size="sm"
             variant="outline"
             onClick={handleResetLayout}
-            className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800 text-[11px] h-7.5 px-2.5 gap-1.5 shadow-lg hidden sm:inline-flex"
+            className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800 text-[11px] h-7.5 px-2 sm:px-2.5 gap-1.5 shadow-lg hidden sm:inline-flex"
             title="Items on desk can be freely dragged. Click to reset items to original positions."
           >
             <Sparkles className="w-3 h-3 text-emerald-400" />
@@ -408,7 +452,7 @@ export function WorkspaceCanvas({
           perspectiveOrigin: "50% 55%",
         }}
         className={`relative flex-1 w-full h-full flex items-center justify-center overflow-hidden touch-none select-none ${
-          isDragging ? "cursor-grabbing" : "cursor-grab"
+          isViewLocked ? "cursor-default" : isDragging ? "cursor-grabbing" : "cursor-grab"
         }`}
       >
         <motion.div
@@ -566,7 +610,17 @@ export function WorkspaceCanvas({
       <div className="absolute bottom-11 sm:bottom-12 left-1/2 -translate-x-1/2 z-30 pointer-events-auto flex flex-col items-center gap-1.5 max-w-[94%]">
         {/* Orbit Angle / Drag State Live Badge */}
         <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-900/85 backdrop-blur-md border border-white/10 text-[10px] text-neutral-300 shadow-lg pointer-events-none transition-all">
-          {isAutoRotating ? (
+          {isViewLocked ? (
+            <>
+              <Lock className="w-3 h-3 text-amber-400" />
+              <span className="text-amber-300 font-medium hidden sm:inline">
+                View locked — drag desk items freely • Click 🔓 to orbit
+              </span>
+              <span className="text-amber-300 font-medium sm:hidden">
+                Locked — drag items freely
+              </span>
+            </>
+          ) : isAutoRotating ? (
             <>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
               <span className="text-emerald-400 font-medium">
