@@ -8,12 +8,14 @@ interface LifestyleRendererProps {
   outdoorId: string | null;
   relaxId: string | null;
   onSelectCategory?: (category: ProductCategory) => void;
+  onSelectItem?: (category: ProductCategory, itemId?: string) => void;
 }
 
 export function LifestyleRenderer({
   outdoorId,
   relaxId,
   onSelectCategory,
+  onSelectItem,
 }: LifestyleRendererProps) {
   return (
     <div
@@ -30,8 +32,12 @@ export function LifestyleRenderer({
             initial={{ opacity: 0, scale: 0.9, rotate: -10 }}
             animate={{ opacity: 1, scale: 1, rotate: -6 }}
             className="pointer-events-auto cursor-pointer flex flex-col items-center group"
-            onClick={() => onSelectCategory?.("bali-lifestyle")}
-            title="Bali Wave Surfboard (Canggu Co.)"
+            onClick={() =>
+              onSelectItem
+                ? onSelectItem("bali-lifestyle", "lifestyle-outdoor-surfboard")
+                : onSelectCategory?.("bali-lifestyle")
+            }
+            title="Bali Wave Surfboard • Click to select"
           >
             {/* Custom 6'2 Epoxy Fish Surfboard */}
             <div className="relative w-14 h-60 rounded-t-[50%] rounded-b-[40%] bg-gradient-to-b from-amber-100 via-emerald-100 to-teal-200 border-2 border-amber-200 shadow-xl overflow-hidden flex flex-col items-center">
@@ -57,8 +63,12 @@ export function LifestyleRenderer({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="pointer-events-auto cursor-pointer flex flex-col items-center group"
-            onClick={() => onSelectCategory?.("bali-lifestyle")}
-            title="Niu Electric Scooter"
+            onClick={() =>
+              onSelectItem
+                ? onSelectItem("bali-lifestyle", "lifestyle-outdoor-scooter")
+                : onSelectCategory?.("bali-lifestyle")
+            }
+            title="Niu Electric Scooter • Click to select"
           >
             <div className="relative w-22 h-36 flex flex-col items-center justify-end">
               <div className="w-16 h-1.5 bg-neutral-800 rounded-full border border-white/10 relative">
@@ -91,7 +101,11 @@ export function LifestyleRenderer({
 
         {!outdoorId && (
           <button
-            onClick={() => onSelectCategory?.("bali-lifestyle")}
+            onClick={() =>
+              onSelectItem
+                ? onSelectItem("bali-lifestyle", "lifestyle-outdoor-surfboard")
+                : onSelectCategory?.("bali-lifestyle")
+            }
             className="pointer-events-auto flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-neutral-900/90 border border-dashed border-white/25 hover:border-emerald-400 hover:bg-emerald-500/10 text-[9px] text-neutral-300 hover:text-emerald-400 transition-all shadow-md group backdrop-blur-md"
             title="Add Surfboard or Island Scooter"
           >
@@ -111,8 +125,12 @@ export function LifestyleRenderer({
             initial={{ opacity: 0, scale: 0.9 }}
             animate={{ opacity: 1, scale: 1 }}
             className="pointer-events-auto cursor-pointer flex flex-col items-center group"
-            onClick={() => onSelectCategory?.("bali-lifestyle")}
-            title="Relax Zone: Waterproof Villa Bean Bag"
+            onClick={() =>
+              onSelectItem
+                ? onSelectItem("bali-lifestyle", "lifestyle-relax-beanbag")
+                : onSelectCategory?.("bali-lifestyle")
+            }
+            title="Relax Zone: Waterproof Villa Bean Bag • Click to select"
           >
             <div className="relative w-22 h-20 rounded-[2rem] bg-gradient-to-b from-[#2d4a3e] via-[#1f382e] to-[#15241e] border-2 border-emerald-500/30 shadow-xl p-1.5 flex flex-col items-center justify-center overflow-hidden">
               <div className="absolute inset-1.5 rounded-[1.6rem] border border-white/10 opacity-70" />
@@ -132,7 +150,11 @@ export function LifestyleRenderer({
 
         {!relaxId && (
           <button
-            onClick={() => onSelectCategory?.("bali-lifestyle")}
+            onClick={() =>
+              onSelectItem
+                ? onSelectItem("bali-lifestyle", "lifestyle-relax-beanbag")
+                : onSelectCategory?.("bali-lifestyle")
+            }
             className="pointer-events-auto flex items-center gap-1 px-2.5 py-1.5 rounded-full bg-neutral-900/90 border border-dashed border-white/25 hover:border-emerald-400 hover:bg-emerald-500/10 text-[9px] text-neutral-300 hover:text-emerald-400 transition-all shadow-md group backdrop-blur-md"
             title="Add Waterproof Villa Bean Bag"
           >

@@ -40,7 +40,22 @@ export default function Home() {
   const [config, setConfig] = useState<WorkspaceConfig>(DEFAULT_CONFIG);
   const [currency, setCurrency] = useState<Currency>("USD");
   const [activeCategory, setActiveCategory] = useState<ProductCategory>("desks");
+  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState<boolean>(false);
+
+  const handleSelectItem = (category: ProductCategory, itemId?: string) => {
+    setActiveCategory(category);
+    if (itemId) {
+      setSelectedItemId(itemId);
+    }
+    // On mobile / tablet viewports, smoothly scroll the configurator into view so user sees the active tab & card
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      const section = document.getElementById("configurator-section");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
 
   // Restore client configuration on mount safely after hydration
   useEffect(() => {
@@ -164,18 +179,23 @@ export default function Home() {
             <WorkspaceCanvas
               config={config}
               onChangeConfig={handleUpdateConfig}
-              onSelectCategory={(cat) => setActiveCategory(cat)}
+              onSelectItem={handleSelectItem}
+              onSelectCategory={(cat) => handleSelectItem(cat)}
             />
           </div>
 
           {/* Right Sidebar: Product Catalog & Customization Tabs (5 cols on lg, 4 on xl) */}
-          <div className="lg:col-span-5 xl:col-span-4 h-[580px] lg:h-full min-h-0">
+          <div
+            id="configurator-section"
+            className="lg:col-span-5 xl:col-span-4 h-[580px] lg:h-full min-h-0"
+          >
             <ConfiguratorSidebar
               config={config}
               onChangeConfig={handleUpdateConfig}
               currency={currency}
               activeCategory={activeCategory}
               onCategoryChange={setActiveCategory}
+              selectedItemId={selectedItemId}
             />
           </div>
         </div>

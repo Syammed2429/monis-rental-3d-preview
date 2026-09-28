@@ -13,6 +13,7 @@ interface AccessoriesRendererProps {
   plantId: string | null;
   coffeeId: string | null;
   onSelectCategory?: (category: ProductCategory) => void;
+  onSelectItem?: (category: ProductCategory, itemId?: string) => void;
 }
 
 export function AccessoriesRenderer({
@@ -24,11 +25,29 @@ export function AccessoriesRenderer({
   plantId,
   coffeeId,
   onSelectCategory,
+  onSelectItem,
 }: AccessoriesRendererProps) {
   return (
     <div className="absolute inset-0 pointer-events-none select-none">
-      {/* 1. Large Minimalist Felt Desk Mat (Rests directly on desk surface) */}
-      <div className="absolute top-1 left-1/2 -translate-x-1/2 w-[410px] h-[34px] rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center pointer-events-auto">
+      {/* 1. Large Minimalist Felt Desk Mat (Rests directly on desk surface • Draggable) */}
+      <motion.div
+        drag="x"
+        dragConstraints={{ left: -70, right: 70 }}
+        dragElastic={0.06}
+        dragMomentum={false}
+        style={{ touchAction: "none" }}
+        whileDrag={{ scale: 1.02 }}
+        onPointerDown={(e) => e.stopPropagation()}
+        onClick={(e) => {
+          e.stopPropagation();
+          onSelectItem ? onSelectItem("peripherals", peripheralsId) : onSelectCategory?.("peripherals");
+        }}
+        className="absolute top-1 left-1/2 -translate-x-1/2 w-[410px] h-[34px] rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center pointer-events-auto cursor-grab active:cursor-grabbing group/mat"
+        title="Slide desk mat • Click to configure peripherals"
+      >
+        <div className="absolute -top-6 opacity-0 group-hover/mat:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+          ⌨️ Slide Mat & Keyboard • Click to Select
+        </div>
         {/* Keyboard & Mouse Area */}
         <div className="flex items-center gap-6">
           {/* Keyboards */}
@@ -83,25 +102,27 @@ export function AccessoriesRenderer({
             </div>
           )}
         </div>
-      </div>
+      </motion.div>
 
-      {/* 2. Aluminum Laptop Stand (Rests flush on desk surface • Draggable along X) */}
+      {/* 2. Aluminum Laptop Stand (Rests flush on desk surface • Draggable across desk) */}
       {laptopStand && (
         <motion.div
-          drag="x"
-          dragConstraints={{ left: -25, right: 80 }}
+          drag
+          dragConstraints={{ left: -20, right: 280, top: -12, bottom: 12 }}
           dragElastic={0.06}
           dragMomentum={false}
+          style={{ touchAction: "none" }}
+          whileDrag={{ scale: 1.05 }}
           onPointerDown={(e) => e.stopPropagation()}
           className="absolute bottom-0 left-8 flex flex-col items-center z-15 pointer-events-auto cursor-grab active:cursor-grabbing group/laptop"
-          title="Drag along desk to reposition • Click to configure"
+          title="Drag anywhere on desk • Click to configure"
           onClick={(e) => {
             e.stopPropagation();
-            onSelectCategory?.("peripherals");
+            onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-laptop-stand") : onSelectCategory?.("bali-lifestyle");
           }}
         >
           <div className="absolute -top-6 opacity-0 group-hover/laptop:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-            💻 Slide Laptop Stand
+            💻 Slide Laptop Stand • Click to Select
           </div>
           {/* Laptop Screen with clean modern wallpaper */}
           <div className="w-24 h-16 rounded-md bg-neutral-900 p-1 border border-neutral-700 shadow-xl flex flex-col">
@@ -128,20 +149,23 @@ export function AccessoriesRenderer({
       {/* 3. Desk Lighting (Anglepoise Lamp / ScreenBar) */}
       {lightingId === "light-smart-lamp" && (
         <motion.div
-          drag="x"
-          dragConstraints={{ left: -30, right: 60 }}
+          drag
+          dragConstraints={{ left: -70, right: 260, top: -12, bottom: 12 }}
           dragElastic={0.06}
           dragMomentum={false}
+          style={{ touchAction: "none" }}
+          whileDrag={{ scale: 1.05 }}
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
             onToggleLamp?.();
+            onSelectItem ? onSelectItem("lighting", lightingId) : onSelectCategory?.("lighting");
           }}
           className="absolute bottom-0 left-22 pointer-events-auto cursor-pointer group/lamp flex flex-col items-center z-20 cursor-grab active:cursor-grabbing"
-          title={`Slide along desk • Click to turn lamp ${lampPowered ? "OFF" : "ON"}`}
+          title={`Slide along desk • Click to toggle & select (${lampPowered ? "ON" : "OFF"})`}
         >
           <div className="absolute -top-6 opacity-0 group-hover/lamp:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-            💡 Slide Lamp • Click to Toggle
+            💡 Slide Lamp • Click to Toggle & Select
           </div>
           {/* Light Fixture Horizontal Bar */}
           <div className="w-22 h-2 bg-slate-100 rounded-full border border-slate-300 shadow-md relative">
@@ -178,9 +202,13 @@ export function AccessoriesRenderer({
 
       {lightingId === "light-screenbar" && (
         <div
-          onClick={onToggleLamp}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleLamp?.();
+            onSelectItem ? onSelectItem("lighting", "light-screenbar") : onSelectCategory?.("lighting");
+          }}
           className="absolute -top-[195px] left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-20"
-          title={`Click to turn ScreenBar ${lampPowered ? "OFF" : "ON"}`}
+          title={`Click to toggle ScreenBar & select (${lampPowered ? "ON" : "OFF"})`}
         >
           {/* ScreenBar Clamped atop Monitor Bezel */}
           <div className="w-56 h-2 bg-neutral-900 rounded-full border border-neutral-700 shadow-lg relative flex items-center justify-center">
@@ -203,16 +231,22 @@ export function AccessoriesRenderer({
       {/* 4. Tropical Bali Monstera Deliciosa (Right Desk Edge • Draggable) */}
       {plantId === "lifestyle-plant-monstera" ? (
         <motion.div
-          drag="x"
-          dragConstraints={{ left: -30, right: 30 }}
+          drag
+          dragConstraints={{ left: -340, right: 40, top: -12, bottom: 12 }}
           dragElastic={0.06}
           dragMomentum={false}
+          style={{ touchAction: "none" }}
+          whileDrag={{ scale: 1.05 }}
           onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-plant-monstera") : onSelectCategory?.("bali-lifestyle");
+          }}
           className="absolute bottom-0 right-4 flex flex-col items-center z-15 pointer-events-auto cursor-grab active:cursor-grabbing group/plant"
-          title="Drag plant along desk"
+          title="Drag plant along desk • Click to customize"
         >
           <div className="absolute -top-6 opacity-0 group-hover/plant:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-            🌿 Slide Plant
+            🌿 Slide Plant • Click to Select
           </div>
           {/* Lush Monstera Leaves Vector */}
           <svg className="w-20 h-20 text-emerald-600 drop-shadow-md" viewBox="0 0 100 100" fill="none">
@@ -248,7 +282,10 @@ export function AccessoriesRenderer({
       ) : (
         /* Dotted Hotspot: + Place a Plant! */
         <button
-          onClick={() => onSelectCategory?.("bali-lifestyle")}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-plant-monstera") : onSelectCategory?.("bali-lifestyle");
+          }}
           className="absolute bottom-2 right-4 pointer-events-auto flex items-center gap-1 px-2 py-1 rounded-full bg-neutral-900/90 border border-dashed border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-500/10 text-[9px] text-emerald-400 transition-all shadow-md group"
           title="Place a tropical plant on desk"
         >
@@ -260,16 +297,22 @@ export function AccessoriesRenderer({
       {/* 5. Nespresso Machine & Coffee (Right Desk Surface • Draggable) */}
       {coffeeId === "lifestyle-coffee-nespresso" ? (
         <motion.div
-          drag="x"
-          dragConstraints={{ left: -40, right: 35 }}
+          drag
+          dragConstraints={{ left: -300, right: 80, top: -12, bottom: 12 }}
           dragElastic={0.06}
           dragMomentum={false}
+          style={{ touchAction: "none" }}
+          whileDrag={{ scale: 1.05 }}
           onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-coffee-nespresso") : onSelectCategory?.("bali-lifestyle");
+          }}
           className="absolute bottom-0 right-16 flex items-end gap-2 z-15 pointer-events-auto cursor-grab active:cursor-grabbing group/coffee"
-          title="Drag coffee along desk"
+          title="Drag coffee along desk • Click to customize"
         >
           <div className="absolute -top-6 opacity-0 group-hover/coffee:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-            ☕ Slide Coffee
+            ☕ Slide Coffee • Click to Select
           </div>
           {/* Nespresso Machine */}
           <div className="w-10 h-18 rounded-t-lg bg-neutral-900 border border-neutral-700 shadow-xl flex flex-col items-center justify-between p-1">

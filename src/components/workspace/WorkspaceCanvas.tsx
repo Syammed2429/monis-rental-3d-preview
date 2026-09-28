@@ -32,16 +32,19 @@ interface WorkspaceCanvasProps {
   config: WorkspaceConfig;
   onChangeConfig: (updater: (prev: WorkspaceConfig) => WorkspaceConfig) => void;
   onSelectCategory?: (category: ProductCategory) => void;
+  onSelectItem?: (category: ProductCategory, itemId?: string) => void;
 }
 
 export function WorkspaceCanvas({
   config,
   onChangeConfig,
   onSelectCategory,
+  onSelectItem,
 }: WorkspaceCanvasProps) {
   const containerRef = useRef<HTMLDivElement>(null);
   const [stageScale, setStageScale] = useState<number>(1);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
+  const [layoutKey, setLayoutKey] = useState<number>(0);
   const isStanding = config.deskHeightState === "standing";
   const currentHeight = config.deskHeightCm || (isStanding ? 108 : 74);
 
@@ -269,6 +272,12 @@ export function WorkspaceCanvas({
     }));
   };
 
+  // Reset all draggable desk item positions
+  const handleResetLayout = () => {
+    sound.playClick();
+    setLayoutKey((k) => k + 1);
+  };
+
   return (
     <div className="relative w-full h-[390px] sm:h-[460px] lg:h-full min-h-[380px] lg:min-h-[500px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-neutral-950 flex flex-col justify-between select-none">
       {/* 1. Dynamic Room Background */}
@@ -319,6 +328,18 @@ export function WorkspaceCanvas({
               <ChevronDown className="w-3.5 h-3.5" />
             </button>
           </div>
+
+          {/* Quick Desk Items Layout Reset Button */}
+          <Button
+            size="sm"
+            variant="outline"
+            onClick={handleResetLayout}
+            className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800 text-[11px] h-7.5 px-2.5 gap-1.5 shadow-lg hidden sm:inline-flex"
+            title="Items on desk can be freely dragged. Click to reset items to original positions."
+          >
+            <Sparkles className="w-3 h-3 text-emerald-400" />
+            <span>Rearrange Desk</span>
+          </Button>
         </div>
 
         {/* Right: Ambient Bali Time of Day & Zoom Controls */}
@@ -445,20 +466,25 @@ export function WorkspaceCanvas({
             outdoorId={config.outdoorId}
             relaxId={config.relaxId}
             onSelectCategory={onSelectCategory}
+            onSelectItem={onSelectItem}
           />
 
           {/* Ergonomic Chair tucked neatly in knee hole behind desk */}
           <div
             onClick={() => {
               sound.playClick();
-              onSelectCategory?.("chairs");
+              if (onSelectItem) {
+                onSelectItem("chairs", config.chairId);
+              } else {
+                onSelectCategory?.("chairs");
+              }
             }}
             className="absolute inset-0 pointer-events-auto cursor-pointer group/chair z-15"
             style={{ transformStyle: "preserve-3d" }}
-            title="Configure Chair"
+            title="Configure Chair • Click to select"
           >
             <div className="absolute bottom-[220px] left-1/2 -translate-x-1/2 opacity-0 group-hover/chair:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-30">
-              Ergonomic Chair • Click to Customize
+              Ergonomic Chair • Click to Select
             </div>
             <ChairRenderer
               chairId={config.chairId}
@@ -476,26 +502,36 @@ export function WorkspaceCanvas({
             onStepHeight={handleStepHeight}
             onClick={() => {
               sound.playClick();
-              onSelectCategory?.("desks");
+              if (onSelectItem) {
+                onSelectItem("desks", config.deskId);
+              } else {
+                onSelectCategory?.("desks");
+              }
             }}
           >
             {/* Monitor Mounted Directly Atop Desk Surface (Rests on bottom-0 • Horizontally Draggable along desk) */}
             <motion.div
+              key={`monitor-${layoutKey}`}
               drag="x"
-              dragConstraints={{ left: -110, right: 110 }}
+              dragConstraints={{ left: -140, right: 140 }}
               dragElastic={0.06}
               dragMomentum={false}
               onPointerDown={(e) => e.stopPropagation()}
               className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center cursor-grab active:cursor-grabbing"
-              style={{ transformStyle: "preserve-3d", transform: "translateZ(10px)" }}
+              style={{ transformStyle: "preserve-3d", transform: "translateZ(10px)", touchAction: "none" }}
+              whileDrag={{ scale: 1.03 }}
               onClick={(e) => {
                 e.stopPropagation();
-                onSelectCategory?.("monitors");
+                if (onSelectItem) {
+                  onSelectItem("monitors", config.monitorId);
+                } else {
+                  onSelectCategory?.("monitors");
+                }
               }}
-              title="Slide monitor along desk • Click screen to cycle art"
+              title="Slide monitor along desk • Click to select"
             >
               <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-                🖥️ Slide Monitor • Click to Cycle Art
+                🖥️ Slide Monitor • Click to Select
               </div>
               <MonitorRenderer
                 monitorId={config.monitorId}
@@ -506,6 +542,7 @@ export function WorkspaceCanvas({
 
             {/* Desktop Accessories (Lamp, Mat, Laptop, Coffee, Plant - All Resting on Desk Surface) */}
             <div
+              key={`accessories-${layoutKey}`}
               className="absolute inset-x-0 bottom-0 pointer-events-auto"
               style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
             >
@@ -518,6 +555,7 @@ export function WorkspaceCanvas({
                 plantId={config.plantId}
                 coffeeId={config.coffeeId}
                 onSelectCategory={onSelectCategory}
+                onSelectItem={onSelectItem}
               />
             </div>
           </DeskRenderer>
