@@ -1,69 +1,218 @@
-import Image from "next/image";
+"use client";
+
+import React, { useState } from "react";
+import { WorkspaceConfig, Currency, ProductCategory, PresetSetup } from "@/types/workspace";
+import { PRESETS } from "@/data/products";
+import { Header } from "@/components/navbar/Header";
+import { WorkspaceCanvas } from "@/components/workspace/WorkspaceCanvas";
+import { ConfiguratorSidebar } from "@/components/workspace/ConfiguratorSidebar";
+import { SetupSummaryBar } from "@/components/workspace/SetupSummaryBar";
+import { PresetSelector } from "@/components/workspace/PresetSelector";
+import { CheckoutDialog } from "@/components/workspace/CheckoutDialog";
+import { Badge } from "@/components/ui/badge";
+import { Truck, ShieldCheck, RefreshCw, Zap } from "lucide-react";
+
+const DEFAULT_CONFIG: WorkspaceConfig = {
+  deskId: "desk-dual-motor",
+  deskFinish: "natural-bamboo",
+  deskHeightState: "sitting",
+  chairId: "chair-ergonomic-mesh",
+  chairColor: "stealth-black",
+  monitorId: "monitor-ultrawide-curved",
+  monitorDisplayMode: "code",
+  peripheralsId: "peripherals-mx-combo",
+  lightingId: "light-screenbar",
+  lampPowered: true,
+  laptopStand: true,
+  plantId: "extra-plant-monstera",
+  audioId: null,
+  coffeeId: "extra-nespresso",
+  airPurifier: true,
+  timeOfDay: "sunset",
+};
+
+function getInitialConfig(): WorkspaceConfig {
+  if (typeof window === "undefined") return DEFAULT_CONFIG;
+  try {
+    const params = new URLSearchParams(window.location.search);
+    const presetParam = params.get("preset");
+    if (presetParam) {
+      const found = PRESETS.find((p) => p.id === presetParam);
+      if (found) return { ...DEFAULT_CONFIG, ...found.config };
+    }
+    const desk = params.get("desk");
+    const chair = params.get("chair");
+    const monitor = params.get("monitor");
+    if (desk || chair || monitor) {
+      return {
+        ...DEFAULT_CONFIG,
+        ...(desk ? { deskId: desk } : {}),
+        ...(chair ? { chairId: chair } : {}),
+        ...(monitor ? { monitorId: monitor } : {}),
+      };
+    }
+  } catch {
+    // fallback
+  }
+  return DEFAULT_CONFIG;
+}
 
 export default function Home() {
+  const [config, setConfig] = useState<WorkspaceConfig>(getInitialConfig);
+  const [currency, setCurrency] = useState<Currency>("USD");
+  const [activeCategory, setActiveCategory] = useState<ProductCategory>("desks");
+  const [checkoutOpen, setCheckoutOpen] = useState<boolean>(false);
+
+  const handleApplyPreset = (preset: PresetSetup) => {
+    setConfig((prev) => ({
+      ...prev,
+      ...preset.config,
+    }));
+  };
+
+  const handleReset = () => {
+    setConfig(DEFAULT_CONFIG);
+  };
+
+  const handleCurrencyToggle = () => {
+    setCurrency((c) => (c === "USD" ? "IDR" : "USD"));
+  };
+
   return (
-    <div className="flex flex-col flex-1 items-center justify-center bg-zinc-50 font-sans dark:bg-black">
-      <main className="flex flex-1 w-full max-w-3xl flex-col items-center justify-between py-32 px-16 bg-white dark:bg-black sm:items-start">
-        <Image
-          className="dark:invert h-5 w-[100px]"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={100}
-          height={20}
-          priority
-        />
-        <div className="flex flex-col items-center gap-6 text-center sm:items-start sm:text-left">
-          <h1 className="max-w-xs text-3xl font-semibold leading-10 tracking-tight text-black dark:text-zinc-50">
-            To get started, edit the{" "}
-            <code className="rounded bg-black/[.06] px-1.5 py-0.5 font-mono text-[0.9em] dark:bg-white/[.08]">
-              page.tsx
-            </code>{" "}
-            file.
-          </h1>
-          <p className="max-w-md text-lg leading-8 text-zinc-600 dark:text-zinc-400">
-            Looking for a starting point or more instructions? Head over to{" "}
-            <a
-              href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Templates
-            </a>{" "}
-            or the{" "}
-            <a
-              href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-              className="font-medium text-zinc-950 dark:text-zinc-50"
-            >
-              Learning
-            </a>{" "}
-            center.
-          </p>
+    <div className="min-h-screen bg-[#0c0e14] text-neutral-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-neutral-950 pb-28">
+      {/* Top Navbar */}
+      <Header
+        currentConfig={config}
+        onApplyPreset={handleApplyPreset}
+        currency={currency}
+        onCurrencyToggle={handleCurrencyToggle}
+        onOpenCheckout={() => setCheckoutOpen(true)}
+      />
+
+      {/* Main Container */}
+      <main className="flex-1 max-w-7xl w-full mx-auto px-4 sm:px-6 pt-5 space-y-5">
+        {/* Hero Section & Preset Pills */}
+        <div className="flex flex-col md:flex-row md:items-end justify-between gap-3 border-b border-white/10 pb-4">
+          <div>
+            <div className="flex items-center gap-2 mb-1">
+              <Badge
+                variant="outline"
+                className="bg-emerald-500/10 text-emerald-400 border-emerald-500/30 text-[10px] font-mono"
+              >
+                monis.rent × Bali Nomads
+              </Badge>
+              <span className="text-xs text-neutral-400 hidden sm:inline">
+                Next-Day Villa Delivery in Canggu, Ubud, Seminyak & Uluwatu
+              </span>
+            </div>
+            <h1 className="text-2xl sm:text-3xl font-extrabold text-white tracking-tight">
+              Design Your Bali Dream Workspace
+            </h1>
+            <p className="text-xs sm:text-sm text-neutral-400 mt-1 max-w-2xl">
+              Select your sit-stand desk, ergonomic chair, displays, and tropical villa extras.
+              Watch your remote battlestation come to life in real-time.
+            </p>
+          </div>
+
+          {/* Quick 1-Click Preset Bar */}
+          <div className="w-full md:w-auto">
+            <PresetSelector onSelectPreset={handleApplyPreset} activeConfig={config} />
+          </div>
         </div>
-        <div className="flex flex-col gap-4 text-base font-medium sm:flex-row">
-          <a
-            className="flex h-12 w-full items-center justify-center gap-2 rounded-full bg-foreground px-5 text-background transition-colors hover:bg-[#383838] dark:hover:bg-[#ccc] md:w-[158px]"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert h-[14px] w-4"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={16}
-              height={14}
+
+        {/* Studio Workspace Grid: Left Canvas, Right Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-auto lg:h-[660px]">
+          {/* Left Canvas: Live 2D/3D Vector Workspace (7 cols on lg, 8 on xl) */}
+          <div className="lg:col-span-7 xl:col-span-8 h-[540px] sm:h-[600px] lg:h-full">
+            <WorkspaceCanvas
+              config={config}
+              onChangeConfig={setConfig}
+              onSelectCategory={(cat) => setActiveCategory(cat)}
             />
-            Deploy Now
-          </a>
-          <a
-            className="flex h-12 w-full items-center justify-center rounded-full border border-solid border-black/[.08] px-5 transition-colors hover:border-transparent hover:bg-black/[.04] dark:border-white/[.145] dark:hover:bg-[#1a1a1a] md:w-[158px]"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Documentation
-          </a>
+          </div>
+
+          {/* Right Sidebar: Product Catalog & Customization Tabs (5 cols on lg, 4 on xl) */}
+          <div className="lg:col-span-5 xl:col-span-4 h-[580px] lg:h-full">
+            <ConfiguratorSidebar
+              config={config}
+              onChangeConfig={setConfig}
+              currency={currency}
+              activeCategory={activeCategory}
+              onCategoryChange={setActiveCategory}
+            />
+          </div>
         </div>
+
+        {/* Below the fold: Benefits & Why Monis */}
+        <section className="pt-10 border-t border-white/10 space-y-6">
+          <div className="text-center max-w-xl mx-auto space-y-1.5">
+            <h2 className="text-xl font-bold text-white">
+              Why Remote Workers in Bali Rent with Monis
+            </h2>
+            <p className="text-xs text-neutral-400">
+              Skip the hassle of buying furniture in local shops or working with bad posture from villa sofas.
+            </p>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+            <div className="p-4 rounded-2xl bg-neutral-900/50 border border-white/5 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <Truck className="w-4 h-4" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">Next-Day Delivery</h3>
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                Order today, arrive tomorrow. Delivered and professionally assembled right inside your villa bedroom or living space.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-neutral-900/50 border border-white/5 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <ShieldCheck className="w-4 h-4" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">Zero Deposit Required</h3>
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                No massive security deposits or complicated paperwork. Simply verify your WhatsApp or passport and pay as you go.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-neutral-900/50 border border-white/5 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <RefreshCw className="w-4 h-4" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">Flexible Rental Terms</h3>
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                Rent for 1 week while on a workation, or 6 months as an island resident with up to 30% progressive long-stay discounts.
+              </p>
+            </div>
+
+            <div className="p-4 rounded-2xl bg-neutral-900/50 border border-white/5 space-y-2">
+              <div className="w-8 h-8 rounded-xl bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex items-center justify-center">
+                <Zap className="w-4 h-4" />
+              </div>
+              <h3 className="text-sm font-semibold text-white">Full Stress-Free Return</h3>
+              <p className="text-xs text-neutral-400 leading-relaxed">
+                Flying out to your next destination? Send us a WhatsApp pin, and our logistics crew will pack up and pick up everything.
+              </p>
+            </div>
+          </div>
+        </section>
       </main>
+
+      {/* Floating Bottom Setup Summary Dock */}
+      <SetupSummaryBar
+        config={config}
+        currency={currency}
+        onOpenCheckout={() => setCheckoutOpen(true)}
+        onReset={handleReset}
+      />
+
+      {/* Checkout / Summary Dialog Modal */}
+      <CheckoutDialog
+        open={checkoutOpen}
+        onOpenChange={setCheckoutOpen}
+        config={config}
+        currency={currency}
+      />
     </div>
   );
 }
