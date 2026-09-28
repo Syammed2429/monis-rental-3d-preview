@@ -9,6 +9,8 @@ Instead of scrolling through a spreadsheet of products, users can visually custo
 ## ⚡ Tech Stack
 
 - **Framework**: [Next.js 16](https://nextjs.org/) (App Router, Turbopack)
+- **Compiler**: [React Compiler](https://react.dev/learn/react-compiler) (`reactCompiler: true` enabled, eliminating manual `useCallback`, `useMemo`, and `useEffect`)
+- **Forms & Validation**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) (`@hookform/resolvers/zod`)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/)
 - **UI Components**: [shadcn/ui](https://ui.shadcn.com/) (Radix / Base UI primitives: Dialog, Slider, Tabs, Select, Switch, Card, Badge, Tooltip)
 - **Animations**: [Motion](https://motion.dev/) (`motion/react` for physics-based spring elevations and transitions)
