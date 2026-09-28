@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { WorkspaceConfig, Currency, ProductCategory, PresetSetup } from "@/types/workspace";
 import { PRESETS } from "@/data/products";
 import { Header } from "@/components/navbar/Header";

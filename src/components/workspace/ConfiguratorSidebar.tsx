@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { ProductItem, ProductCategory, WorkspaceConfig, Currency, DeskFinish, ChairColor } from "@/types/workspace";
 import { PRODUCTS } from "@/data/products";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";

@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import Link from "next/link";
-import { PresetSetup, Currency } from "@/types/workspace";
+import { PresetSetup, Currency, WorkspaceConfig } from "@/types/workspace";
 import { PRESETS } from "@/data/products";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
@@ -18,7 +18,7 @@ import { Sparkles, Volume2, VolumeX, Globe, ChevronDown } from "lucide-react";
 import { sound } from "@/lib/audio";
 
 interface HeaderProps {
-  currentConfig?: unknown;
+  currentConfig: WorkspaceConfig;
   onApplyPreset: (preset: PresetSetup) => void;
   currency: Currency;
   onCurrencyToggle: () => void;
@@ -26,6 +26,7 @@ interface HeaderProps {
 }
 
 export function Header({
+  currentConfig: _currentConfig,
   onApplyPreset,
   currency,
   onCurrencyToggle,

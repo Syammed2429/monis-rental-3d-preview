@@ -1,7 +1,5 @@
 "use client";
 
-import React from "react";
-
 interface MonitorRendererProps {
   monitorId: string;
   displayMode: "code" | "bali-nature" | "minimal-clock" | "off";

@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState } from "react";
+import { useState } from "react";
 import { motion } from "motion/react";
 import { WorkspaceConfig, ProductCategory } from "@/types/workspace";
 import { RoomBackdrop } from "./RoomBackdrop";

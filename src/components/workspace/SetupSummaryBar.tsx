@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { WorkspaceConfig, Currency } from "@/types/workspace";
 import { PRODUCTS } from "@/data/products";
 import { Button } from "@/components/ui/button";

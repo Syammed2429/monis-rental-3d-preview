@@ -1,6 +1,5 @@
 "use client";
 
-import React from "react";
 import { PresetSetup, WorkspaceConfig } from "@/types/workspace";
 import { PRESETS } from "@/data/products";
 import { Badge } from "@/components/ui/badge";
