@@ -47,11 +47,11 @@ export function WorkspaceCanvas({
 
   // 3D Camera Orbit & Rotation State
   const [rotY, setRotY] = useState<number>(0); // Horizontal orbit angle: -36deg to +36deg
-  const [rotX, setRotX] = useState<number>(4); // Vertical pitch angle: -4deg to +18deg
+  const [rotX, setRotX] = useState<number>(4); // Vertical pitch angle: 0deg to +24deg
   const [isAutoRotating, setIsAutoRotating] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [activePreset, setActivePreset] = useState<
-    "front" | "iso-left" | "iso-right" | "top" | "custom"
+    "front" | "iso-left" | "iso-right" | "side" | "top" | "custom"
   >("front");
 
   // Pointer drag tracking refs
@@ -89,20 +89,17 @@ export function WorkspaceCanvas({
     };
   }, []);
 
-  // 360° Auto-Turntable Tour Animation Loop
+  // Studio Showcase Auto-Tour (Cinematic breathing sweep)
   useEffect(() => {
     if (!isAutoRotating) return;
     let animFrameId: number;
-    const startTime = performance.now();
 
     const loop = (currentTime: number) => {
-      const elapsedSec = (currentTime - startTime) / 1000;
-      // Gentle sinusoidal wave oscillating between -24deg and +24deg over ~7s cycle
-      const wave = Math.sin(elapsedSec * 0.9);
-      const newRotY = wave * 24;
-      const newRotX = 5 + Math.cos(elapsedSec * 0.6) * 3;
-      setRotY(Number(newRotY.toFixed(1)));
-      setRotX(Number(newRotX.toFixed(1)));
+      // Elegant sine sweep between -32° and +32°
+      const targetY = Math.sin(currentTime / 1800) * 32;
+      const targetX = 6 + Math.cos(currentTime / 2200) * 3;
+      setRotY(Number(targetY.toFixed(1)));
+      setRotX(Number(targetX.toFixed(1)));
       animFrameId = requestAnimationFrame(loop);
     };
 
@@ -142,10 +139,11 @@ export function WorkspaceCanvas({
     }
 
     if (hasDraggedRef.current) {
-      // 0.28 deg/px for horizontal yaw, 0.18 deg/px for vertical pitch
-      const nextRotY = Math.max(-36, Math.min(36, dragStartRef.current.rotY + dx * 0.28));
-      const nextRotX = Math.max(-4, Math.min(18, dragStartRef.current.rotX - dy * 0.18));
-      setRotY(Number(nextRotY.toFixed(1)));
+      // Fluid Studio Isometric Orbit (clamped smoothly between -44° and +44°)
+      const rawRotY = dragStartRef.current.rotY + dx * 0.32;
+      const clampedRotY = Math.max(-44, Math.min(44, rawRotY));
+      const nextRotX = Math.max(0, Math.min(22, dragStartRef.current.rotX - dy * 0.16));
+      setRotY(Number(clampedRotY.toFixed(1)));
       setRotX(Number(nextRotX.toFixed(1)));
       setActivePreset("custom");
     }
@@ -184,16 +182,16 @@ export function WorkspaceCanvas({
         setRotX(4);
         break;
       case "iso-left":
-        setRotY(-24);
+        setRotY(-28);
         setRotX(8);
         break;
       case "iso-right":
-        setRotY(24);
+        setRotY(28);
         setRotX(8);
         break;
       case "top":
         setRotY(0);
-        setRotX(16);
+        setRotX(18);
         break;
     }
   };
@@ -425,6 +423,23 @@ export function WorkspaceCanvas({
             style={{ transform: "translateZ(-30px)" }}
           />
 
+          {/* Showroom Floor Pedestal Ring (Ground Floor Underneath Desk Feet) */}
+          <div
+            className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[490px] h-14 rounded-[100%] pointer-events-none border border-emerald-500/25 bg-gradient-to-b from-neutral-900/80 via-black/90 to-transparent shadow-[0_0_40px_rgba(16,185,129,0.18)] flex items-center justify-between px-6"
+            style={{ transform: "translateZ(-15px)" }}
+          >
+            <span className="text-[7px] font-mono text-emerald-400/80 font-bold tracking-widest">
+              ◄ WEST FLANK
+            </span>
+            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[7px] font-mono text-emerald-300">
+              <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+              <span>BALI NOMAD SHOWROOM</span>
+            </div>
+            <span className="text-[7px] font-mono text-emerald-400/80 font-bold tracking-widest">
+              EAST FLANK ►
+            </span>
+          </div>
+
           {/* Bali Lifestyle Elements (Outdoor Gear Left, Relax Zone Right) */}
           <LifestyleRenderer
             outdoorId={config.outdoorId}
@@ -516,23 +531,26 @@ export function WorkspaceCanvas({
           {isAutoRotating ? (
             <>
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-emerald-400 font-medium">360° Turntable Active</span>
+              <span className="text-emerald-400 font-medium">
+                Studio Tour Active ({Math.round(rotY)}°)
+              </span>
             </>
           ) : isDragging ? (
             <>
               <Orbit className="w-3 h-3 text-emerald-400 animate-spin" />
               <span className="font-mono text-emerald-300 font-bold">
-                Yaw: {Math.round(rotY)}° • Pitch: {Math.round(rotX)}°
+                Studio Orbit: {Math.round(rotY)}° • Pitch: {Math.round(rotX)}°
               </span>
             </>
           ) : (
             <>
               <Orbit className="w-3 h-3 text-emerald-400" />
-              <span className="hidden sm:inline">Drag scene to orbit 3D • Tap presets below</span>
-              <span className="sm:hidden">Drag scene to rotate in 3D</span>
-              {rotY !== 0 && (
-                <span className="font-mono text-neutral-400 ml-1">({Math.round(rotY)}°)</span>
-              )}
+              <span className="hidden sm:inline">
+                Drag scene to orbit 3D • Tap presets below {rotY !== 0 ? `(${Math.round(rotY)}°)` : ""}
+              </span>
+              <span className="sm:hidden">
+                Drag scene to rotate in 3D {rotY !== 0 ? `(${Math.round(rotY)}°)` : ""}
+              </span>
             </>
           )}
         </div>
@@ -553,7 +571,7 @@ export function WorkspaceCanvas({
             <span>Front</span>
           </button>
 
-          {/* 3/4 Left -24° */}
+          {/* 3/4 Left -28° */}
           <button
             onClick={() => handleSelectPreset("iso-left")}
             className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
@@ -561,13 +579,13 @@ export function WorkspaceCanvas({
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
-            title="3/4 Left Isometric View (-24°)"
+            title="3/4 Left Isometric View (-28°)"
           >
             <RotateCcw className="w-3 h-3" />
             <span>Left</span>
           </button>
 
-          {/* 3/4 Right +24° */}
+          {/* 3/4 Right +28° */}
           <button
             onClick={() => handleSelectPreset("iso-right")}
             className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
@@ -575,7 +593,7 @@ export function WorkspaceCanvas({
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
-            title="3/4 Right Isometric View (+24°)"
+            title="3/4 Right Isometric View (+28°)"
           >
             <RotateCw className="w-3 h-3" />
             <span>Right</span>
@@ -589,7 +607,7 @@ export function WorkspaceCanvas({
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
-            title="Elevated Top Overview Angle (+16°)"
+            title="Elevated Top Overview Angle (+18°)"
           >
             <span>Top</span>
           </button>

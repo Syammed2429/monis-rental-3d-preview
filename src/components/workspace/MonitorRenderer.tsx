@@ -82,58 +82,125 @@ export function MonitorRenderer({
     >
       {/* 1. Apple 27" 5K Studio Display */}
       {monitorId === "monitor-studio-display" && (
-        <div className="flex flex-col items-center">
-          {/* Main Bezel */}
-          <div className="w-[240px] h-[155px] rounded-lg bg-neutral-900 p-1 border-2 border-neutral-700 shadow-2xl relative flex flex-col">
-            {/* Top Webcam Notch */}
-            <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-6 h-1 flex items-center justify-center">
-              <div className="w-1 h-1 rounded-full bg-neutral-800 border border-neutral-600" />
+        <div className="flex flex-col items-center" style={{ transformStyle: "preserve-3d" }}>
+          {/* Main Bezel Assembly with 3D Front & Rear Chassis */}
+          <div className="relative w-[240px] h-[155px]" style={{ transformStyle: "preserve-3d" }}>
+            {/* Front Screen Display Face (+Z) */}
+            <div
+              className="absolute inset-0 rounded-lg bg-neutral-900 p-1 border-2 border-neutral-700 shadow-2xl flex flex-col"
+              style={{ transform: "translateZ(4px)", backfaceVisibility: "hidden" }}
+            >
+              {/* Top Webcam Notch */}
+              <div className="absolute top-0.5 left-1/2 -translate-x-1/2 w-6 h-1 flex items-center justify-center">
+                <div className="w-1 h-1 rounded-full bg-neutral-800 border border-neutral-600" />
+              </div>
+
+              {/* Active Display Surface */}
+              <div className="w-full flex-1 rounded overflow-hidden relative shadow-inner">
+                {renderScreenContent(false)}
+              </div>
+
+              {/* Silver Aluminum Chin */}
+              <div className="h-2.5 bg-gradient-to-r from-slate-300 via-slate-100 to-slate-300 rounded-b mt-0.5 flex items-center justify-center shadow-xs">
+                <div className="w-1.5 h-1.5 rounded-full bg-black/10" />
+              </div>
             </div>
 
-            {/* Active Display Surface */}
-            <div className="w-full flex-1 rounded overflow-hidden relative shadow-inner">
-              {renderScreenContent(false)}
-            </div>
+            {/* Rear 3D Aluminum Chassis (-Z: Visible when rotated 180deg) */}
+            <div
+              className="absolute inset-0 rounded-lg bg-gradient-to-b from-slate-200 via-slate-300 to-slate-400 border border-slate-400/50 shadow-2xl p-2.5 flex flex-col items-center justify-between"
+              style={{ transform: "rotateY(180deg) translateZ(4px)", backfaceVisibility: "hidden" }}
+            >
+              {/* Top Exhaust Vent Slot */}
+              <div className="w-28 h-1 bg-black/30 rounded-full" />
 
-            {/* Silver Aluminum Chin */}
-            <div className="h-2.5 bg-gradient-to-r from-slate-300 via-slate-100 to-slate-300 rounded-b mt-0.5 flex items-center justify-center shadow-xs">
-              <div className="w-1.5 h-1.5 rounded-full bg-black/10" />
+              {/* Rear Embossed Studio Display Branding */}
+              <div className="text-slate-600/80 font-mono text-[7px] font-bold tracking-widest">
+                APPLE STUDIO DISPLAY
+              </div>
+
+              {/* Circular Magnetic Stand Hinge Pivot */}
+              <div className="w-9 h-9 rounded-full bg-slate-300 border-2 border-slate-400 shadow-inner flex items-center justify-center">
+                <div className="w-3.5 h-3.5 rounded-full bg-slate-400/80 border border-white/40" />
+              </div>
+
+              {/* Power & Thunderbolt Port Bar */}
+              <div className="flex gap-2 items-center">
+                <div className="w-3 h-1 bg-black/50 rounded-full" />
+                <div className="w-1 h-1 bg-black/50 rounded-full" />
+                <div className="w-1 h-1 bg-black/50 rounded-full" />
+              </div>
             </div>
           </div>
 
           {/* Aluminum Tilt Stand */}
-          <div className="w-9 h-8 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-400 border-x border-white/30 shadow-md flex items-center justify-center relative">
+          <div
+            className="w-9 h-8 bg-gradient-to-b from-slate-200 via-slate-300 to-slate-400 border-x border-white/30 shadow-md flex items-center justify-center relative"
+            style={{ transform: "translateZ(0px)" }}
+          >
             <div className="w-2.5 h-2.5 rounded-full bg-neutral-900 border border-slate-400/50 shadow-inner" />
           </div>
           {/* Aluminum Stand Base Plate */}
-          <div className="w-22 h-1.5 bg-gradient-to-r from-slate-300 via-slate-100 to-slate-300 rounded-t border-t border-white shadow-lg" />
+          <div
+            className="w-22 h-1.5 bg-gradient-to-r from-slate-300 via-slate-100 to-slate-300 rounded-t border-t border-white shadow-lg"
+            style={{ transform: "translateZ(0px)" }}
+          />
         </div>
       )}
 
       {/* 2. Xiaomi 34" Curved Gaming Ultrawide */}
       {monitorId === "monitor-ultrawide-curved" && (
-        <div className="flex flex-col items-center">
-          {/* Curved Panoramic Frame */}
-          <div className="w-[290px] h-[135px] rounded-xl bg-neutral-950 p-1 border-2 border-neutral-800 shadow-2xl relative flex flex-col">
-            <div className="absolute inset-x-4 top-0.5 h-0.5 bg-cyan-400/20 rounded-full" />
+        <div className="flex flex-col items-center" style={{ transformStyle: "preserve-3d" }}>
+          {/* Curved Panoramic Frame with 3D Front & Rear */}
+          <div className="relative w-[290px] h-[135px]" style={{ transformStyle: "preserve-3d" }}>
+            {/* Front Screen Surface (+Z) */}
+            <div
+              className="absolute inset-0 rounded-xl bg-neutral-950 p-1 border-2 border-neutral-800 shadow-2xl flex flex-col"
+              style={{ transform: "translateZ(5px)", backfaceVisibility: "hidden" }}
+            >
+              <div className="absolute inset-x-4 top-0.5 h-0.5 bg-cyan-400/20 rounded-full" />
 
-            {/* Screen Surface */}
-            <div className="w-full flex-1 rounded-lg overflow-hidden relative shadow-inner">
-              {renderScreenContent(true)}
+              {/* Screen Surface */}
+              <div className="w-full flex-1 rounded-lg overflow-hidden relative shadow-inner">
+                {renderScreenContent(true)}
+              </div>
+
+              {/* Bottom Minimal Frame */}
+              <div className="h-1.5 bg-neutral-900 rounded-b mt-0.5 flex items-center justify-center">
+                <div className="text-[5.5px] tracking-widest text-neutral-500 font-mono">180Hz WQHD CURVED</div>
+              </div>
             </div>
 
-            {/* Bottom Minimal Frame */}
-            <div className="h-1.5 bg-neutral-900 rounded-b mt-0.5 flex items-center justify-center">
-              <div className="text-[5.5px] tracking-widest text-neutral-500 font-mono">180Hz WQHD CURVED</div>
+            {/* Rear Curved Gaming Chassis (-Z: Visible when rotated 180deg) */}
+            <div
+              className="absolute inset-0 rounded-xl bg-neutral-900 border border-neutral-700 shadow-2xl p-2.5 flex flex-col items-center justify-between"
+              style={{ transform: "rotateY(180deg) translateZ(5px)", backfaceVisibility: "hidden" }}
+            >
+              {/* Top Heat Dissipation Grill */}
+              <div className="w-36 h-1 bg-black/60 rounded-full" />
+
+              {/* Gaming Ambient Halo Ring */}
+              <div className="w-12 h-12 rounded-full border-2 border-cyan-500/40 shadow-[0_0_15px_rgba(6,182,212,0.3)] bg-neutral-950 flex items-center justify-center">
+                <div className="text-[6px] font-mono text-cyan-400/90 font-bold">180Hz</div>
+              </div>
+
+              {/* Rear Cable Cover Clip */}
+              <div className="w-8 h-2 bg-neutral-800 rounded border border-white/10" />
             </div>
           </div>
 
           {/* Stand Stalk */}
-          <div className="w-7 h-9 bg-gradient-to-b from-neutral-800 to-neutral-900 border-x border-white/10 shadow-md flex items-center justify-center">
+          <div
+            className="w-7 h-9 bg-gradient-to-b from-neutral-800 to-neutral-900 border-x border-white/10 shadow-md flex items-center justify-center"
+            style={{ transform: "translateZ(0px)" }}
+          >
             <div className="w-1.5 h-5 bg-neutral-700 rounded-full" />
           </div>
           {/* Wide V-Legs Base */}
-          <div className="relative w-34 h-2.5 flex justify-center items-center">
+          <div
+            className="relative w-34 h-2.5 flex justify-center items-center"
+            style={{ transform: "translateZ(0px)" }}
+          >
             <div className="w-34 h-1.5 bg-neutral-800 rounded-md border-t border-white/10 shadow-md" />
             <div className="absolute w-20 h-1.5 bg-neutral-900 rounded-md rotate-12 -left-1" />
             <div className="absolute w-20 h-1.5 bg-neutral-900 rounded-md -rotate-12 -right-1" />

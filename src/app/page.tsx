@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { WorkspaceConfig, Currency, ProductCategory, PresetSetup } from "@/types/workspace";
 import { PRESETS } from "@/data/products";
 import { Header } from "@/components/navbar/Header";
@@ -36,40 +36,42 @@ const DEFAULT_CONFIG: WorkspaceConfig = {
   timeOfDay: "sunset",
 };
 
-function getInitialConfig(): WorkspaceConfig {
-  if (typeof window === "undefined") return DEFAULT_CONFIG;
-  try {
-    const urlParams = new URLSearchParams(window.location.search);
-    const presetParam = urlParams.get("preset");
-    if (presetParam) {
-      const found = PRESETS.find((p) => p.id === presetParam);
-      if (found) return { ...DEFAULT_CONFIG, ...found.config };
-    }
-
-    // 1. Check if URL has query parameters
-    if (window.location.search && window.location.search.length > 1) {
-      const parsed = parseConfigFromUrl(window.location.search);
-      if (Object.keys(parsed).length > 0) {
-        return { ...DEFAULT_CONFIG, ...parsed };
-      }
-    }
-    // 2. Check localStorage
-    const saved = localStorage.getItem(STORAGE_KEY);
-    if (saved) {
-      const parsedJson = JSON.parse(saved);
-      return { ...DEFAULT_CONFIG, ...parsedJson };
-    }
-  } catch {
-    // fallback
-  }
-  return DEFAULT_CONFIG;
-}
-
 export default function Home() {
-  const [config, setConfig] = useState<WorkspaceConfig>(getInitialConfig);
+  const [config, setConfig] = useState<WorkspaceConfig>(DEFAULT_CONFIG);
   const [currency, setCurrency] = useState<Currency>("USD");
   const [activeCategory, setActiveCategory] = useState<ProductCategory>("desks");
   const [checkoutOpen, setCheckoutOpen] = useState<boolean>(false);
+
+  // Restore client configuration on mount safely after hydration
+  useEffect(() => {
+    try {
+      const urlParams = new URLSearchParams(window.location.search);
+      const presetParam = urlParams.get("preset");
+      if (presetParam) {
+        const found = PRESETS.find((p) => p.id === presetParam);
+        if (found) {
+          queueMicrotask(() => setConfig({ ...DEFAULT_CONFIG, ...found.config }));
+          return;
+        }
+      }
+
+      if (window.location.search && window.location.search.length > 1) {
+        const parsed = parseConfigFromUrl(window.location.search);
+        if (Object.keys(parsed).length > 0) {
+          queueMicrotask(() => setConfig((prev) => ({ ...prev, ...parsed })));
+          return;
+        }
+      }
+
+      const saved = localStorage.getItem(STORAGE_KEY);
+      if (saved) {
+        const parsedJson = JSON.parse(saved);
+        queueMicrotask(() => setConfig((prev) => ({ ...prev, ...parsedJson })));
+      }
+    } catch {
+      // ignore
+    }
+  }, []);
 
   // Sync state update to localStorage and URL search params safely outside render cycle
   const handleUpdateConfig = (updater: (prev: WorkspaceConfig) => WorkspaceConfig) => {
