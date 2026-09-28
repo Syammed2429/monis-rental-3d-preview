@@ -1,6 +1,6 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef, useEffect } from "react";
 import { motion } from "motion/react";
 import { WorkspaceConfig, ProductCategory } from "@/types/workspace";
 import { RoomBackdrop } from "./RoomBackdrop";
@@ -25,11 +25,38 @@ export function WorkspaceCanvas({
   onChangeConfig,
   onSelectCategory,
 }: WorkspaceCanvasProps) {
+  const containerRef = useRef<HTMLDivElement>(null);
+  const [stageScale, setStageScale] = useState<number>(1);
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const isStanding = config.deskHeightState === "standing";
   const currentHeight = config.deskHeightCm || (isStanding ? 108 : 74);
   const heightRatio = Math.max(0, Math.min(1, (currentHeight - 70) / (118 - 70)));
-  const deskOffsetY = (1 - heightRatio) * 62;
+  const elevationY = -(heightRatio * 44);
+
+  // ResizeObserver dynamically measures container and auto-scales the 760x440 stage
+  useEffect(() => {
+    const el = containerRef.current;
+    if (!el) return;
+
+    const handleResize = () => {
+      const { clientWidth, clientHeight } = el;
+      if (clientWidth > 0 && clientHeight > 0) {
+        // Stage baseline coordinates: 760px width x 440px height
+        const scaleX = clientWidth / 760;
+        const scaleY = clientHeight / 440;
+        const computed = Math.min(scaleX, scaleY);
+        setStageScale(Number.isFinite(computed) && computed > 0 ? Math.min(computed, 1.35) : 1);
+      }
+    };
+
+    handleResize();
+    const observer = new ResizeObserver(handleResize);
+    observer.observe(el);
+
+    return () => {
+      observer.disconnect();
+    };
+  }, []);
 
   // Toggle desk height preset (74cm / 108cm)
   const handleToggleHeight = () => {
@@ -91,7 +118,7 @@ export function WorkspaceCanvas({
   };
 
   return (
-    <div className="relative w-full h-[380px] sm:h-[460px] lg:h-full min-h-[360px] lg:min-h-[500px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-neutral-950 flex flex-col justify-between select-none">
+    <div className="relative w-full h-[390px] sm:h-[460px] lg:h-full min-h-[380px] lg:min-h-[500px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-neutral-950 flex flex-col justify-between select-none">
       {/* 1. Dynamic Room Background */}
       <RoomBackdrop timeOfDay={config.timeOfDay} />
 
@@ -190,74 +217,26 @@ export function WorkspaceCanvas({
       </div>
 
       {/* 3. Main Stage Composite */}
-      <div className="relative flex-1 flex items-center justify-center overflow-hidden">
-        {/* Bali Lifestyle Elements (Outdoor Gear Left, Relax Zone Right) */}
-        <LifestyleRenderer
-          outdoorId={config.outdoorId}
-          relaxId={config.relaxId}
-          onSelectCategory={onSelectCategory}
-        />
-
-        {/* Central Workspace Rig (Scaled with Zoom) */}
+      <div
+        ref={containerRef}
+        className="relative flex-1 w-full h-full flex items-center justify-center overflow-hidden"
+      >
         <motion.div
-          className="relative w-full max-w-2xl sm:max-w-3xl h-[420px] flex items-center justify-center transform origin-bottom"
-          animate={{ scale: zoomLevel }}
-          transition={{ type: "spring", stiffness: 150, damping: 25 }}
+          style={{
+            width: 760,
+            height: 440,
+            transformOrigin: "center center",
+          }}
+          className="relative shrink-0 select-none pointer-events-auto"
+          animate={{ scale: stageScale * zoomLevel }}
+          transition={{ type: "spring", stiffness: 180, damping: 25 }}
         >
-          {/* Desk Surface, Monitors & Accessories Group: elevates smoothly with continuous height */}
-          <motion.div
-            className="absolute inset-x-0 bottom-16 flex flex-col items-center z-20 pointer-events-none"
-            animate={{ y: deskOffsetY }}
-            transition={{ type: "spring", stiffness: 140, damping: 22 }}
-          >
-            {/* Monitor Mounted atop Desk */}
-            <div
-              className="absolute -top-[175px] left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center"
-              onClick={() => onSelectCategory?.("monitors")}
-              title="Click to configure Monitor (or click screen to cycle wallpaper)"
-            >
-              <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-                Display • Click to Cycle Wallpaper
-              </div>
-              <MonitorRenderer
-                monitorId={config.monitorId}
-                displayMode={config.monitorDisplayMode}
-                onToggleDisplayMode={handleToggleScreen}
-              />
-            </div>
-
-            {/* Desktop Accessories (Lamp, Mat, Laptop, Coffee, Plant) */}
-            <div className="absolute inset-x-0 -top-[12px] h-[40px] pointer-events-auto">
-              <AccessoriesRenderer
-                peripheralsId={config.peripheralsId}
-                lightingId={config.lightingId}
-                lampPowered={config.lampPowered}
-                onToggleLamp={handleToggleLamp}
-                laptopStand={config.laptopStand}
-                plantId={config.plantId}
-                coffeeId={config.coffeeId}
-                onSelectCategory={onSelectCategory}
-              />
-            </div>
-          </motion.div>
-
-          {/* Desk Frame & Telescoping Legs */}
-          <div
-            onClick={() => {
-              sound.playClick();
-              onSelectCategory?.("desks");
-            }}
-            className="cursor-pointer group/desk relative flex flex-col items-center"
-            title="Configure Desk"
-          >
-            <DeskRenderer
-              finish={config.deskFinish}
-              isStanding={isStanding}
-              heightCm={currentHeight}
-              onToggleHeight={handleToggleHeight}
-              onStepHeight={handleStepHeight}
-            />
-          </div>
+          {/* Bali Lifestyle Elements (Outdoor Gear Left, Relax Zone Right) */}
+          <LifestyleRenderer
+            outdoorId={config.outdoorId}
+            relaxId={config.relaxId}
+            onSelectCategory={onSelectCategory}
+          />
 
           {/* Ergonomic Chair tucked neatly in knee hole */}
           <div
@@ -277,6 +256,61 @@ export function WorkspaceCanvas({
               isStanding={isStanding}
             />
           </div>
+
+          {/* Desk Frame & Telescoping Legs */}
+          <div
+            onClick={() => {
+              sound.playClick();
+              onSelectCategory?.("desks");
+            }}
+            className="cursor-pointer group/desk relative flex flex-col items-center"
+            title="Configure Desk"
+          >
+            <DeskRenderer
+              finish={config.deskFinish}
+              isStanding={isStanding}
+              heightCm={currentHeight}
+              onToggleHeight={handleToggleHeight}
+              onStepHeight={handleStepHeight}
+            />
+          </div>
+
+          {/* Desk Surface Mounted Items: Monitor & Accessories (Elevates with Tabletop) */}
+          <motion.div
+            className="absolute inset-x-0 bottom-[92px] h-[56px] flex flex-col items-center z-25 pointer-events-none"
+            animate={{ y: elevationY }}
+            transition={{ type: "spring", stiffness: 140, damping: 22 }}
+          >
+            {/* Monitor Mounted atop Desk */}
+            <div
+              className="absolute -top-[165px] left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center"
+              onClick={() => onSelectCategory?.("monitors")}
+              title="Click to configure Monitor (or click screen to cycle wallpaper)"
+            >
+              <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+                Display • Click to Cycle Wallpaper
+              </div>
+              <MonitorRenderer
+                monitorId={config.monitorId}
+                displayMode={config.monitorDisplayMode}
+                onToggleDisplayMode={handleToggleScreen}
+              />
+            </div>
+
+            {/* Desktop Accessories (Lamp, Mat, Laptop, Coffee, Plant) */}
+            <div className="absolute inset-x-0 -top-[10px] h-[40px] pointer-events-auto">
+              <AccessoriesRenderer
+                peripheralsId={config.peripheralsId}
+                lightingId={config.lightingId}
+                lampPowered={config.lampPowered}
+                onToggleLamp={handleToggleLamp}
+                laptopStand={config.laptopStand}
+                plantId={config.plantId}
+                coffeeId={config.coffeeId}
+                onSelectCategory={onSelectCategory}
+              />
+            </div>
+          </motion.div>
         </motion.div>
       </div>
 

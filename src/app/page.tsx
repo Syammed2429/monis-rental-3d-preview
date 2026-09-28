@@ -156,7 +156,7 @@ export default function Home() {
         {/* Studio Workspace Grid: Left Canvas, Right Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-auto lg:h-[660px]">
           {/* Left Canvas: Live 2D/3D Vector Workspace (7 cols on lg, 8 on xl) */}
-          <div className="lg:col-span-7 xl:col-span-8 h-[380px] sm:h-[460px] lg:h-full">
+          <div className="lg:col-span-7 xl:col-span-8 h-[390px] sm:h-[460px] lg:h-full">
             <WorkspaceCanvas
               config={config}
               onChangeConfig={handleUpdateConfig}

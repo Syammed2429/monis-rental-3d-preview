@@ -42,10 +42,10 @@ export function ChairRenderer({ chairId, color, isStanding }: ChairRendererProps
 
   return (
     <motion.div
-      className="absolute bottom-10 left-1/2 -translate-x-1/2 z-15 pointer-events-none select-none flex flex-col items-center"
+      className="absolute bottom-6 left-1/2 -translate-x-1/2 z-15 pointer-events-auto cursor-pointer select-none flex flex-col items-center"
       animate={{
-        y: isStanding ? 16 : 0,
-        scale: isStanding ? 0.95 : 1,
+        y: isStanding ? 8 : 0,
+        scale: isStanding ? 0.96 : 1,
       }}
       transition={{ type: "spring", stiffness: 120, damping: 20 }}
     >

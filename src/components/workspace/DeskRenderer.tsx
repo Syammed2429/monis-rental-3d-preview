@@ -51,19 +51,45 @@ export function DeskRenderer({
   // Continuous height calculation from 70cm to 118cm
   const currentHeight = heightCm || (isStanding ? 108 : 74);
   const heightRatio = Math.max(0, Math.min(1, (currentHeight - 70) / (118 - 70)));
-  const deskOffsetY = (1 - heightRatio) * 62;
-  const legExtHeight = 64 + heightRatio * 76;
+  const elevationY = -(heightRatio * 44);
 
   return (
-    <div className="absolute inset-x-0 bottom-16 flex flex-col items-center pointer-events-none select-none">
-      {/* Desk Group with Motion Elevation */}
+    <div className="absolute inset-x-0 bottom-6 flex flex-col items-center pointer-events-none select-none">
+      {/* 1. Stationary Lower Base Columns & Heavy-Duty T-Feet (Firmly pinned to floor) */}
+      <div className="relative w-[460px] max-w-[460px] flex justify-between px-12 z-10">
+        {/* Left Stationary Foot & Base */}
+        <div className="flex flex-col items-center">
+          <div className={`w-11 h-20 ${currentFinish.legColor} rounded-t-sm border-x border-white/10 shadow-lg relative overflow-hidden`}>
+            {/* Subtle inner shadow indicating hollow column */}
+            <div className="absolute inset-x-0 top-0 h-2 bg-black/40" />
+          </div>
+          <div className="w-24 h-4 bg-neutral-900 rounded-lg border-t border-white/15 shadow-xl flex justify-between px-1.5 items-center">
+            <div className="w-3 h-1.5 bg-neutral-700 rounded-full" />
+            <div className="w-3 h-1.5 bg-neutral-700 rounded-full" />
+          </div>
+        </div>
+
+        {/* Right Stationary Foot & Base */}
+        <div className="flex flex-col items-center">
+          <div className={`w-11 h-20 ${currentFinish.legColor} rounded-t-sm border-x border-white/10 shadow-lg relative overflow-hidden`}>
+            {/* Subtle inner shadow indicating hollow column */}
+            <div className="absolute inset-x-0 top-0 h-2 bg-black/40" />
+          </div>
+          <div className="w-24 h-4 bg-neutral-900 rounded-lg border-t border-white/15 shadow-xl flex justify-between px-1.5 items-center">
+            <div className="w-3 h-1.5 bg-neutral-700 rounded-full" />
+            <div className="w-3 h-1.5 bg-neutral-700 rounded-full" />
+          </div>
+        </div>
+      </div>
+
+      {/* 2. Elevating Tabletop & Telescoping Upper Segments (Rises smoothly from lower base) */}
       <motion.div
-        className="relative w-[90%] max-w-2xl flex flex-col items-center"
-        animate={{ y: deskOffsetY }}
+        className="absolute bottom-[92px] w-[460px] max-w-[460px] flex flex-col items-center z-20"
+        animate={{ y: elevationY }}
         transition={{ type: "spring", stiffness: 140, damping: 22 }}
       >
         {/* Tabletop Surface */}
-        <div className="relative w-full z-20">
+        <div className="relative w-full z-20 pointer-events-auto cursor-pointer">
           {/* Main Top Bevel & Shadow */}
           <div
             className={`w-full h-11 rounded-2xl ${currentFinish.top} border-t ${currentFinish.bevel} shadow-xl relative overflow-hidden transition-colors duration-500`}
@@ -132,41 +158,13 @@ export function DeskRenderer({
           </div>
         </div>
 
-        {/* Telescoping Steel Columns / Legs (Left and Right) */}
-        <div className="w-[84%] flex justify-between px-6 -mt-1 relative z-10">
-          {/* Left Telescoping Leg */}
-          <div className="flex flex-col items-center">
-            {/* Upper Extending Segment */}
-            <motion.div
-              className={`w-9 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500`}
-              animate={{ height: legExtHeight }}
-              transition={{ type: "spring", stiffness: 140, damping: 22 }}
-            />
-            {/* Lower Base Column */}
-            <div className={`w-11 h-20 ${currentFinish.legColor} rounded-t-sm border-x border-white/10 shadow-lg`} />
-            {/* Heavy-Duty T-Foot */}
-            <div className="w-24 h-4 bg-neutral-900 rounded-lg border-t border-white/15 shadow-xl flex justify-between px-1.5 items-center">
-              <div className="w-3 h-1.5 bg-neutral-700 rounded-full" />
-              <div className="w-3 h-1.5 bg-neutral-700 rounded-full" />
-            </div>
-          </div>
+        {/* Upper Telescoping Steel Leg Segments (Slide down into lower base columns) */}
+        <div className="w-[460px] flex justify-between px-13 -mt-1 relative z-10 pointer-events-none">
+          {/* Left Upper Telescoping Leg */}
+          <div className={`w-9 h-14 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500 shadow-md`} />
 
-          {/* Right Telescoping Leg */}
-          <div className="flex flex-col items-center">
-            {/* Upper Extending Segment */}
-            <motion.div
-              className={`w-9 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500`}
-              animate={{ height: legExtHeight }}
-              transition={{ type: "spring", stiffness: 140, damping: 22 }}
-            />
-            {/* Lower Base Column */}
-            <div className={`w-11 h-20 ${currentFinish.legColor} rounded-t-sm border-x border-white/10 shadow-lg`} />
-            {/* Heavy-Duty T-Foot */}
-            <div className="w-24 h-4 bg-neutral-900 rounded-lg border-t border-white/15 shadow-xl flex justify-between px-1.5 items-center">
-              <div className="w-3 h-1.5 bg-neutral-700 rounded-full" />
-              <div className="w-3 h-1.5 bg-neutral-700 rounded-full" />
-            </div>
-          </div>
+          {/* Right Upper Telescoping Leg */}
+          <div className={`w-9 h-14 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500 shadow-md`} />
         </div>
       </motion.div>
     </div>
