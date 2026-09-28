@@ -30,8 +30,6 @@ export function WorkspaceCanvas({
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const isStanding = config.deskHeightState === "standing";
   const currentHeight = config.deskHeightCm || (isStanding ? 108 : 74);
-  const heightRatio = Math.max(0, Math.min(1, (currentHeight - 70) / (118 - 70)));
-  const elevationY = -(heightRatio * 44);
 
   // ResizeObserver dynamically measures container and auto-scales the 760x440 stage
   useEffect(() => {
@@ -238,16 +236,16 @@ export function WorkspaceCanvas({
             onSelectCategory={onSelectCategory}
           />
 
-          {/* Ergonomic Chair tucked neatly in knee hole */}
+          {/* Ergonomic Chair tucked neatly in knee hole behind desk */}
           <div
             onClick={() => {
               sound.playClick();
               onSelectCategory?.("chairs");
             }}
-            className="pointer-events-auto cursor-pointer group/chair relative flex flex-col items-center"
+            className="absolute inset-0 pointer-events-auto cursor-pointer group/chair z-15"
             title="Configure Chair"
           >
-            <div className="absolute -top-6 opacity-0 group-hover/chair:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-30">
+            <div className="absolute bottom-[220px] left-1/2 -translate-x-1/2 opacity-0 group-hover/chair:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-30">
               Ergonomic Chair • Click to Customize
             </div>
             <ChairRenderer
@@ -257,34 +255,25 @@ export function WorkspaceCanvas({
             />
           </div>
 
-          {/* Desk Frame & Telescoping Legs */}
-          <div
+          {/* Desk Frame, Telescoping Legs, and Mounted Monitor & Peripherals */}
+          <DeskRenderer
+            finish={config.deskFinish}
+            isStanding={isStanding}
+            heightCm={currentHeight}
+            onToggleHeight={handleToggleHeight}
+            onStepHeight={handleStepHeight}
             onClick={() => {
               sound.playClick();
               onSelectCategory?.("desks");
             }}
-            className="cursor-pointer group/desk relative flex flex-col items-center"
-            title="Configure Desk"
           >
-            <DeskRenderer
-              finish={config.deskFinish}
-              isStanding={isStanding}
-              heightCm={currentHeight}
-              onToggleHeight={handleToggleHeight}
-              onStepHeight={handleStepHeight}
-            />
-          </div>
-
-          {/* Desk Surface Mounted Items: Monitor & Accessories (Elevates with Tabletop) */}
-          <motion.div
-            className="absolute inset-x-0 bottom-[92px] h-[56px] flex flex-col items-center z-25 pointer-events-none"
-            animate={{ y: elevationY }}
-            transition={{ type: "spring", stiffness: 140, damping: 22 }}
-          >
-            {/* Monitor Mounted atop Desk */}
+            {/* Monitor Mounted Directly Atop Desk Surface */}
             <div
-              className="absolute -top-[165px] left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center"
-              onClick={() => onSelectCategory?.("monitors")}
+              className="absolute -top-[160px] left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center"
+              onClick={(e) => {
+                e.stopPropagation();
+                onSelectCategory?.("monitors");
+              }}
               title="Click to configure Monitor (or click screen to cycle wallpaper)"
             >
               <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
@@ -310,7 +299,7 @@ export function WorkspaceCanvas({
                 onSelectCategory={onSelectCategory}
               />
             </div>
-          </motion.div>
+          </DeskRenderer>
         </motion.div>
       </div>
 

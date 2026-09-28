@@ -9,6 +9,8 @@ interface DeskRendererProps {
   heightCm: number;
   onToggleHeight?: () => void;
   onStepHeight?: (delta: number) => void;
+  onClick?: () => void;
+  children?: React.ReactNode;
 }
 
 export function DeskRenderer({
@@ -17,6 +19,8 @@ export function DeskRenderer({
   heightCm,
   onToggleHeight,
   onStepHeight,
+  onClick,
+  children,
 }: DeskRendererProps) {
   // Tabletop styling
   const finishStyles: Record<DeskFinish, { top: string; edge: string; bevel: string; legColor: string }> = {
@@ -89,7 +93,18 @@ export function DeskRenderer({
         transition={{ type: "spring", stiffness: 140, damping: 22 }}
       >
         {/* Tabletop Surface */}
-        <div className="relative w-full z-20 pointer-events-auto cursor-pointer">
+        <div
+          onClick={onClick}
+          className="relative w-full z-20 pointer-events-auto cursor-pointer"
+          title="Configure Desk"
+        >
+          {/* Mounted Items Atop Tabletop (Monitors & Peripherals) */}
+          {children && (
+            <div className="absolute inset-x-0 top-0 pointer-events-auto">
+              {children}
+            </div>
+          )}
+
           {/* Main Top Bevel & Shadow */}
           <div
             className={`w-full h-11 rounded-2xl ${currentFinish.top} border-t ${currentFinish.bevel} shadow-xl relative overflow-hidden transition-colors duration-500`}
@@ -159,12 +174,12 @@ export function DeskRenderer({
         </div>
 
         {/* Upper Telescoping Steel Leg Segments (Slide down into lower base columns) */}
-        <div className="w-[460px] flex justify-between px-13 -mt-1 relative z-10 pointer-events-none">
+        <div className="w-[460px] flex justify-between px-13 -mt-1 relative z-5 pointer-events-none">
           {/* Left Upper Telescoping Leg */}
-          <div className={`w-9 h-14 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500 shadow-md`} />
+          <div className={`w-9 h-24 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500 shadow-md`} />
 
           {/* Right Upper Telescoping Leg */}
-          <div className={`w-9 h-14 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500 shadow-md`} />
+          <div className={`w-9 h-24 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500 shadow-md`} />
         </div>
       </motion.div>
     </div>

@@ -155,7 +155,7 @@ export function ConfiguratorSidebar({
       <Tabs
         value={activeCategory}
         onValueChange={handleTabChange}
-        className="w-full h-full flex flex-col"
+        className="w-full h-full flex flex-col min-h-0"
       >
         <div className="p-3 sm:p-4 border-b border-white/10 bg-neutral-950/50">
           <div className="flex items-center justify-between mb-2.5">
@@ -214,7 +214,7 @@ export function ConfiguratorSidebar({
         </div>
 
         {/* Scrollable Products List Container */}
-        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3.5 pr-2 sm:pr-3 custom-scrollbar">
+        <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3.5 pr-2 sm:pr-3 custom-scrollbar">
           {/* --- TAB: DESKS --- */}
           <TabsContent value="desks" className="space-y-3 m-0 focus-visible:outline-none">
             <div className="text-xs text-neutral-400">
