@@ -47,6 +47,42 @@ export default function Home() {
     setActiveCategory(category);
     if (itemId) {
       setSelectedItemId(itemId);
+      // Auto-select the item in config so color/finish swatches appear immediately
+      // without needing to click a separate "Select" button
+      setConfig((prev) => {
+        if (category === "desks" && itemId.startsWith("desk-")) {
+          return { ...prev, deskId: itemId };
+        }
+        if (category === "chairs" && itemId.startsWith("chair-")) {
+          return { ...prev, chairId: itemId };
+        }
+        if (category === "monitors" && itemId.startsWith("monitor-")) {
+          return { ...prev, monitorId: itemId };
+        }
+        if (category === "peripherals" && itemId.startsWith("peripherals-")) {
+          return { ...prev, peripheralsId: itemId };
+        }
+        if (category === "lighting" && itemId.startsWith("light-")) {
+          return { ...prev, lightingId: itemId, lampPowered: true };
+        }
+        // Lifestyle items: activate if not already
+        if (itemId === "lifestyle-plant-monstera") {
+          return { ...prev, plantId: prev.plantId ? prev.plantId : itemId };
+        }
+        if (itemId === "lifestyle-coffee-nespresso") {
+          return { ...prev, coffeeId: prev.coffeeId ? prev.coffeeId : itemId };
+        }
+        if (itemId === "lifestyle-outdoor-surfboard" || itemId === "lifestyle-outdoor-scooter") {
+          return { ...prev, outdoorId: itemId };
+        }
+        if (itemId === "lifestyle-relax-beanbag") {
+          return { ...prev, relaxId: prev.relaxId ? prev.relaxId : itemId };
+        }
+        if (itemId === "lifestyle-laptop-stand") {
+          return { ...prev, laptopStand: true };
+        }
+        return prev;
+      });
     }
     // On mobile / tablet viewports, smoothly scroll the configurator into view so user sees the active tab & card
     if (typeof window !== "undefined" && window.innerWidth < 1024) {

@@ -7,7 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Plus, SlidersHorizontal, Sparkles } from "lucide-react";
+import { Check, Plus, SlidersHorizontal } from "lucide-react";
 import { sound } from "@/lib/audio";
 
 interface ConfiguratorSidebarProps {
@@ -226,7 +226,33 @@ export function ConfiguratorSidebar({
               </TabsTrigger>
             </TabsList>
           </div>
-        </div>
+
+          {/* Dot Indicators — tap any dot to jump to that tab */}
+          {(() => {
+            const tabs: ProductCategory[] = ["desks", "chairs", "monitors", "peripherals", "lighting", "bali-lifestyle"];
+            const labels = ["Desk", "Chair", "Monitor", "Keys", "Lamp", "Bali"];
+            return (
+              <div className="flex items-center justify-center gap-2 pt-1.5">
+                {tabs.map((tab, i) => (
+                  <button
+                    key={tab}
+                    onClick={() => handleTabChange(tab)}
+                    title={labels[i]}
+                    className="flex flex-col items-center gap-0.5 group"
+                  >
+                    <span
+                      className={`block rounded-full transition-all duration-200 ${
+                        activeCategory === tab
+                          ? "w-5 h-1.5 bg-emerald-400"
+                          : "w-1.5 h-1.5 bg-neutral-600 group-hover:bg-neutral-400"
+                      }`}
+                    />
+                  </button>
+                ))}
+              </div>
+            );
+          })()}
+</div>
 
         {/* Scrollable Products List Container */}
         <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3.5 pr-2 sm:pr-3 custom-scrollbar">
@@ -303,8 +329,8 @@ export function ConfiguratorSidebar({
                       ))}
                     </div>
 
-                    {/* Finish Selector (if selected) */}
-                    {isSelected && desk.availableFinishes && (
+                    {/* Finish Selector (if selected or focused from 3D) */}
+                    {(isSelected || isFocused) && desk.availableFinishes && (
                       <div className="pt-2 border-t border-white/10 flex items-center justify-between">
                         <span className="text-xs text-neutral-400">Finish:</span>
                         <div className="flex items-center gap-2.5">
@@ -434,8 +460,8 @@ export function ConfiguratorSidebar({
                       ))}
                     </div>
 
-                    {/* Color Swatches */}
-                    {isSelected && chair.availableFinishes && (
+                    {/* Color Swatches (if selected or focused from 3D) */}
+                    {(isSelected || isFocused) && chair.availableFinishes && (
                       <div className="pt-2 border-t border-white/10 flex items-center justify-between">
                         <span className="text-xs text-neutral-400">Color:</span>
                         <div className="flex items-center gap-2.5">
