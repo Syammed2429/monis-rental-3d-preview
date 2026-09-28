@@ -1,9 +1,12 @@
 "use client";
 
 import React, { useState } from "react";
+import { useForm, Controller, useWatch } from "react-hook-form";
+import { zodResolver } from "@hookform/resolvers/zod";
 import confetti from "canvas-confetti";
 import { WorkspaceConfig, Currency } from "@/types/workspace";
 import { PRODUCTS, BALI_DELIVERY_AREAS } from "@/data/products";
+import { checkoutFormSchema, CheckoutFormData } from "@/lib/validations/checkout";
 import {
   Dialog,
   DialogContent,
@@ -26,6 +29,7 @@ import {
   Share2,
   Check,
   ShoppingBag,
+  AlertCircle,
 } from "lucide-react";
 import { sound } from "@/lib/audio";
 
@@ -36,21 +40,49 @@ interface CheckoutDialogProps {
   currency: Currency;
 }
 
+function generateBookingRef(): string {
+  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
+    const array = new Uint32Array(1);
+    crypto.getRandomValues(array);
+    return String(1000 + (array[0] % 9000));
+  }
+  return String(Date.now()).slice(-4);
+}
+
 export function CheckoutDialog({
   open,
   onOpenChange,
   config,
   currency,
 }: CheckoutDialogProps) {
-  // Rental duration in weeks (default: 4 weeks / 1 month)
-  const [durationWeeks, setDurationWeeks] = useState<number>(4);
-  const [selectedAreaId, setSelectedAreaId] = useState<string>("canggu");
-  const [customerName, setCustomerName] = useState<string>("");
-  const [whatsappNumber, setWhatsappNumber] = useState<string>("");
-  const [villaAddress, setVillaAddress] = useState<string>("");
   const [orderConfirmed, setOrderConfirmed] = useState<boolean>(false);
   const [bookingRef, setBookingRef] = useState<string>("7842");
+  const [submittedData, setSubmittedData] = useState<CheckoutFormData | null>(null);
   const [isCopied, setIsCopied] = useState<boolean>(false);
+
+  // Setup react-hook-form with Zod validation schema
+  const {
+    register,
+    handleSubmit,
+    control,
+    formState: { errors, isSubmitting },
+    reset,
+  } = useForm<CheckoutFormData>({
+    resolver: zodResolver(checkoutFormSchema),
+    defaultValues: {
+      fullName: "",
+      whatsapp: "",
+      areaId: "canggu",
+      durationWeeks: 4,
+      villaAddress: "",
+      specialRequests: "",
+    },
+    mode: "onTouched",
+  });
+
+  // Watch fields reactively with useWatch (React Compiler fully compatible)
+  const durationWeeks = useWatch({ control, name: "durationWeeks" }) ?? 4;
+  const selectedAreaId = useWatch({ control, name: "areaId" }) ?? "canggu";
 
   // Selected products lookup
   const selectedDesk = PRODUCTS.find((p) => p.id === config.deskId);
@@ -81,11 +113,7 @@ export function CheckoutDialog({
   const baseWeeklyUSD = allSelectedItems.reduce((acc, curr) => acc + (curr?.weeklyPriceUSD || 0), 0);
   const baseWeeklyIDR = allSelectedItems.reduce((acc, curr) => acc + (curr?.weeklyPriceIDR || 0), 0);
 
-  // Progressive nomad discounts:
-  // 1-3 weeks: 0%
-  // 4-7 weeks: 10%
-  // 8-11 weeks: 20%
-  // 12+ weeks: 30%
+  // Progressive nomad discounts
   let discountRate = 0;
   let discountBadge = "Standard Weekly";
   if (durationWeeks >= 12) {
@@ -118,17 +146,17 @@ export function CheckoutDialog({
     return `$${usd}`;
   };
 
-  const handleConfirmOrder = (e: React.FormEvent) => {
-    e.preventDefault();
+  const onValidSubmit = (data: CheckoutFormData) => {
     sound.playFanfare();
-    const refCode = String(Math.floor(1000 + Math.random() * 9000));
+    const refCode = generateBookingRef();
     setBookingRef(refCode);
+    setSubmittedData(data);
     setOrderConfirmed(true);
 
-    // Fire celebratory confetti!
+    // Confetti celebration
     confetti({
-      particleCount: 80,
-      spread: 70,
+      particleCount: 90,
+      spread: 75,
       origin: { y: 0.6 },
       colors: ["#10b981", "#3b82f6", "#f59e0b", "#ec4899"],
     });
@@ -137,6 +165,7 @@ export function CheckoutDialog({
   const handleCopySummary = () => {
     sound.playClick();
     const summaryText = `🌴 My Monis Bali Workspace Setup:
+- Customer: ${submittedData?.fullName || "Bali Nomad"}
 - Desk: ${selectedDesk?.name} (${config.deskFinish})
 - Chair: ${selectedChair?.name} (${config.chairColor})
 - Monitor: ${selectedMonitor?.name}
@@ -154,7 +183,7 @@ Designed on monis.rent visual configurator`;
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-w-2xl bg-neutral-950 border border-white/15 text-white max-h-[90vh] overflow-y-auto p-0 rounded-3xl shadow-2xl">
-        {/* Header */}
+        {/* Modal Header */}
         <div className="p-6 pb-4 border-b border-white/10 bg-gradient-to-r from-neutral-900 via-neutral-950 to-neutral-900">
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-2.5">
@@ -194,7 +223,7 @@ Designed on monis.rent visual configurator`;
                 Booking Reference: #MN-BALI-{bookingRef}
               </h3>
               <p className="text-sm text-neutral-300">
-                Thank you{customerName ? `, ${customerName}` : ""}! We have reserved your setup for{" "}
+                Thank you{submittedData?.fullName ? `, ${submittedData.fullName}` : ""}! We have reserved your setup for{" "}
                 <span className="text-emerald-400 font-bold">{durationWeeks} weeks</span> in{" "}
                 <span className="text-white font-medium">{deliveryArea.name}</span>.
               </p>
@@ -210,19 +239,24 @@ Designed on monis.rent visual configurator`;
                   <div className="w-5 h-5 rounded-full bg-neutral-800 flex items-center justify-center text-[10px] text-white shrink-0 mt-0.5">
                     1
                   </div>
-                  <span>Our Bali logistics team will WhatsApp you at <strong className="text-white">{whatsappNumber || "your phone"}</strong> in the next 15 minutes to confirm villa pin.</span>
+                  <span>
+                    Our Bali logistics team will WhatsApp you at{" "}
+                    <strong className="text-white">{submittedData?.whatsapp || "your phone"}</strong> in the next 15 minutes to confirm villa location.
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="w-5 h-5 rounded-full bg-neutral-800 flex items-center justify-center text-[10px] text-white shrink-0 mt-0.5">
                     2
                   </div>
-                  <span>Equipment delivery & professional ergonomic desk assembly: <strong className="text-emerald-400">{deliveryArea.estimatedDelivery}</strong>.</span>
+                  <span>
+                    Equipment delivery & white-glove setup: <strong className="text-emerald-400">{deliveryArea.estimatedDelivery}</strong>.
+                  </span>
                 </div>
                 <div className="flex items-start gap-2">
                   <div className="w-5 h-5 rounded-full bg-neutral-800 flex items-center justify-center text-[10px] text-white shrink-0 mt-0.5">
                     3
                   </div>
-                  <span>Pay upon delivery (Cash IDR, Wise, Card, or Bank Transfer). Zero deposit required.</span>
+                  <span>Pay upon arrival at your villa (Cash IDR, Wise, Card, or Transfer). No upfront deposit.</span>
                 </div>
               </div>
             </div>
@@ -243,6 +277,7 @@ Designed on monis.rent visual configurator`;
                 onClick={() => {
                   onOpenChange(false);
                   setOrderConfirmed(false);
+                  reset();
                 }}
               >
                 Done / Back to Designer
@@ -250,8 +285,8 @@ Designed on monis.rent visual configurator`;
             </div>
           </div>
         ) : (
-          /* Normal Checkout View */
-          <form onSubmit={handleConfirmOrder} className="p-6 space-y-6">
+          /* Normal Checkout View with React Hook Form + Zod */
+          <form onSubmit={handleSubmit(onValidSubmit)} className="p-6 space-y-6">
             {/* 1. Itemized Setup Summary */}
             <div className="space-y-3">
               <div className="flex items-center justify-between">
@@ -286,7 +321,7 @@ Designed on monis.rent visual configurator`;
               </div>
             </div>
 
-            {/* 2. Rental Duration Slider with Progressive Nomad Discounts */}
+            {/* 2. Rental Duration Slider (Controlled via react-hook-form Controller) */}
             <div className="p-4 rounded-2xl bg-neutral-900/80 border border-white/10 space-y-3">
               <div className="flex justify-between items-center">
                 <div>
@@ -308,17 +343,23 @@ Designed on monis.rent visual configurator`;
                 </Badge>
               </div>
 
-              <Slider
-                value={[durationWeeks]}
-                min={1}
-                max={24}
-                step={1}
-                onValueChange={(val) => {
-                  sound.playClick();
-                  const nextVal = Array.isArray(val) ? val[0] : (typeof val === "number" ? val : 4);
-                  setDurationWeeks(nextVal);
-                }}
-                className="py-2"
+              <Controller
+                name="durationWeeks"
+                control={control}
+                render={({ field }) => (
+                  <Slider
+                    value={[field.value]}
+                    min={1}
+                    max={24}
+                    step={1}
+                    onValueChange={(val) => {
+                      sound.playClick();
+                      const nextVal = Array.isArray(val) ? val[0] : (typeof val === "number" ? val : 4);
+                      field.onChange(nextVal);
+                    }}
+                    className="py-2"
+                  />
+                )}
               />
 
               <div className="flex justify-between text-[10px] text-neutral-400 font-mono">
@@ -330,34 +371,47 @@ Designed on monis.rent visual configurator`;
               </div>
             </div>
 
-            {/* 3. Bali Delivery Details */}
+            {/* 3. Bali Delivery Details with Zod validations */}
             <div className="space-y-4">
               <span className="text-xs font-semibold uppercase tracking-wider text-neutral-400">
-                Bali Delivery Location
+                Nomad Delivery Details (Bali)
               </span>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                {/* Delivery Zone Selector */}
                 <div className="space-y-1.5">
                   <Label className="text-xs text-neutral-300">Delivery Zone</Label>
-                  <Select
-                    value={selectedAreaId}
-                    onValueChange={(val) => {
-                      if (val) setSelectedAreaId(val);
-                    }}
-                  >
-                    <SelectTrigger className="bg-neutral-900 border-white/15 text-xs text-white">
-                      <SelectValue placeholder="Select Bali Area" />
-                    </SelectTrigger>
-                    <SelectContent className="bg-neutral-950 border-neutral-800 text-white">
-                      {BALI_DELIVERY_AREAS.map((area) => (
-                        <SelectItem key={area.id} value={area.id} className="text-xs">
-                          {area.name} {area.feeUSD === 0 ? "(Free Delivery)" : `(+$${area.feeUSD})`}
-                        </SelectItem>
-                      ))}
-                    </SelectContent>
-                  </Select>
+                  <Controller
+                    name="areaId"
+                    control={control}
+                    render={({ field }) => (
+                      <Select
+                        value={field.value}
+                        onValueChange={(val) => {
+                          if (val) field.onChange(val);
+                        }}
+                      >
+                        <SelectTrigger className="bg-neutral-900 border-white/15 text-xs text-white">
+                          <SelectValue placeholder="Select Bali Area" />
+                        </SelectTrigger>
+                        <SelectContent className="bg-neutral-950 border-neutral-800 text-white">
+                          {BALI_DELIVERY_AREAS.map((area) => (
+                            <SelectItem key={area.id} value={area.id} className="text-xs">
+                              {area.name} {area.feeUSD === 0 ? "(Free Delivery)" : `(+$${area.feeUSD})`}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    )}
+                  />
+                  {errors.areaId && (
+                    <p className="text-[10px] text-rose-400 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" /> {errors.areaId.message}
+                    </p>
+                  )}
                 </div>
 
+                {/* Estimated Delivery Slot */}
                 <div className="space-y-1.5">
                   <Label className="text-xs text-neutral-300">Estimated Arrival</Label>
                   <div className="h-9 px-3 rounded-md bg-neutral-900 border border-white/10 flex items-center text-xs text-emerald-400 font-mono">
@@ -366,39 +420,58 @@ Designed on monis.rent visual configurator`;
                   </div>
                 </div>
 
+                {/* Full Name */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-neutral-300">Your Full Name</Label>
+                  <Label className="text-xs text-neutral-300">Your Full Name *</Label>
                   <Input
-                    required
+                    {...register("fullName")}
                     placeholder="e.g. Alex Rivera"
-                    value={customerName}
-                    onChange={(e) => setCustomerName(e.target.value)}
-                    className="bg-neutral-900 border-white/15 text-xs text-white"
+                    className={`bg-neutral-900 text-xs text-white ${
+                      errors.fullName ? "border-rose-500 focus-visible:ring-rose-500" : "border-white/15"
+                    }`}
                   />
+                  {errors.fullName && (
+                    <p className="text-[10px] text-rose-400 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" /> {errors.fullName.message}
+                    </p>
+                  )}
                 </div>
 
+                {/* WhatsApp / Telegram Number */}
                 <div className="space-y-1.5">
-                  <Label className="text-xs text-neutral-300">WhatsApp / Telegram Number</Label>
+                  <Label className="text-xs text-neutral-300">WhatsApp Number *</Label>
                   <Input
-                    required
+                    {...register("whatsapp")}
                     placeholder="e.g. +62 812 3456 7890"
-                    value={whatsappNumber}
-                    onChange={(e) => setWhatsappNumber(e.target.value)}
-                    className="bg-neutral-900 border-white/15 text-xs text-white"
+                    className={`bg-neutral-900 text-xs text-white ${
+                      errors.whatsapp ? "border-rose-500 focus-visible:ring-rose-500" : "border-white/15"
+                    }`}
                   />
+                  {errors.whatsapp && (
+                    <p className="text-[10px] text-rose-400 flex items-center gap-1">
+                      <AlertCircle className="w-3 h-3" /> {errors.whatsapp.message}
+                    </p>
+                  )}
                 </div>
               </div>
 
+              {/* Villa / Hotel Address */}
               <div className="space-y-1.5">
                 <Label className="text-xs text-neutral-300">
-                  Villa Name / Resort & Address
+                  Villa / Resort Name & Room Number *
                 </Label>
                 <Textarea
+                  {...register("villaAddress")}
                   placeholder="e.g. Villa Luna Canggu, Jl. Pantai Batu Bolong Gang Nyepi No. 12, Room 3"
-                  value={villaAddress}
-                  onChange={(e) => setVillaAddress(e.target.value)}
-                  className="bg-neutral-900 border-white/15 text-xs text-white h-18 resize-none"
+                  className={`bg-neutral-900 text-xs text-white h-18 resize-none ${
+                    errors.villaAddress ? "border-rose-500 focus-visible:ring-rose-500" : "border-white/15"
+                  }`}
                 />
+                {errors.villaAddress && (
+                  <p className="text-[10px] text-rose-400 flex items-center gap-1">
+                    <AlertCircle className="w-3 h-3" /> {errors.villaAddress.message}
+                  </p>
+                )}
               </div>
             </div>
 
@@ -456,7 +529,8 @@ Designed on monis.rent visual configurator`;
 
               <Button
                 type="submit"
-                className="bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-10 px-6 gap-2 shadow-lg hover:shadow-emerald-500/25 transition-all"
+                disabled={isSubmitting}
+                className="bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-10 px-6 gap-2 shadow-lg hover:shadow-emerald-500/25 transition-all cursor-pointer"
               >
                 <span>Confirm & Rent Setup</span>
                 <ArrowRight className="w-4 h-4 stroke-[2.5]" />
