@@ -19,15 +19,15 @@ const DEFAULT_CONFIG: WorkspaceConfig = {
   chairId: "chair-ergonomic-mesh",
   chairColor: "stealth-black",
   monitorId: "monitor-ultrawide-curved",
-  monitorDisplayMode: "code",
+  monitorDisplayMode: "bali-gradient",
   peripheralsId: "peripherals-mx-combo",
-  lightingId: "light-screenbar",
+  lightingId: "light-smart-lamp",
   lampPowered: true,
   laptopStand: true,
-  plantId: "extra-plant-monstera",
-  audioId: null,
-  coffeeId: "extra-nespresso",
-  airPurifier: true,
+  plantId: "lifestyle-plant-monstera",
+  coffeeId: "lifestyle-coffee-nespresso",
+  outdoorId: "lifestyle-outdoor-surfboard",
+  relaxId: null,
   timeOfDay: "sunset",
 };
 
@@ -79,7 +79,7 @@ export default function Home() {
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0e14] text-neutral-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-neutral-950 pb-28">
+    <div className="min-h-screen bg-[#0c0e14] text-neutral-100 flex flex-col font-sans selection:bg-emerald-500 selection:text-neutral-950 pb-36">
       {/* Top Navbar */}
       <Header
         currentConfig={config}
@@ -123,7 +123,7 @@ export default function Home() {
         {/* Studio Workspace Grid: Left Canvas, Right Sidebar */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-auto lg:h-[660px]">
           {/* Left Canvas: Live 2D/3D Vector Workspace (7 cols on lg, 8 on xl) */}
-          <div className="lg:col-span-7 xl:col-span-8 h-[540px] sm:h-[600px] lg:h-full">
+          <div className="lg:col-span-7 xl:col-span-8 h-[380px] sm:h-[460px] lg:h-full">
             <WorkspaceCanvas
               config={config}
               onChangeConfig={setConfig}

@@ -1,15 +1,12 @@
 "use client";
 
-import { useState } from "react";
 import { ProductItem, ProductCategory, WorkspaceConfig, Currency, DeskFinish, ChairColor } from "@/types/workspace";
 import { PRODUCTS } from "@/data/products";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Switch } from "@/components/ui/switch";
-import { Label } from "@/components/ui/label";
-import { Check, Plus, SlidersHorizontal, Laptop, Wind, Coffee, Music, TreePine } from "lucide-react";
+import { Check, Plus, SlidersHorizontal } from "lucide-react";
 import { sound } from "@/lib/audio";
 
 interface ConfiguratorSidebarProps {
@@ -27,12 +24,9 @@ export function ConfiguratorSidebar({
   activeCategory = "desks",
   onCategoryChange,
 }: ConfiguratorSidebarProps) {
-  const [tab, setTab] = useState<ProductCategory>(activeCategory);
-
   const handleTabChange = (val: string) => {
     sound.playClick();
     const newCategory = val as ProductCategory;
-    setTab(newCategory);
     onCategoryChange?.(newCategory);
   };
 
@@ -109,72 +103,120 @@ export function ConfiguratorSidebar({
     }));
   };
 
+  // Lifestyle toggle helpers
+  const handleToggleLifestyle = (productId: string) => {
+    sound.playSelect();
+    if (productId === "lifestyle-plant-monstera") {
+      onChangeConfig((prev) => ({
+        ...prev,
+        plantId: prev.plantId ? null : "lifestyle-plant-monstera",
+      }));
+    } else if (productId === "lifestyle-coffee-nespresso") {
+      onChangeConfig((prev) => ({
+        ...prev,
+        coffeeId: prev.coffeeId ? null : "lifestyle-coffee-nespresso",
+      }));
+    } else if (productId === "lifestyle-outdoor-surfboard") {
+      onChangeConfig((prev) => ({
+        ...prev,
+        outdoorId: prev.outdoorId === "lifestyle-outdoor-surfboard" ? null : "lifestyle-outdoor-surfboard",
+      }));
+    } else if (productId === "lifestyle-outdoor-scooter") {
+      onChangeConfig((prev) => ({
+        ...prev,
+        outdoorId: prev.outdoorId === "lifestyle-outdoor-scooter" ? null : "lifestyle-outdoor-scooter",
+      }));
+    } else if (productId === "lifestyle-relax-beanbag") {
+      onChangeConfig((prev) => ({
+        ...prev,
+        relaxId: prev.relaxId ? null : "lifestyle-relax-beanbag",
+      }));
+    } else if (productId === "lifestyle-laptop-stand") {
+      onChangeConfig((prev) => ({
+        ...prev,
+        laptopStand: !prev.laptopStand,
+      }));
+    }
+  };
+
+  const isLifestyleActive = (productId: string) => {
+    if (productId === "lifestyle-plant-monstera") return config.plantId !== null;
+    if (productId === "lifestyle-coffee-nespresso") return config.coffeeId !== null;
+    if (productId === "lifestyle-outdoor-surfboard") return config.outdoorId === "lifestyle-outdoor-surfboard";
+    if (productId === "lifestyle-outdoor-scooter") return config.outdoorId === "lifestyle-outdoor-scooter";
+    if (productId === "lifestyle-relax-beanbag") return config.relaxId !== null;
+    if (productId === "lifestyle-laptop-stand") return config.laptopStand;
+    return false;
+  };
+
   return (
-    <div className="w-full h-full flex flex-col bg-neutral-900/60 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+    <div className="w-full h-full flex flex-col bg-neutral-900/70 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
       {/* Category Tabs Header */}
       <Tabs
-        value={tab}
+        value={activeCategory}
         onValueChange={handleTabChange}
         className="w-full h-full flex flex-col"
       >
-        <div className="p-4 border-b border-white/10 bg-neutral-950/40">
-          <div className="flex items-center justify-between mb-3">
+        <div className="p-3 sm:p-4 border-b border-white/10 bg-neutral-950/50">
+          <div className="flex items-center justify-between mb-2.5">
             <div className="flex items-center gap-2">
               <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
               <h2 className="text-sm font-semibold tracking-wide text-white">
                 Customize Equipment
               </h2>
             </div>
-            <span className="text-[11px] text-neutral-400 font-mono">
+            <span className="text-[11px] text-emerald-400 font-mono hidden sm:inline">
               Next-day Bali delivery
             </span>
           </div>
 
-          {/* Horizontal scrollable tab buttons */}
-          <TabsList className="w-full grid grid-cols-3 sm:grid-cols-6 h-auto p-1 bg-neutral-950 border border-white/10 rounded-xl gap-1">
-            <TabsTrigger
-              value="desks"
-              className="text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
-            >
-              Desks
-            </TabsTrigger>
-            <TabsTrigger
-              value="chairs"
-              className="text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
-            >
-              Chairs
-            </TabsTrigger>
-            <TabsTrigger
-              value="monitors"
-              className="text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
-            >
-              Monitors
-            </TabsTrigger>
-            <TabsTrigger
-              value="peripherals"
-              className="text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
-            >
-              Keyboards
-            </TabsTrigger>
-            <TabsTrigger
-              value="lighting"
-              className="text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
-            >
-              Lighting
-            </TabsTrigger>
-            <TabsTrigger
-              value="villa-extras"
-              className="text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
-            >
-              Villa Extras
-            </TabsTrigger>
-          </TabsList>
+          {/* Horizontally Scrollable Touch-Friendly Tab Bar */}
+          <div className="overflow-x-auto pb-1 -mx-1 px-1 custom-scrollbar">
+            <TabsList className="w-full flex sm:grid sm:grid-cols-6 min-w-[480px] sm:min-w-0 h-auto p-1 bg-neutral-950 border border-white/10 rounded-xl gap-1">
+              <TabsTrigger
+                value="desks"
+                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+              >
+                Desks
+              </TabsTrigger>
+              <TabsTrigger
+                value="chairs"
+                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+              >
+                Chairs
+              </TabsTrigger>
+              <TabsTrigger
+                value="monitors"
+                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+              >
+                Monitors
+              </TabsTrigger>
+              <TabsTrigger
+                value="peripherals"
+                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+              >
+                Keyboards
+              </TabsTrigger>
+              <TabsTrigger
+                value="lighting"
+                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+              >
+                Lighting
+              </TabsTrigger>
+              <TabsTrigger
+                value="bali-lifestyle"
+                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+              >
+                Bali Extras
+              </TabsTrigger>
+            </TabsList>
+          </div>
         </div>
 
         {/* Scrollable Products List Container */}
-        <div className="flex-1 overflow-y-auto p-4 space-y-4 pr-3 custom-scrollbar">
+        <div className="flex-1 overflow-y-auto p-3 sm:p-4 space-y-3.5 pr-2 sm:pr-3 custom-scrollbar">
           {/* --- TAB: DESKS --- */}
-          <TabsContent value="desks" className="space-y-3.5 m-0 focus-visible:outline-none">
+          <TabsContent value="desks" className="space-y-3 m-0 focus-visible:outline-none">
             <div className="text-xs text-neutral-400">
               Select your sit-stand workstation foundation. All motorized desks include anti-collision sensors.
             </div>
@@ -192,7 +234,7 @@ export function ConfiguratorSidebar({
                   }`}
                   onClick={() => handleSelectDesk(desk)}
                 >
-                  <CardHeader className="p-4 pb-2">
+                  <CardHeader className="p-3.5 pb-2">
                     <div className="flex justify-between items-start gap-2">
                       <div>
                         <div className="flex items-center gap-2">
@@ -213,7 +255,7 @@ export function ConfiguratorSidebar({
                         </CardTitle>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         <div className="text-sm font-bold text-white font-mono">
                           {formatPrice(desk.weeklyPriceUSD, desk.weeklyPriceIDR)}
                           <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
@@ -225,8 +267,7 @@ export function ConfiguratorSidebar({
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="p-4 pt-1 space-y-3">
-                    {/* Specs Pills */}
+                  <CardContent className="p-3.5 pt-1 space-y-3">
                     <div className="flex flex-wrap gap-1.5">
                       {desk.specs.map((spec, i) => (
                         <span
@@ -242,7 +283,7 @@ export function ConfiguratorSidebar({
                     {isSelected && desk.availableFinishes && (
                       <div className="pt-2 border-t border-white/10 flex items-center justify-between">
                         <span className="text-xs text-neutral-400">Finish:</span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5">
                           {desk.availableFinishes.map((f) => (
                             <button
                               key={f.id}
@@ -250,7 +291,7 @@ export function ConfiguratorSidebar({
                                 e.stopPropagation();
                                 handleChangeDeskFinish(f.id as DeskFinish);
                               }}
-                              className={`w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center ${
+                              className={`w-7 h-7 rounded-full border-2 transition-all flex items-center justify-center ${
                                 config.deskFinish === f.id
                                   ? "border-emerald-400 scale-110 shadow-md ring-2 ring-emerald-500/30"
                                   : "border-transparent opacity-75 hover:opacity-100"
@@ -259,7 +300,7 @@ export function ConfiguratorSidebar({
                               title={f.name}
                             >
                               {config.deskFinish === f.id && (
-                                <Check className="w-3 h-3 text-neutral-950 stroke-[3]" />
+                                <Check className="w-3.5 h-3.5 text-neutral-950 stroke-[3]" />
                               )}
                             </button>
                           ))}
@@ -267,11 +308,10 @@ export function ConfiguratorSidebar({
                       </div>
                     )}
 
-                    {/* Action Button */}
                     <Button
                       size="sm"
                       variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-8 ${
+                      className={`w-full text-xs h-9 ${
                         isSelected
                           ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
                           : "border-white/15 text-white hover:bg-white/10"
@@ -298,7 +338,7 @@ export function ConfiguratorSidebar({
           </TabsContent>
 
           {/* --- TAB: CHAIRS --- */}
-          <TabsContent value="chairs" className="space-y-3.5 m-0 focus-visible:outline-none">
+          <TabsContent value="chairs" className="space-y-3 m-0 focus-visible:outline-none">
             <div className="text-xs text-neutral-400">
               Ergonomic posture support designed to stay cool in tropical Bali climates.
             </div>
@@ -316,7 +356,7 @@ export function ConfiguratorSidebar({
                   }`}
                   onClick={() => handleSelectChair(chair)}
                 >
-                  <CardHeader className="p-4 pb-2">
+                  <CardHeader className="p-3.5 pb-2">
                     <div className="flex justify-between items-start gap-2">
                       <div>
                         <div className="flex items-center gap-2">
@@ -337,7 +377,7 @@ export function ConfiguratorSidebar({
                         </CardTitle>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         <div className="text-sm font-bold text-white font-mono">
                           {formatPrice(chair.weeklyPriceUSD, chair.weeklyPriceIDR)}
                           <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
@@ -349,7 +389,7 @@ export function ConfiguratorSidebar({
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="p-4 pt-1 space-y-3">
+                  <CardContent className="p-3.5 pt-1 space-y-3">
                     <div className="flex flex-wrap gap-1.5">
                       {chair.specs.map((spec, i) => (
                         <span
@@ -365,7 +405,7 @@ export function ConfiguratorSidebar({
                     {isSelected && chair.availableFinishes && (
                       <div className="pt-2 border-t border-white/10 flex items-center justify-between">
                         <span className="text-xs text-neutral-400">Color:</span>
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2.5">
                           {chair.availableFinishes.map((c) => (
                             <button
                               key={c.id}
@@ -373,7 +413,7 @@ export function ConfiguratorSidebar({
                                 e.stopPropagation();
                                 handleChangeChairColor(c.id as ChairColor);
                               }}
-                              className={`w-6 h-6 rounded-full border-2 transition-all flex items-center justify-center ${
+                              className={`w-7 h-7 rounded-full border-2 transition-all flex items-center justify-center ${
                                 config.chairColor === c.id
                                   ? "border-emerald-400 scale-110 shadow-md ring-2 ring-emerald-500/30"
                                   : "border-transparent opacity-75 hover:opacity-100"
@@ -382,7 +422,7 @@ export function ConfiguratorSidebar({
                               title={c.name}
                             >
                               {config.chairColor === c.id && (
-                                <Check className="w-3 h-3 text-white stroke-[3]" />
+                                <Check className="w-3.5 h-3.5 text-white stroke-[3]" />
                               )}
                             </button>
                           ))}
@@ -393,7 +433,7 @@ export function ConfiguratorSidebar({
                     <Button
                       size="sm"
                       variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-8 ${
+                      className={`w-full text-xs h-9 ${
                         isSelected
                           ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
                           : "border-white/15 text-white hover:bg-white/10"
@@ -420,7 +460,7 @@ export function ConfiguratorSidebar({
           </TabsContent>
 
           {/* --- TAB: MONITORS --- */}
-          <TabsContent value="monitors" className="space-y-3.5 m-0 focus-visible:outline-none">
+          <TabsContent value="monitors" className="space-y-3 m-0 focus-visible:outline-none">
             <div className="text-xs text-neutral-400">
               High refresh rate, 4K USB-C, or 5K Apple displays. Includes HDMI & USB-C cables.
             </div>
@@ -438,7 +478,7 @@ export function ConfiguratorSidebar({
                   }`}
                   onClick={() => handleSelectMonitor(monitor)}
                 >
-                  <CardHeader className="p-4 pb-2">
+                  <CardHeader className="p-3.5 pb-2">
                     <div className="flex justify-between items-start gap-2">
                       <div>
                         <div className="flex items-center gap-2">
@@ -459,7 +499,7 @@ export function ConfiguratorSidebar({
                         </CardTitle>
                       </div>
 
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         <div className="text-sm font-bold text-white font-mono">
                           {formatPrice(monitor.weeklyPriceUSD, monitor.weeklyPriceIDR)}
                           <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
@@ -471,7 +511,7 @@ export function ConfiguratorSidebar({
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="p-4 pt-1 space-y-3">
+                  <CardContent className="p-3.5 pt-1 space-y-3">
                     <div className="flex flex-wrap gap-1.5">
                       {monitor.specs.map((spec, i) => (
                         <span
@@ -486,7 +526,7 @@ export function ConfiguratorSidebar({
                     <Button
                       size="sm"
                       variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-8 ${
+                      className={`w-full text-xs h-9 ${
                         isSelected
                           ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
                           : "border-white/15 text-white hover:bg-white/10"
@@ -513,7 +553,7 @@ export function ConfiguratorSidebar({
           </TabsContent>
 
           {/* --- TAB: PERIPHERALS --- */}
-          <TabsContent value="peripherals" className="space-y-3.5 m-0 focus-visible:outline-none">
+          <TabsContent value="peripherals" className="space-y-3 m-0 focus-visible:outline-none">
             <div className="text-xs text-neutral-400">
               Wireless ergonomic keyboards, precision mice, and oversized felt desk pads.
             </div>
@@ -531,7 +571,7 @@ export function ConfiguratorSidebar({
                   }`}
                   onClick={() => handleSelectPeripherals(item)}
                 >
-                  <CardHeader className="p-4 pb-2">
+                  <CardHeader className="p-3.5 pb-2">
                     <div className="flex justify-between items-start gap-2">
                       <div>
                         <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
@@ -541,7 +581,7 @@ export function ConfiguratorSidebar({
                           {item.name}
                         </CardTitle>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         <div className="text-sm font-bold text-white font-mono">
                           {formatPrice(item.weeklyPriceUSD, item.weeklyPriceIDR)}
                           <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
@@ -553,7 +593,7 @@ export function ConfiguratorSidebar({
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="p-4 pt-1 space-y-3">
+                  <CardContent className="p-3.5 pt-1 space-y-3">
                     <div className="flex flex-wrap gap-1.5">
                       {item.specs.map((spec, i) => (
                         <span
@@ -568,7 +608,7 @@ export function ConfiguratorSidebar({
                     <Button
                       size="sm"
                       variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-8 ${
+                      className={`w-full text-xs h-9 ${
                         isSelected
                           ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
                           : "border-white/15 text-white hover:bg-white/10"
@@ -595,7 +635,7 @@ export function ConfiguratorSidebar({
           </TabsContent>
 
           {/* --- TAB: LIGHTING --- */}
-          <TabsContent value="lighting" className="space-y-3.5 m-0 focus-visible:outline-none">
+          <TabsContent value="lighting" className="space-y-3 m-0 focus-visible:outline-none">
             <div className="text-xs text-neutral-400">
               Smart flicker-free illumination with ambient dimming and zero screen reflection.
             </div>
@@ -613,7 +653,7 @@ export function ConfiguratorSidebar({
                   }`}
                   onClick={() => handleSelectLighting(light)}
                 >
-                  <CardHeader className="p-4 pb-2">
+                  <CardHeader className="p-3.5 pb-2">
                     <div className="flex justify-between items-start gap-2">
                       <div>
                         <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
@@ -623,7 +663,7 @@ export function ConfiguratorSidebar({
                           {light.name}
                         </CardTitle>
                       </div>
-                      <div className="text-right">
+                      <div className="text-right shrink-0">
                         <div className="text-sm font-bold text-white font-mono">
                           {formatPrice(light.weeklyPriceUSD, light.weeklyPriceIDR)}
                           <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
@@ -635,7 +675,7 @@ export function ConfiguratorSidebar({
                     </CardDescription>
                   </CardHeader>
 
-                  <CardContent className="p-4 pt-1 space-y-3">
+                  <CardContent className="p-3.5 pt-1 space-y-3">
                     <div className="flex flex-wrap gap-1.5">
                       {light.specs.map((spec, i) => (
                         <span
@@ -650,7 +690,7 @@ export function ConfiguratorSidebar({
                     <Button
                       size="sm"
                       variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-8 ${
+                      className={`w-full text-xs h-9 ${
                         isSelected
                           ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
                           : "border-white/15 text-white hover:bg-white/10"
@@ -676,143 +716,97 @@ export function ConfiguratorSidebar({
             })}
           </TabsContent>
 
-          {/* --- TAB: VILLA EXTRAS & WELLNESS --- */}
-          <TabsContent value="villa-extras" className="space-y-4 m-0 focus-visible:outline-none">
+          {/* --- TAB: BALI LIFESTYLE & VILLA EXTRAS (Sketch Aligned) --- */}
+          <TabsContent value="bali-lifestyle" className="space-y-3 m-0 focus-visible:outline-none">
             <div className="text-xs text-neutral-400">
-              The little touches that turn a rental desk into an inspiring tropical Bali workspace.
+              The iconic Bali lifestyle extensions from the concept sketch: Surfboard, Scooter, Bean Bag, Coffee Station, and Monstera Plant.
             </div>
 
-            {/* Quick Toggle Add-ons (Shadcn Switch controls) */}
-            <div className="space-y-3 bg-neutral-950/60 p-3.5 rounded-2xl border border-white/10">
-              {/* Laptop Riser Stand */}
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <Laptop className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <Label className="text-xs font-semibold text-white cursor-pointer">
-                      Aluminum Laptop Riser (+{formatPrice(3, 50000)}/wk)
-                    </Label>
-                    <p className="text-[10px] text-neutral-400">
-                      Positions your laptop screen at eye level beside monitor
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={config.laptopStand}
-                  onCheckedChange={(checked) => {
-                    sound.playClick();
-                    onChangeConfig((prev) => ({ ...prev, laptopStand: checked }));
-                  }}
-                />
-              </div>
+            {PRODUCTS.filter((p) => p.category === "bali-lifestyle").map((item) => {
+              const isSelected = isLifestyleActive(item.id);
 
-              {/* Smart Air Purifier Elite */}
-              <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <Wind className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <Label className="text-xs font-semibold text-white cursor-pointer">
-                      HEPA Air Purifier Elite (+{formatPrice(10, 160000)}/wk)
-                    </Label>
-                    <p className="text-[10px] text-neutral-400">
-                      Filters tropical humidity, pollen & dust in your villa room
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={config.airPurifier}
-                  onCheckedChange={(checked) => {
-                    sound.playClick();
-                    onChangeConfig((prev) => ({ ...prev, airPurifier: checked }));
-                  }}
-                />
-              </div>
+              return (
+                <Card
+                  key={item.id}
+                  className={`transition-all duration-200 border cursor-pointer ${
+                    isSelected
+                      ? "bg-neutral-950/80 border-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
+                      : "bg-neutral-950/40 border-white/10 hover:border-white/20 hover:bg-neutral-950/60"
+                  }`}
+                  onClick={() => handleToggleLifestyle(item.id)}
+                >
+                  <CardHeader className="p-3.5 pb-2">
+                    <div className="flex justify-between items-start gap-2">
+                      <div>
+                        <div className="flex items-center gap-2">
+                          <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
+                            {item.brand}
+                          </span>
+                          {item.tag && (
+                            <Badge
+                              variant="secondary"
+                              className="text-[10px] px-1.5 py-0 h-4 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
+                            >
+                              {item.tag}
+                            </Badge>
+                          )}
+                        </div>
+                        <CardTitle className="text-sm font-semibold text-white mt-1">
+                          {item.name}
+                        </CardTitle>
+                      </div>
 
-              {/* Tropical Bali Monstera Plant */}
-              <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <TreePine className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <Label className="text-xs font-semibold text-white cursor-pointer">
-                      Potted Monstera Deliciosa (+{formatPrice(3, 45000)}/wk)
-                    </Label>
-                    <p className="text-[10px] text-neutral-400">
-                      Fresh living tropical plant in handcrafted terracotta pot
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={config.plantId !== null}
-                  onCheckedChange={(checked) => {
-                    sound.playClick();
-                    onChangeConfig((prev) => ({
-                      ...prev,
-                      plantId: checked ? "extra-plant-monstera" : null,
-                    }));
-                  }}
-                />
-              </div>
+                      <div className="text-right shrink-0">
+                        <div className="text-sm font-bold text-white font-mono">
+                          +{formatPrice(item.weeklyPriceUSD, item.weeklyPriceIDR)}
+                          <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
+                        </div>
+                      </div>
+                    </div>
+                    <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
+                      {item.description}
+                    </CardDescription>
+                  </CardHeader>
 
-              {/* Nespresso Coffee Machine */}
-              <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <Coffee className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <Label className="text-xs font-semibold text-white cursor-pointer">
-                      Nespresso Essenza Machine (+{formatPrice(9, 145000)}/wk)
-                    </Label>
-                    <p className="text-[10px] text-neutral-400">
-                      19-bar espresso brewer + 10 complimentary roast pods
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={config.coffeeId !== null}
-                  onCheckedChange={(checked) => {
-                    sound.playClick();
-                    onChangeConfig((prev) => ({
-                      ...prev,
-                      coffeeId: checked ? "extra-nespresso" : null,
-                    }));
-                  }}
-                />
-              </div>
+                  <CardContent className="p-3.5 pt-1 space-y-3">
+                    <div className="flex flex-wrap gap-1.5">
+                      {item.specs.map((spec, i) => (
+                        <span
+                          key={i}
+                          className="text-[10px] bg-neutral-900 text-neutral-300 px-2 py-0.5 rounded-md border border-white/5"
+                        >
+                          {spec}
+                        </span>
+                      ))}
+                    </div>
 
-              {/* Marshall Woburn III Speaker */}
-              <div className="flex items-center justify-between pt-2 border-t border-white/5">
-                <div className="flex items-center gap-2.5">
-                  <div className="p-1.5 rounded-lg bg-emerald-500/10 text-emerald-400 border border-emerald-500/20">
-                    <Music className="w-4 h-4" />
-                  </div>
-                  <div>
-                    <Label className="text-xs font-semibold text-white cursor-pointer">
-                      Marshall Woburn III Speaker (+{formatPrice(12, 190000)}/wk)
-                    </Label>
-                    <p className="text-[10px] text-neutral-400">
-                      110W vintage bluetooth sound for your work soundtrack
-                    </p>
-                  </div>
-                </div>
-                <Switch
-                  checked={config.audioId !== null}
-                  onCheckedChange={(checked) => {
-                    sound.playClick();
-                    onChangeConfig((prev) => ({
-                      ...prev,
-                      audioId: checked ? "extra-speaker-marshall" : null,
-                    }));
-                  }}
-                />
-              </div>
-            </div>
+                    <Button
+                      size="sm"
+                      variant={isSelected ? "default" : "outline"}
+                      className={`w-full text-xs h-9 ${
+                        isSelected
+                          ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
+                          : "border-white/15 text-white hover:bg-white/10"
+                      }`}
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleToggleLifestyle(item.id);
+                      }}
+                    >
+                      {isSelected ? (
+                        <span className="flex items-center gap-1.5">
+                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Added to Setup (Click to Remove)
+                        </span>
+                      ) : (
+                        <span className="flex items-center gap-1.5">
+                          <Plus className="w-3.5 h-3.5" /> Add to Bali Setup
+                        </span>
+                      )}
+                    </Button>
+                  </CardContent>
+                </Card>
+              );
+            })}
           </TabsContent>
         </div>
       </Tabs>

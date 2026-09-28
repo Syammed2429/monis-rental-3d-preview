@@ -4,7 +4,7 @@ export type ProductCategory =
   | "monitors" 
   | "peripherals" 
   | "lighting" 
-  | "villa-extras";
+  | "bali-lifestyle";
 
 export type DeskFinish = "natural-bamboo" | "walnut" | "matte-black" | "minimal-white";
 export type ChairColor = "stealth-black" | "mineral-grey" | "cognac-leather" | "terracotta";
@@ -21,7 +21,6 @@ export interface ProductItem {
   description: string;
   tag?: string;
   specs: string[];
-  features?: string[];
   dimensions?: string;
   defaultFinish?: string;
   availableFinishes?: { id: string; name: string; hex: string }[];
@@ -35,15 +34,15 @@ export interface WorkspaceConfig {
   chairId: string;
   chairColor: ChairColor;
   monitorId: string;
-  monitorDisplayMode: "code" | "bali-nature" | "minimal-clock" | "off";
+  monitorDisplayMode: "bali-gradient" | "sunset-surf" | "minimal-clock";
   peripheralsId: string;
   lightingId: string;
   lampPowered: boolean;
   laptopStand: boolean;
   plantId: string | null;
-  audioId: string | null;
   coffeeId: string | null;
-  airPurifier: boolean;
+  outdoorId: string | null; // surfboard or scooter
+  relaxId: string | null;  // beanbag
   timeOfDay: TimeOfDay;
 }
 

@@ -92,9 +92,9 @@ export function CheckoutDialog({
   const selectedLighting = PRODUCTS.find((p) => p.id === config.lightingId);
   const selectedPlant = config.plantId ? PRODUCTS.find((p) => p.id === config.plantId) : null;
   const selectedCoffee = config.coffeeId ? PRODUCTS.find((p) => p.id === config.coffeeId) : null;
-  const selectedAudio = config.audioId ? PRODUCTS.find((p) => p.id === config.audioId) : null;
-  const selectedLaptopStand = config.laptopStand ? PRODUCTS.find((p) => p.id === "extra-laptop-stand") : null;
-  const selectedAirPurifier = config.airPurifier ? PRODUCTS.find((p) => p.id === "extra-air-purifier") : null;
+  const selectedOutdoor = config.outdoorId ? PRODUCTS.find((p) => p.id === config.outdoorId) : null;
+  const selectedRelax = config.relaxId ? PRODUCTS.find((p) => p.id === config.relaxId) : null;
+  const selectedLaptopStand = config.laptopStand ? PRODUCTS.find((p) => p.id === "lifestyle-laptop-stand") : null;
 
   const allSelectedItems = [
     selectedDesk,
@@ -104,9 +104,9 @@ export function CheckoutDialog({
     selectedLighting,
     selectedPlant,
     selectedCoffee,
-    selectedAudio,
+    selectedOutdoor,
+    selectedRelax,
     selectedLaptopStand,
-    selectedAirPurifier,
   ].filter(Boolean);
 
   // Calculate pricing
