@@ -14,7 +14,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { Sparkles, Volume2, VolumeX, Globe, ChevronDown } from "lucide-react";
+import { Sparkles, Volume2, VolumeX, Globe, ChevronDown, Share2, Check } from "lucide-react";
 import { sound } from "@/lib/audio";
 
 interface HeaderProps {
@@ -33,12 +33,22 @@ export function Header({
   onOpenCheckout,
 }: HeaderProps) {
   const [isMuted, setIsMuted] = useState<boolean>(sound.getMuted());
+  const [copied, setCopied] = useState<boolean>(false);
 
   const handleToggleMute = () => {
     const nextMuted = !isMuted;
     sound.setMuted(nextMuted);
     setIsMuted(nextMuted);
     if (!nextMuted) sound.playClick();
+  };
+
+  const handleShare = () => {
+    sound.playSelect();
+    if (typeof window !== "undefined") {
+      navigator.clipboard.writeText(window.location.href);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2200);
+    }
   };
 
   return (
@@ -145,6 +155,24 @@ export function Header({
           >
             <Globe className="w-3.5 h-3.5 text-neutral-400" />
             <span className="font-bold">{currency}</span>
+          </Button>
+
+          {/* Share Setup Link */}
+          <Button
+            variant="outline"
+            size="sm"
+            onClick={handleShare}
+            className="bg-neutral-900 border-white/15 text-neutral-200 hover:text-white text-xs h-8 px-2.5 rounded-full flex items-center gap-1.5 shadow-sm"
+            title="Copy shareable link to this workspace setup"
+          >
+            {copied ? (
+              <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[3]" />
+            ) : (
+              <Share2 className="w-3.5 h-3.5 text-neutral-400" />
+            )}
+            <span className="hidden sm:inline font-medium">
+              {copied ? "Link Copied!" : "Share"}
+            </span>
           </Button>
 
           {/* Quick Rent Setup Button */}

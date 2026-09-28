@@ -30,6 +30,7 @@ import {
   Check,
   ShoppingBag,
   AlertCircle,
+  MessageCircle,
 } from "lucide-react";
 import { sound } from "@/lib/audio";
 
@@ -261,8 +262,30 @@ Designed on monis.rent visual configurator`;
               </div>
             </div>
 
+            {/* WhatsApp Concierge Dispatch CTA */}
+            <div className="space-y-2 pt-2">
+              <Button
+                className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs h-11 gap-2 shadow-[0_0_20px_rgba(37,211,102,0.35)] hover:scale-[1.02] active:scale-[0.98] transition-all cursor-pointer"
+                onClick={() => {
+                  sound.playClick();
+                  const msg = `🌴 Halo Monis Bali! I have reserved workspace rental #MN-BALI-${bookingRef}:
+• Customer: ${submittedData?.fullName || "Bali Nomad"}
+• WhatsApp: ${submittedData?.whatsapp || ""}
+• Villa Address: ${submittedData?.villaAddress || ""} (${deliveryArea.name})
+• Duration: ${durationWeeks} weeks
+• Total Rental: ${formatMoney(totalUSD, totalIDR)} (${discountBadge})
+• Equipment: ${allSelectedItems.map((i) => i?.name).filter(Boolean).join(", ")}
+Please confirm our next-day delivery for ${deliveryArea.estimatedDelivery}!`;
+                  window.open(`https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`, "_blank");
+                }}
+              >
+                <MessageCircle className="w-4 h-4 fill-white" />
+                <span>Open in WhatsApp to Confirm Delivery</span>
+              </Button>
+            </div>
+
             {/* Action Buttons */}
-            <div className="flex flex-col sm:flex-row gap-3 pt-2">
+            <div className="flex flex-col sm:flex-row gap-3 pt-1">
               <Button
                 variant="outline"
                 onClick={handleCopySummary}

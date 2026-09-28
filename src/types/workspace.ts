@@ -31,6 +31,7 @@ export interface WorkspaceConfig {
   deskId: string;
   deskFinish: DeskFinish;
   deskHeightState: "sitting" | "standing"; // sitting = 74cm, standing = 108cm
+  deskHeightCm: number; // 70 to 118 cm
   chairId: string;
   chairColor: ChairColor;
   monitorId: string;

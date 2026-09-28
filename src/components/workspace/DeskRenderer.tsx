@@ -6,10 +6,18 @@ import { DeskFinish } from "@/types/workspace";
 interface DeskRendererProps {
   finish: DeskFinish;
   isStanding: boolean;
+  heightCm: number;
   onToggleHeight?: () => void;
+  onStepHeight?: (delta: number) => void;
 }
 
-export function DeskRenderer({ finish, isStanding, onToggleHeight }: DeskRendererProps) {
+export function DeskRenderer({
+  finish,
+  isStanding,
+  heightCm,
+  onToggleHeight,
+  onStepHeight,
+}: DeskRendererProps) {
   // Tabletop styling
   const finishStyles: Record<DeskFinish, { top: string; edge: string; bevel: string; legColor: string }> = {
     "natural-bamboo": {
@@ -40,10 +48,11 @@ export function DeskRenderer({ finish, isStanding, onToggleHeight }: DeskRendere
 
   const currentFinish = finishStyles[finish] || finishStyles["natural-bamboo"];
 
-  // In sitting mode: tabletop is lower (e.g. translateY: 70px)
-  // In standing mode: tabletop rises up (translateY: 0px)
-  const deskOffsetY = isStanding ? 0 : 64;
-  const currentHeightCm = isStanding ? 108 : 74;
+  // Continuous height calculation from 70cm to 118cm
+  const currentHeight = heightCm || (isStanding ? 108 : 74);
+  const heightRatio = Math.max(0, Math.min(1, (currentHeight - 70) / (118 - 70)));
+  const deskOffsetY = (1 - heightRatio) * 62;
+  const legExtHeight = 64 + heightRatio * 76;
 
   return (
     <div className="absolute inset-x-0 bottom-16 flex flex-col items-center pointer-events-none select-none">
@@ -51,7 +60,7 @@ export function DeskRenderer({ finish, isStanding, onToggleHeight }: DeskRendere
       <motion.div
         className="relative w-[90%] max-w-2xl flex flex-col items-center"
         animate={{ y: deskOffsetY }}
-        transition={{ type: "spring", stiffness: 120, damping: 20 }}
+        transition={{ type: "spring", stiffness: 140, damping: 22 }}
       >
         {/* Tabletop Surface */}
         <div className="relative w-full z-20">
@@ -78,21 +87,47 @@ export function DeskRenderer({ finish, isStanding, onToggleHeight }: DeskRendere
 
           {/* Motorized Height Controller Display (Right Hand Side) */}
           <div
-            onClick={onToggleHeight}
-            className="pointer-events-auto absolute -bottom-6 right-8 cursor-pointer group flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-900 border border-white/15 shadow-lg hover:border-emerald-500/60 transition-all hover:scale-105 active:scale-95"
-            title="Click to toggle Sit/Stand height"
+            className="pointer-events-auto absolute -bottom-6 right-8 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-900 border border-white/15 shadow-xl hover:border-emerald-500/60 transition-all select-none"
+            title="Motorized Sit-Stand Memory Controller"
           >
-            {/* Digital LED Screen */}
-            <div className="font-mono text-[11px] font-bold tracking-wider text-emerald-400 flex items-center gap-1">
+            {/* Digital LED Screen - Click toggles Sitting/Standing preset */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleHeight?.();
+              }}
+              className="font-mono text-[11px] font-bold tracking-wider text-emerald-400 flex items-center gap-1 hover:text-emerald-300 transition-colors"
+              title="Click to toggle Sit/Stand preset"
+            >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{currentHeightCm}</span>
+              <span>{Math.round(currentHeight)}</span>
               <span className="text-[9px] text-emerald-500/70">cm</span>
-            </div>
+            </button>
 
-            {/* Micro Touch Buttons */}
-            <div className="flex flex-col gap-0.5 pl-1 border-l border-neutral-700">
-              <span className={`text-[8px] leading-none ${isStanding ? "text-emerald-400" : "text-neutral-500"}`}>▲</span>
-              <span className={`text-[8px] leading-none ${!isStanding ? "text-emerald-400" : "text-neutral-500"}`}>▼</span>
+            {/* Micro Touch Stepper Buttons */}
+            <div className="flex flex-col gap-0.5 pl-1.5 border-l border-neutral-700">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStepHeight?.(2);
+                }}
+                disabled={currentHeight >= 118}
+                className="text-[9px] leading-none text-neutral-400 hover:text-emerald-400 active:scale-125 disabled:opacity-30 transition-all"
+                title="Raise desk (+2 cm)"
+              >
+                ▲
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStepHeight?.(-2);
+                }}
+                disabled={currentHeight <= 70}
+                className="text-[9px] leading-none text-neutral-400 hover:text-emerald-400 active:scale-125 disabled:opacity-30 transition-all"
+                title="Lower desk (-2 cm)"
+              >
+                ▼
+              </button>
             </div>
           </div>
         </div>
@@ -101,11 +136,11 @@ export function DeskRenderer({ finish, isStanding, onToggleHeight }: DeskRendere
         <div className="w-[84%] flex justify-between px-6 -mt-1 relative z-10">
           {/* Left Telescoping Leg */}
           <div className="flex flex-col items-center">
-            {/* Upper Extending Segment (animates height) */}
+            {/* Upper Extending Segment */}
             <motion.div
               className={`w-9 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500`}
-              animate={{ height: isStanding ? 134 : 70 }}
-              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+              animate={{ height: legExtHeight }}
+              transition={{ type: "spring", stiffness: 140, damping: 22 }}
             />
             {/* Lower Base Column */}
             <div className={`w-11 h-20 ${currentFinish.legColor} rounded-t-sm border-x border-white/10 shadow-lg`} />
@@ -121,8 +156,8 @@ export function DeskRenderer({ finish, isStanding, onToggleHeight }: DeskRendere
             {/* Upper Extending Segment */}
             <motion.div
               className={`w-9 ${currentFinish.legColor} border-x border-white/10 transition-colors duration-500`}
-              animate={{ height: isStanding ? 134 : 70 }}
-              transition={{ type: "spring", stiffness: 120, damping: 20 }}
+              animate={{ height: legExtHeight }}
+              transition={{ type: "spring", stiffness: 140, damping: 22 }}
             />
             {/* Lower Base Column */}
             <div className={`w-11 h-20 ${currentFinish.legColor} rounded-t-sm border-x border-white/10 shadow-lg`} />

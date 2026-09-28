@@ -12,10 +12,15 @@ import { CheckoutDialog } from "@/components/workspace/CheckoutDialog";
 import { Badge } from "@/components/ui/badge";
 import { Truck, ShieldCheck, RefreshCw, Zap } from "lucide-react";
 
+import { serializeConfigToUrl, parseConfigFromUrl } from "@/lib/config-url";
+
+const STORAGE_KEY = "monis_bali_workspace_setup";
+
 const DEFAULT_CONFIG: WorkspaceConfig = {
   deskId: "desk-dual-motor",
   deskFinish: "natural-bamboo",
   deskHeightState: "sitting",
+  deskHeightCm: 74,
   chairId: "chair-ergonomic-mesh",
   chairColor: "stealth-black",
   monitorId: "monitor-ultrawide-curved",
@@ -34,22 +39,25 @@ const DEFAULT_CONFIG: WorkspaceConfig = {
 function getInitialConfig(): WorkspaceConfig {
   if (typeof window === "undefined") return DEFAULT_CONFIG;
   try {
-    const params = new URLSearchParams(window.location.search);
-    const presetParam = params.get("preset");
+    const urlParams = new URLSearchParams(window.location.search);
+    const presetParam = urlParams.get("preset");
     if (presetParam) {
       const found = PRESETS.find((p) => p.id === presetParam);
       if (found) return { ...DEFAULT_CONFIG, ...found.config };
     }
-    const desk = params.get("desk");
-    const chair = params.get("chair");
-    const monitor = params.get("monitor");
-    if (desk || chair || monitor) {
-      return {
-        ...DEFAULT_CONFIG,
-        ...(desk ? { deskId: desk } : {}),
-        ...(chair ? { chairId: chair } : {}),
-        ...(monitor ? { monitorId: monitor } : {}),
-      };
+
+    // 1. Check if URL has query parameters
+    if (window.location.search && window.location.search.length > 1) {
+      const parsed = parseConfigFromUrl(window.location.search);
+      if (Object.keys(parsed).length > 0) {
+        return { ...DEFAULT_CONFIG, ...parsed };
+      }
+    }
+    // 2. Check localStorage
+    const saved = localStorage.getItem(STORAGE_KEY);
+    if (saved) {
+      const parsedJson = JSON.parse(saved);
+      return { ...DEFAULT_CONFIG, ...parsedJson };
     }
   } catch {
     // fallback
@@ -63,14 +71,39 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<ProductCategory>("desks");
   const [checkoutOpen, setCheckoutOpen] = useState<boolean>(false);
 
+  // Sync state update to localStorage and URL search params without useEffect
+  const handleUpdateConfig = (updater: (prev: WorkspaceConfig) => WorkspaceConfig) => {
+    setConfig((prev) => {
+      const next = updater(prev);
+      if (typeof window !== "undefined") {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+          const newUrl = serializeConfigToUrl(next);
+          window.history.replaceState(null, "", newUrl);
+        } catch {
+          // ignore
+        }
+      }
+      return next;
+    });
+  };
+
   const handleApplyPreset = (preset: PresetSetup) => {
-    setConfig((prev) => ({
+    handleUpdateConfig((prev) => ({
       ...prev,
       ...preset.config,
     }));
   };
 
   const handleReset = () => {
+    if (typeof window !== "undefined") {
+      try {
+        localStorage.removeItem(STORAGE_KEY);
+        window.history.replaceState(null, "", window.location.pathname);
+      } catch {
+        // ignore
+      }
+    }
     setConfig(DEFAULT_CONFIG);
   };
 
@@ -126,7 +159,7 @@ export default function Home() {
           <div className="lg:col-span-7 xl:col-span-8 h-[380px] sm:h-[460px] lg:h-full">
             <WorkspaceCanvas
               config={config}
-              onChangeConfig={setConfig}
+              onChangeConfig={handleUpdateConfig}
               onSelectCategory={(cat) => setActiveCategory(cat)}
             />
           </div>
@@ -135,7 +168,7 @@ export default function Home() {
           <div className="lg:col-span-5 xl:col-span-4 h-[580px] lg:h-full">
             <ConfiguratorSidebar
               config={config}
-              onChangeConfig={setConfig}
+              onChangeConfig={handleUpdateConfig}
               currency={currency}
               activeCategory={activeCategory}
               onCategoryChange={setActiveCategory}
