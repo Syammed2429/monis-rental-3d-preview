@@ -43,6 +43,7 @@ export function ChairRenderer({ chairId, color, isStanding }: ChairRendererProps
   return (
     <motion.div
       className="absolute bottom-6 left-1/2 -translate-x-1/2 z-15 pointer-events-auto cursor-pointer select-none flex flex-col items-center"
+      style={{ transformStyle: "preserve-3d", transform: "translateZ(-20px)" }}
       animate={{
         y: isStanding ? 8 : 0,
         scale: isStanding ? 0.96 : 1,

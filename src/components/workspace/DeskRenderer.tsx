@@ -58,9 +58,15 @@ export function DeskRenderer({
   const elevationY = -(heightRatio * 44);
 
   return (
-    <div className="absolute inset-x-0 bottom-6 flex flex-col items-center pointer-events-none select-none">
+    <div
+      className="absolute inset-x-0 bottom-6 flex flex-col items-center pointer-events-none select-none"
+      style={{ transformStyle: "preserve-3d" }}
+    >
       {/* 1. Stationary Lower Base Columns & Heavy-Duty T-Feet (Firmly pinned to floor) */}
-      <div className="relative w-[460px] max-w-[460px] flex justify-between px-12 z-10">
+      <div
+        className="relative w-[460px] max-w-[460px] flex justify-between px-12 z-10"
+        style={{ transform: "translateZ(0px)", transformStyle: "preserve-3d" }}
+      >
         {/* Left Stationary Foot & Base */}
         <div className="flex flex-col items-center">
           <div className={`w-11 h-20 ${currentFinish.legColor} rounded-t-sm border-x border-white/10 shadow-lg relative overflow-hidden`}>
@@ -89,6 +95,7 @@ export function DeskRenderer({
       {/* 2. Elevating Tabletop & Telescoping Upper Segments (Rises smoothly from lower base) */}
       <motion.div
         className="absolute bottom-[92px] w-[460px] max-w-[460px] flex flex-col items-center z-20"
+        style={{ transformStyle: "preserve-3d", transform: "translateZ(25px)" }}
         animate={{ y: elevationY }}
         transition={{ type: "spring", stiffness: 140, damping: 22 }}
       >
@@ -100,7 +107,10 @@ export function DeskRenderer({
         >
           {/* Mounted Items Atop Tabletop (Monitors & Peripherals) */}
           {children && (
-            <div className="absolute inset-x-0 top-0 pointer-events-auto">
+            <div
+              className="absolute inset-x-0 top-0 pointer-events-auto"
+              style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
+            >
               {children}
             </div>
           )}

@@ -16,9 +16,15 @@ export function LifestyleRenderer({
   onSelectCategory,
 }: LifestyleRendererProps) {
   return (
-    <div className="absolute inset-0 pointer-events-none select-none z-15">
+    <div
+      className="absolute inset-0 pointer-events-none select-none z-15"
+      style={{ transformStyle: "preserve-3d" }}
+    >
       {/* 1. Outdoor Gear Zone (Left Flank, safely outside desk edge) */}
-      <div className="absolute bottom-6 left-5 sm:left-7 flex flex-col items-center">
+      <div
+        className="absolute bottom-6 left-5 sm:left-7 flex flex-col items-center"
+        style={{ transform: "translateZ(18px)", transformStyle: "preserve-3d" }}
+      >
         {outdoorId === "lifestyle-outdoor-surfboard" && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9, rotate: -10 }}
@@ -96,7 +102,10 @@ export function LifestyleRenderer({
       </div>
 
       {/* 2. Relax Zone (Right Flank, safely outside desk edge) */}
-      <div className="absolute bottom-6 right-5 sm:right-7 flex flex-col items-center">
+      <div
+        className="absolute bottom-6 right-5 sm:right-7 flex flex-col items-center"
+        style={{ transform: "translateZ(14px)", transformStyle: "preserve-3d" }}
+      >
         {relaxId === "lifestyle-relax-beanbag" && (
           <motion.div
             initial={{ opacity: 0, scale: 0.9 }}

@@ -11,7 +11,21 @@ import { AccessoriesRenderer } from "./AccessoriesRenderer";
 import { LifestyleRenderer } from "./LifestyleRenderer";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
-import { Sun, Sunset, Moon, ArrowUpDown, Sparkles, ZoomIn, ZoomOut, ChevronUp, ChevronDown } from "lucide-react";
+import {
+  Sun,
+  Sunset,
+  Moon,
+  ArrowUpDown,
+  Sparkles,
+  ZoomIn,
+  ZoomOut,
+  ChevronUp,
+  ChevronDown,
+  Orbit,
+  RotateCcw,
+  RotateCw,
+  Eye,
+} from "lucide-react";
 import { sound } from "@/lib/audio";
 
 interface WorkspaceCanvasProps {
@@ -30,6 +44,25 @@ export function WorkspaceCanvas({
   const [zoomLevel, setZoomLevel] = useState<number>(1);
   const isStanding = config.deskHeightState === "standing";
   const currentHeight = config.deskHeightCm || (isStanding ? 108 : 74);
+
+  // 3D Camera Orbit & Rotation State
+  const [rotY, setRotY] = useState<number>(0); // Horizontal orbit angle: -36deg to +36deg
+  const [rotX, setRotX] = useState<number>(4); // Vertical pitch angle: -4deg to +18deg
+  const [isAutoRotating, setIsAutoRotating] = useState<boolean>(false);
+  const [isDragging, setIsDragging] = useState<boolean>(false);
+  const [activePreset, setActivePreset] = useState<
+    "front" | "iso-left" | "iso-right" | "top" | "custom"
+  >("front");
+
+  // Pointer drag tracking refs
+  const isPointerDownRef = useRef<boolean>(false);
+  const dragStartRef = useRef<{ x: number; y: number; rotY: number; rotX: number }>({
+    x: 0,
+    y: 0,
+    rotY: 0,
+    rotX: 4,
+  });
+  const hasDraggedRef = useRef<boolean>(false);
 
   // ResizeObserver dynamically measures container and auto-scales the 760x440 stage
   useEffect(() => {
@@ -56,6 +89,123 @@ export function WorkspaceCanvas({
     };
   }, []);
 
+  // 360° Auto-Turntable Tour Animation Loop
+  useEffect(() => {
+    if (!isAutoRotating) return;
+    let animFrameId: number;
+    const startTime = performance.now();
+
+    const loop = (currentTime: number) => {
+      const elapsedSec = (currentTime - startTime) / 1000;
+      // Gentle sinusoidal wave oscillating between -24deg and +24deg over ~7s cycle
+      const wave = Math.sin(elapsedSec * 0.9);
+      const newRotY = wave * 24;
+      const newRotX = 5 + Math.cos(elapsedSec * 0.6) * 3;
+      setRotY(Number(newRotY.toFixed(1)));
+      setRotX(Number(newRotX.toFixed(1)));
+      animFrameId = requestAnimationFrame(loop);
+    };
+
+    animFrameId = requestAnimationFrame(loop);
+    return () => {
+      cancelAnimationFrame(animFrameId);
+    };
+  }, [isAutoRotating]);
+
+  // Pointer Event Handlers for 3D Drag Orbit
+  const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (e.button !== 0 && e.pointerType === "mouse") return;
+    isPointerDownRef.current = true;
+    hasDraggedRef.current = false;
+    dragStartRef.current = {
+      x: e.clientX,
+      y: e.clientY,
+      rotY,
+      rotX,
+    };
+    if (isAutoRotating) {
+      setIsAutoRotating(false);
+    }
+    try {
+      e.currentTarget.setPointerCapture(e.pointerId);
+    } catch {}
+  };
+
+  const handlePointerMove = (e: React.PointerEvent<HTMLDivElement>) => {
+    if (!isPointerDownRef.current) return;
+    const dx = e.clientX - dragStartRef.current.x;
+    const dy = e.clientY - dragStartRef.current.y;
+
+    if (!hasDraggedRef.current && Math.hypot(dx, dy) > 5) {
+      hasDraggedRef.current = true;
+      setIsDragging(true);
+    }
+
+    if (hasDraggedRef.current) {
+      // 0.28 deg/px for horizontal yaw, 0.18 deg/px for vertical pitch
+      const nextRotY = Math.max(-36, Math.min(36, dragStartRef.current.rotY + dx * 0.28));
+      const nextRotX = Math.max(-4, Math.min(18, dragStartRef.current.rotX - dy * 0.18));
+      setRotY(Number(nextRotY.toFixed(1)));
+      setRotX(Number(nextRotX.toFixed(1)));
+      setActivePreset("custom");
+    }
+  };
+
+  const handlePointerUp = (e: React.PointerEvent<HTMLDivElement>) => {
+    isPointerDownRef.current = false;
+    setIsDragging(false);
+    try {
+      e.currentTarget.releasePointerCapture(e.pointerId);
+    } catch {}
+  };
+
+  const handlePointerCancel = () => {
+    isPointerDownRef.current = false;
+    setIsDragging(false);
+  };
+
+  // Suppress clicks on children if user performed a 3D orbit drag
+  const handleClickCapture = (e: React.MouseEvent) => {
+    if (hasDraggedRef.current) {
+      e.stopPropagation();
+      e.preventDefault();
+      hasDraggedRef.current = false;
+    }
+  };
+
+  // Camera Presets
+  const handleSelectPreset = (preset: "front" | "iso-left" | "iso-right" | "top") => {
+    sound.playClick();
+    setIsAutoRotating(false);
+    setActivePreset(preset);
+    switch (preset) {
+      case "front":
+        setRotY(0);
+        setRotX(4);
+        break;
+      case "iso-left":
+        setRotY(-24);
+        setRotX(8);
+        break;
+      case "iso-right":
+        setRotY(24);
+        setRotX(8);
+        break;
+      case "top":
+        setRotY(0);
+        setRotX(16);
+        break;
+    }
+  };
+
+  const handleToggleAutoTour = () => {
+    sound.playSelect();
+    setIsAutoRotating((prev) => !prev);
+    if (!isAutoRotating) {
+      setActivePreset("custom");
+    }
+  };
+
   // Toggle desk height preset (74cm / 108cm)
   const handleToggleHeight = () => {
     sound.playMotorHum();
@@ -72,7 +222,13 @@ export function WorkspaceCanvas({
   const handleStepHeight = (delta: number) => {
     sound.playMotorHum();
     onChangeConfig((prev) => {
-      const nextCm = Math.max(70, Math.min(118, (prev.deskHeightCm || (prev.deskHeightState === "standing" ? 108 : 74)) + delta));
+      const nextCm = Math.max(
+        70,
+        Math.min(
+          118,
+          (prev.deskHeightCm || (prev.deskHeightState === "standing" ? 108 : 74)) + delta
+        )
+      );
       return {
         ...prev,
         deskHeightCm: nextCm,
@@ -129,7 +285,7 @@ export function WorkspaceCanvas({
             className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-white/90 font-medium px-2.5 py-1 text-[11px] gap-1.5 shadow-lg hidden sm:inline-flex"
           >
             <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Interactive Studio Canvas</span>
+            <span>Interactive 3D Studio</span>
           </Badge>
 
           {/* Quick Sit / Stand Preset Button */}
@@ -141,7 +297,9 @@ export function WorkspaceCanvas({
           >
             <ArrowUpDown className="w-3.5 h-3.5 text-emerald-400" />
             <span>{isStanding ? "Standing" : "Sitting"}</span>
-            <span className="font-mono text-emerald-400 font-bold">({Math.round(currentHeight)} cm)</span>
+            <span className="font-mono text-emerald-400 font-bold">
+              ({Math.round(currentHeight)} cm)
+            </span>
           </Button>
 
           {/* Micro Height Stepper (Fine-Tuning) */}
@@ -209,26 +367,64 @@ export function WorkspaceCanvas({
             className="p-1.5 rounded-full text-neutral-400 hover:text-white transition-colors"
             title={zoomLevel === 1 ? "Zoom in setup" : "Reset zoom"}
           >
-            {zoomLevel === 1 ? <ZoomIn className="w-3.5 h-3.5" /> : <ZoomOut className="w-3.5 h-3.5" />}
+            {zoomLevel === 1 ? (
+              <ZoomIn className="w-3.5 h-3.5" />
+            ) : (
+              <ZoomOut className="w-3.5 h-3.5" />
+            )}
           </button>
         </div>
       </div>
 
-      {/* 3. Main Stage Composite */}
+      {/* 3. Main Stage Composite with 3D Perspective & Orbit Drag */}
       <div
         ref={containerRef}
-        className="relative flex-1 w-full h-full flex items-center justify-center overflow-hidden"
+        onPointerDown={handlePointerDown}
+        onPointerMove={handlePointerMove}
+        onPointerUp={handlePointerUp}
+        onPointerCancel={handlePointerCancel}
+        onClickCapture={handleClickCapture}
+        style={{
+          perspective: 1200,
+          perspectiveOrigin: "50% 55%",
+        }}
+        className={`relative flex-1 w-full h-full flex items-center justify-center overflow-hidden touch-none select-none ${
+          isDragging ? "cursor-grabbing" : "cursor-grab"
+        }`}
       >
         <motion.div
           style={{
             width: 760,
             height: 440,
             transformOrigin: "center center",
+            transformStyle: "preserve-3d",
+            rotateX: rotX,
+            rotateY: rotY,
+            scale: stageScale * zoomLevel,
+          }}
+          animate={
+            isDragging
+              ? undefined
+              : {
+                  rotateX: rotX,
+                  rotateY: rotY,
+                  scale: stageScale * zoomLevel,
+                }
+          }
+          transition={{
+            type: "spring",
+            stiffness: 160,
+            damping: 24,
+            mass: 0.8,
           }}
           className="relative shrink-0 select-none pointer-events-auto"
-          animate={{ scale: stageScale * zoomLevel }}
-          transition={{ type: "spring", stiffness: 180, damping: 25 }}
         >
+          {/* Grounding 3D Studio Radial Shadow (Moves with Diorama Orbit) */}
+          <div
+            className="absolute bottom-3 left-1/2 -translate-x-1/2 w-[540px] h-20 rounded-[50%] bg-black/60 blur-xl pointer-events-none"
+            style={{ transform: "translateZ(-30px)" }}
+          />
+
           {/* Bali Lifestyle Elements (Outdoor Gear Left, Relax Zone Right) */}
           <LifestyleRenderer
             outdoorId={config.outdoorId}
@@ -243,6 +439,7 @@ export function WorkspaceCanvas({
               onSelectCategory?.("chairs");
             }}
             className="absolute inset-0 pointer-events-auto cursor-pointer group/chair z-15"
+            style={{ transformStyle: "preserve-3d" }}
             title="Configure Chair"
           >
             <div className="absolute bottom-[220px] left-1/2 -translate-x-1/2 opacity-0 group-hover/chair:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-30">
@@ -270,6 +467,7 @@ export function WorkspaceCanvas({
             {/* Monitor Mounted Directly Atop Desk Surface */}
             <div
               className="absolute -top-[160px] left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center"
+              style={{ transformStyle: "preserve-3d", transform: "translateZ(10px)" }}
               onClick={(e) => {
                 e.stopPropagation();
                 onSelectCategory?.("monitors");
@@ -287,7 +485,10 @@ export function WorkspaceCanvas({
             </div>
 
             {/* Desktop Accessories (Lamp, Mat, Laptop, Coffee, Plant) */}
-            <div className="absolute inset-x-0 -top-[10px] h-[40px] pointer-events-auto">
+            <div
+              className="absolute inset-x-0 -top-[10px] h-[40px] pointer-events-auto"
+              style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
+            >
               <AccessoriesRenderer
                 peripheralsId={config.peripheralsId}
                 lightingId={config.lightingId}
@@ -303,11 +504,128 @@ export function WorkspaceCanvas({
         </motion.div>
       </div>
 
-      {/* 4. Canvas Bottom Hint Chips */}
+      {/* 4. Floating 3D Orbit Camera Controls (Positioned above bottom bar) */}
+      <div className="absolute bottom-11 sm:bottom-12 left-1/2 -translate-x-1/2 z-30 pointer-events-auto flex flex-col items-center gap-1.5 max-w-[94%]">
+        {/* Orbit Angle / Drag State Live Badge */}
+        <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-900/85 backdrop-blur-md border border-white/10 text-[10px] text-neutral-300 shadow-lg pointer-events-none transition-all">
+          {isAutoRotating ? (
+            <>
+              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
+              <span className="text-emerald-400 font-medium">360° Turntable Active</span>
+            </>
+          ) : isDragging ? (
+            <>
+              <Orbit className="w-3 h-3 text-emerald-400 animate-spin" />
+              <span className="font-mono text-emerald-300 font-bold">
+                Yaw: {Math.round(rotY)}° • Pitch: {Math.round(rotX)}°
+              </span>
+            </>
+          ) : (
+            <>
+              <Orbit className="w-3 h-3 text-emerald-400" />
+              <span className="hidden sm:inline">Drag scene to orbit 3D • Tap presets below</span>
+              <span className="sm:hidden">Drag scene to rotate in 3D</span>
+              {rotY !== 0 && (
+                <span className="font-mono text-neutral-400 ml-1">({Math.round(rotY)}°)</span>
+              )}
+            </>
+          )}
+        </div>
+
+        {/* Camera Presets & Tour Pill */}
+        <div className="flex items-center gap-1 bg-neutral-900/90 backdrop-blur-md border border-white/15 p-1 rounded-full shadow-2xl">
+          {/* Front 0° */}
+          <button
+            onClick={() => handleSelectPreset("front")}
+            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
+              activePreset === "front" && !isAutoRotating
+                ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
+                : "text-neutral-400 hover:text-white"
+            }`}
+            title="Front Battlestation View (0°)"
+          >
+            <Eye className="w-3 h-3" />
+            <span>Front</span>
+          </button>
+
+          {/* 3/4 Left -24° */}
+          <button
+            onClick={() => handleSelectPreset("iso-left")}
+            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
+              activePreset === "iso-left" && !isAutoRotating
+                ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
+                : "text-neutral-400 hover:text-white"
+            }`}
+            title="3/4 Left Isometric View (-24°)"
+          >
+            <RotateCcw className="w-3 h-3" />
+            <span>Left</span>
+          </button>
+
+          {/* 3/4 Right +24° */}
+          <button
+            onClick={() => handleSelectPreset("iso-right")}
+            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
+              activePreset === "iso-right" && !isAutoRotating
+                ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
+                : "text-neutral-400 hover:text-white"
+            }`}
+            title="3/4 Right Isometric View (+24°)"
+          >
+            <RotateCw className="w-3 h-3" />
+            <span>Right</span>
+          </button>
+
+          {/* Top Angle */}
+          <button
+            onClick={() => handleSelectPreset("top")}
+            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all hidden sm:flex items-center gap-1 ${
+              activePreset === "top" && !isAutoRotating
+                ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
+                : "text-neutral-400 hover:text-white"
+            }`}
+            title="Elevated Top Overview Angle (+16°)"
+          >
+            <span>Top</span>
+          </button>
+
+          <div className="w-[1px] h-3.5 bg-white/10 mx-0.5" />
+
+          {/* 360° Turntable Tour Toggle */}
+          <button
+            onClick={handleToggleAutoTour}
+            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1.5 ${
+              isAutoRotating
+                ? "bg-emerald-500 text-neutral-950 font-semibold shadow-md shadow-emerald-500/20"
+                : "text-neutral-300 hover:text-white hover:bg-white/5"
+            }`}
+            title={isAutoRotating ? "Pause 360° Tour" : "Start 360° Turntable Tour"}
+          >
+            <Orbit className={`w-3.5 h-3.5 ${isAutoRotating ? "animate-spin" : ""}`} />
+            <span className="hidden sm:inline">{isAutoRotating ? "Touring" : "360° Tour"}</span>
+            <span className="sm:hidden">Tour</span>
+          </button>
+
+          {/* Quick Snap Reset */}
+          {(rotY !== 0 || rotX !== 4) && !isAutoRotating && (
+            <button
+              onClick={() => handleSelectPreset("front")}
+              className="p-1 text-neutral-400 hover:text-emerald-400 transition-colors ml-0.5"
+              title="Reset camera to Front (0°)"
+            >
+              <RotateCcw className="w-3 h-3" />
+            </button>
+          )}
+        </div>
+      </div>
+
+      {/* 5. Canvas Bottom Hint Chips */}
       <div className="relative z-30 px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between text-[11px] text-neutral-400 pointer-events-none border-t border-white/5 bg-neutral-950/50 backdrop-blur-xs">
         <div className="flex items-center gap-1.5 truncate">
           <span className="hidden sm:inline">💡</span>
-          <span className="truncate">Click monitors to cycle art • Click desk or chair to customize</span>
+          <span className="truncate">
+            Click monitors to cycle art • Click desk or chair to customize
+          </span>
         </div>
 
         <button
