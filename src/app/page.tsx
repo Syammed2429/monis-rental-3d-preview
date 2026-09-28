@@ -71,18 +71,20 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<ProductCategory>("desks");
   const [checkoutOpen, setCheckoutOpen] = useState<boolean>(false);
 
-  // Sync state update to localStorage and URL search params without useEffect
+  // Sync state update to localStorage and URL search params safely outside render cycle
   const handleUpdateConfig = (updater: (prev: WorkspaceConfig) => WorkspaceConfig) => {
     setConfig((prev) => {
       const next = updater(prev);
       if (typeof window !== "undefined") {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-          const newUrl = serializeConfigToUrl(next);
-          window.history.replaceState(null, "", newUrl);
-        } catch {
-          // ignore
-        }
+        queueMicrotask(() => {
+          try {
+            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
+            const newUrl = serializeConfigToUrl(next);
+            window.history.replaceState(null, "", newUrl);
+          } catch {
+            // ignore
+          }
+        });
       }
       return next;
     });

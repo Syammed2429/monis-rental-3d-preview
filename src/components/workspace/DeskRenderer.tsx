@@ -108,7 +108,7 @@ export function DeskRenderer({
           {/* Mounted Items Atop Tabletop (Monitors & Peripherals) */}
           {children && (
             <div
-              className="absolute inset-x-0 top-0 pointer-events-auto"
+              className="absolute inset-x-0 top-0 h-0 pointer-events-auto z-10"
               style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
             >
               {children}
@@ -151,7 +151,7 @@ export function DeskRenderer({
               title="Click to toggle Sit/Stand preset"
             >
               <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
-              <span>{Math.round(currentHeight)}</span>
+              <span suppressHydrationWarning>{Math.round(currentHeight)}</span>
               <span className="text-[9px] text-emerald-500/70">cm</span>
             </button>
 

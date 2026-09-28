@@ -296,8 +296,8 @@ export function WorkspaceCanvas({
             className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-white hover:bg-neutral-800 text-[11px] h-7.5 px-2.5 gap-1.5 shadow-lg"
           >
             <ArrowUpDown className="w-3.5 h-3.5 text-emerald-400" />
-            <span>{isStanding ? "Standing" : "Sitting"}</span>
-            <span className="font-mono text-emerald-400 font-bold">
+            <span suppressHydrationWarning>{isStanding ? "Standing" : "Sitting"}</span>
+            <span className="font-mono text-emerald-400 font-bold" suppressHydrationWarning>
               ({Math.round(currentHeight)} cm)
             </span>
           </Button>
@@ -464,29 +464,34 @@ export function WorkspaceCanvas({
               onSelectCategory?.("desks");
             }}
           >
-            {/* Monitor Mounted Directly Atop Desk Surface */}
-            <div
-              className="absolute -top-[160px] left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center"
+            {/* Monitor Mounted Directly Atop Desk Surface (Rests on bottom-0 • Horizontally Draggable along desk) */}
+            <motion.div
+              drag="x"
+              dragConstraints={{ left: -110, right: 110 }}
+              dragElastic={0.06}
+              dragMomentum={false}
+              onPointerDown={(e) => e.stopPropagation()}
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center cursor-grab active:cursor-grabbing"
               style={{ transformStyle: "preserve-3d", transform: "translateZ(10px)" }}
               onClick={(e) => {
                 e.stopPropagation();
                 onSelectCategory?.("monitors");
               }}
-              title="Click to configure Monitor (or click screen to cycle wallpaper)"
+              title="Slide monitor along desk • Click screen to cycle art"
             >
               <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-                Display • Click to Cycle Wallpaper
+                🖥️ Slide Monitor • Click to Cycle Art
               </div>
               <MonitorRenderer
                 monitorId={config.monitorId}
                 displayMode={config.monitorDisplayMode}
                 onToggleDisplayMode={handleToggleScreen}
               />
-            </div>
+            </motion.div>
 
-            {/* Desktop Accessories (Lamp, Mat, Laptop, Coffee, Plant) */}
+            {/* Desktop Accessories (Lamp, Mat, Laptop, Coffee, Plant - All Resting on Desk Surface) */}
             <div
-              className="absolute inset-x-0 -top-[10px] h-[40px] pointer-events-auto"
+              className="absolute inset-x-0 bottom-0 pointer-events-auto"
               style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
             >
               <AccessoriesRenderer
@@ -633,7 +638,7 @@ export function WorkspaceCanvas({
           className="pointer-events-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 hover:border-emerald-500/50 text-neutral-300 hover:text-white transition-all text-[11px] shrink-0"
         >
           <Sparkles className="w-3 h-3 text-emerald-400" />
-          <span>{isStanding ? "Switch to Sitting (74cm)" : "Switch to Standing (108cm)"}</span>
+          <span suppressHydrationWarning>{isStanding ? "Switch to Sitting (74cm)" : "Switch to Standing (108cm)"}</span>
         </button>
       </div>
     </div>

@@ -27,8 +27,8 @@ export function AccessoriesRenderer({
 }: AccessoriesRendererProps) {
   return (
     <div className="absolute inset-0 pointer-events-none select-none">
-      {/* 1. Large Minimalist Felt Desk Mat on Table Surface */}
-      <div className="absolute top-[28px] left-1/2 -translate-x-1/2 w-[420px] h-[32px] rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center">
+      {/* 1. Large Minimalist Felt Desk Mat (Rests directly on desk surface) */}
+      <div className="absolute top-1 left-1/2 -translate-x-1/2 w-[410px] h-[34px] rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center pointer-events-auto">
         {/* Keyboard & Mouse Area */}
         <div className="flex items-center gap-6">
           {/* Keyboards */}
@@ -85,9 +85,24 @@ export function AccessoriesRenderer({
         </div>
       </div>
 
-      {/* 2. Aluminum Laptop Stand (Left Hand Side) */}
+      {/* 2. Aluminum Laptop Stand (Rests flush on desk surface • Draggable along X) */}
       {laptopStand && (
-        <div className="absolute top-[6px] left-12 flex flex-col items-center z-10 pointer-events-auto">
+        <motion.div
+          drag="x"
+          dragConstraints={{ left: -25, right: 80 }}
+          dragElastic={0.06}
+          dragMomentum={false}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute bottom-0 left-8 flex flex-col items-center z-15 pointer-events-auto cursor-grab active:cursor-grabbing group/laptop"
+          title="Drag along desk to reposition • Click to configure"
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectCategory?.("peripherals");
+          }}
+        >
+          <div className="absolute -top-6 opacity-0 group-hover/laptop:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+            💻 Slide Laptop Stand
+          </div>
           {/* Laptop Screen with clean modern wallpaper */}
           <div className="w-24 h-16 rounded-md bg-neutral-900 p-1 border border-neutral-700 shadow-xl flex flex-col">
             <div className="w-full flex-1 rounded bg-gradient-to-tr from-emerald-950 via-teal-900 to-slate-900 flex flex-col justify-between p-1 select-none border border-white/5">
@@ -105,18 +120,29 @@ export function AccessoriesRenderer({
           </div>
           {/* Laptop Base */}
           <div className="w-26 h-1.5 bg-gradient-to-r from-slate-400 via-slate-200 to-slate-400 rounded-b shadow-sm" />
-          {/* Angled CNC Aluminum Riser Stand */}
+          {/* Angled CNC Aluminum Riser Stand (Grounded on wooden surface) */}
           <div className="w-14 h-7 border-x-3 border-b-3 border-slate-400/80 rounded-b-md shadow-md -mt-0.5" />
-        </div>
+        </motion.div>
       )}
 
       {/* 3. Desk Lighting (Anglepoise Lamp / ScreenBar) */}
       {lightingId === "light-smart-lamp" && (
-        <div
-          onClick={onToggleLamp}
-          className="absolute -top-[125px] left-24 pointer-events-auto cursor-pointer group flex flex-col items-center z-20"
-          title={`Click to turn lamp ${lampPowered ? "OFF" : "ON"}`}
+        <motion.div
+          drag="x"
+          dragConstraints={{ left: -30, right: 60 }}
+          dragElastic={0.06}
+          dragMomentum={false}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleLamp?.();
+          }}
+          className="absolute bottom-0 left-22 pointer-events-auto cursor-pointer group/lamp flex flex-col items-center z-20 cursor-grab active:cursor-grabbing"
+          title={`Slide along desk • Click to turn lamp ${lampPowered ? "OFF" : "ON"}`}
         >
+          <div className="absolute -top-6 opacity-0 group-hover/lamp:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+            💡 Slide Lamp • Click to Toggle
+          </div>
           {/* Light Fixture Horizontal Bar */}
           <div className="w-22 h-2 bg-slate-100 rounded-full border border-slate-300 shadow-md relative">
             {/* LED Underside */}
@@ -130,11 +156,11 @@ export function AccessoriesRenderer({
           </div>
 
           {/* Pivoting Stem */}
-          <div className="w-1.5 h-28 bg-gradient-to-b from-slate-200 to-slate-400 relative">
+          <div className="w-1.5 h-26 bg-gradient-to-b from-slate-200 to-slate-400 relative">
             <div className="absolute top-4 -right-1 w-2.5 h-6 rounded-full border-r-2 border-amber-500" />
           </div>
 
-          {/* Minimalist Round Base */}
+          {/* Minimalist Round Base (Rests flush on desk surface) */}
           <div className="w-8 h-2 bg-slate-200 rounded-full border border-slate-300 shadow-md flex items-center justify-center">
             <div
               className={`w-1.5 h-1.5 rounded-full transition-colors ${
@@ -147,13 +173,13 @@ export function AccessoriesRenderer({
           {lampPowered && (
             <div className="absolute top-[8px] -left-12 w-44 h-36 bg-[radial-gradient(ellipse_at_top,rgba(254,240,138,0.25)_0%,transparent_75%)] pointer-events-none blur-xs" />
           )}
-        </div>
+        </motion.div>
       )}
 
       {lightingId === "light-screenbar" && (
         <div
           onClick={onToggleLamp}
-          className="absolute -top-[205px] left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-20"
+          className="absolute -top-[195px] left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-20"
           title={`Click to turn ScreenBar ${lampPowered ? "OFF" : "ON"}`}
         >
           {/* ScreenBar Clamped atop Monitor Bezel */}
@@ -174,11 +200,22 @@ export function AccessoriesRenderer({
         </div>
       )}
 
-      {/* 4. Tropical Bali Monstera Deliciosa (Right Desk Edge) */}
+      {/* 4. Tropical Bali Monstera Deliciosa (Right Desk Edge • Draggable) */}
       {plantId === "lifestyle-plant-monstera" ? (
-        <div className="absolute -top-[100px] -right-10 flex flex-col items-center z-15 pointer-events-none">
+        <motion.div
+          drag="x"
+          dragConstraints={{ left: -30, right: 30 }}
+          dragElastic={0.06}
+          dragMomentum={false}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute bottom-0 right-4 flex flex-col items-center z-15 pointer-events-auto cursor-grab active:cursor-grabbing group/plant"
+          title="Drag plant along desk"
+        >
+          <div className="absolute -top-6 opacity-0 group-hover/plant:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+            🌿 Slide Plant
+          </div>
           {/* Lush Monstera Leaves Vector */}
-          <svg className="w-22 h-22 text-emerald-600 drop-shadow-md" viewBox="0 0 100 100" fill="none">
+          <svg className="w-20 h-20 text-emerald-600 drop-shadow-md" viewBox="0 0 100 100" fill="none">
             <path
               d="M 50 80 Q 20 60 15 30 Q 30 15 45 40 Q 40 55 50 80 Z"
               fill="#059669"
@@ -202,27 +239,38 @@ export function AccessoriesRenderer({
             <circle cx="72" cy="40" r="2.5" fill="#181a20" opacity="0.6" />
           </svg>
 
-          {/* Terracotta Balinese Planter */}
-          <div className="w-12 h-10 bg-gradient-to-b from-amber-700 via-amber-800 to-amber-950 rounded-b-xl border-t-2 border-amber-600 shadow-xl flex items-center justify-center">
+          {/* Terracotta Balinese Planter (Rests flush on desk wood) */}
+          <div className="w-12 h-9 bg-gradient-to-b from-amber-700 via-amber-800 to-amber-950 rounded-b-xl border-t-2 border-amber-600 shadow-xl flex items-center justify-center">
             <div className="w-8 h-1 bg-amber-900/60 rounded-full" />
           </div>
           <div className="w-14 h-1.5 bg-amber-900 rounded-full shadow-md" />
-        </div>
+        </motion.div>
       ) : (
         /* Dotted Hotspot: + Place a Plant! */
         <button
           onClick={() => onSelectCategory?.("bali-lifestyle")}
-          className="absolute -top-[55px] -right-10 pointer-events-auto flex items-center gap-1 px-2 py-1 rounded-full bg-neutral-900/90 border border-dashed border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-500/10 text-[9px] text-emerald-400 transition-all shadow-md group"
+          className="absolute bottom-2 right-4 pointer-events-auto flex items-center gap-1 px-2 py-1 rounded-full bg-neutral-900/90 border border-dashed border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-500/10 text-[9px] text-emerald-400 transition-all shadow-md group"
           title="Place a tropical plant on desk"
         >
           <Plus className="w-3 h-3 group-hover:rotate-90 transition-transform" />
-          <span>Place a Plant!</span>
+          <span>Place Plant</span>
         </button>
       )}
 
-      {/* 5. Nespresso Machine & Coffee (Right Desk Surface) */}
+      {/* 5. Nespresso Machine & Coffee (Right Desk Surface • Draggable) */}
       {coffeeId === "lifestyle-coffee-nespresso" ? (
-        <div className="absolute -top-[65px] right-14 flex items-end gap-2 z-10 pointer-events-none">
+        <motion.div
+          drag="x"
+          dragConstraints={{ left: -40, right: 35 }}
+          dragElastic={0.06}
+          dragMomentum={false}
+          onPointerDown={(e) => e.stopPropagation()}
+          className="absolute bottom-0 right-16 flex items-end gap-2 z-15 pointer-events-auto cursor-grab active:cursor-grabbing group/coffee"
+          title="Drag coffee along desk"
+        >
+          <div className="absolute -top-6 opacity-0 group-hover/coffee:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+            ☕ Slide Coffee
+          </div>
           {/* Nespresso Machine */}
           <div className="w-10 h-18 rounded-t-lg bg-neutral-900 border border-neutral-700 shadow-xl flex flex-col items-center justify-between p-1">
             <div className="w-6 h-1.5 bg-gradient-to-r from-slate-400 via-white to-slate-400 rounded-full shadow-sm" />
@@ -246,7 +294,7 @@ export function AccessoriesRenderer({
             </div>
             <div className="w-7 h-1 bg-stone-300 rounded-full shadow-xs" />
           </div>
-        </div>
+        </motion.div>
       ) : null}
     </div>
   );
