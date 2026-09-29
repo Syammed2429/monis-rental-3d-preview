@@ -19,7 +19,7 @@ Instead of scrolling through a catalog spreadsheet, digital nomads can visually 
 - **Coding Challenge**: [Desent Solutions Coding Test 2](https://www.desent.io/coding-test-2) (`monis.rent`)
 - **Email**: [kerry.blig12@gmail.com](mailto:kerry.blig12@gmail.com)
 - **WhatsApp**: [+62 816-3212-9228](https://wa.me/6281632129228)
-- **GitHub**: [@mmedini2129](https://github.com/mmedini2129)
+- **GitHub**: [@syammed2429](https://github.com/syammed2429)
 - **Architecture Highlights**: Next.js 16 React Server Components (RSC) split, Tailwind CSS v4, Zustand store, interactive 2.5D/3D vector canvas with physics spring elevations, Web Audio synthesizers, and WCAG 2.1 AA accessibility.
 
 ---
