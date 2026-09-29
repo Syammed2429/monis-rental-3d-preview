@@ -1,11 +1,13 @@
 # 🌴 monis.rent — Interactive Bali Workspace Designer
 
-[![CI](https://github.com/desent-solutions/decent-agy/actions/workflows/ci.yml/badge.svg)](https://github.com/desent-solutions/decent-agy/actions/workflows/ci.yml)
+[![Live Demo](https://img.shields.io/badge/Live_Demo-monis--rental--3d--preview.vercel.app-000000?style=for-the-badge&logo=vercel&logoColor=white)](https://monis-rental-3d-preview.vercel.app/)
 [![Next.js 16](https://img.shields.io/badge/Next.js-16.3.6-black?logo=next.js)](https://nextjs.org/)
 [![React 19](https://img.shields.io/badge/React-19.2.8-blue?logo=react)](https://react.dev/)
 [![TypeScript 5](https://img.shields.io/badge/TypeScript-5-blue?logo=typescript)](https://www.typescriptlang.org/)
 [![Tailwind CSS v4](https://img.shields.io/badge/Tailwind_CSS-v4-38bdf8?logo=tailwindcss)](https://tailwindcss.com/)
-[![Tests](https://img.shields.io/badge/Tests-18%20Passing-success)](https://nodejs.org/)
+[![Tests](https://img.shields.io/badge/Tests-20%20Passing-success)](https://nodejs.org/)
+
+> 🚀 **Live Demo**: [https://monis-rental-3d-preview.vercel.app](https://monis-rental-3d-preview.vercel.app/)
 
 An interactive, visual workspace designer built for **[monis.rent](https://monis.rent)** — the premier remote work equipment rental service for digital nomads, software engineers, and startups in Bali (Canggu, Pererenan, Ubud, Seminyak, and Uluwatu).
 
@@ -17,6 +19,8 @@ Instead of scrolling through a catalog spreadsheet, digital nomads can visually 
 
 - **Developer**: **Dada Khalandar**
 - **Coding Challenge**: [Desent Solutions Coding Test 2](https://www.desent.io/coding-test-2) (`monis.rent`)
+- **Live Application**: [https://monis-rental-3d-preview.vercel.app/](https://monis-rental-3d-preview.vercel.app/)
+- **GitHub Repository**: [https://github.com/Syammed2429/monis-rental-3d-preview](https://github.com/Syammed2429/monis-rental-3d-preview)
 - **Email**: [kerry.blig12@gmail.com](mailto:kerry.blig12@gmail.com)
 - **WhatsApp**: [+62 816-3212-9228](https://wa.me/6281632129228)
 - **GitHub**: [@syammed2429](https://github.com/syammed2429)
@@ -51,7 +55,7 @@ Instead of scrolling through a catalog spreadsheet, digital nomads can visually 
 | **Visual Live Preview**           | High-fidelity interactive vector canvas with smooth motorized desk height animation (sitting 74cm vs standing 108cm), telescoping hydraulic legs, customizable finishes, active monitor wallpapers/code editors, and lamp light beams.                                              | ✅ Complete |
 | **Summary / Checkout View**       | Full modal with itemized hardware breakdown, duration slider (1-24 weeks) with progressive nomad discounts, Bali delivery zone picker, address validation, and instant WhatsApp booking link with reference ID.                                                                     | ✅ Complete |
 | **Next.js & Tailwind CSS**        | Next.js 16 + Tailwind CSS v4 + TypeScript.                                                                                                                                                                                                                                          | ✅ Complete |
-| **Public Deployment**             | Optimized for zero-error Vercel deployment with offline-safe font stacks and static routes.                                                                                                                                                                                         | ✅ Complete |
+| **Public Deployment**             | Live on Vercel: [https://monis-rental-3d-preview.vercel.app/](https://monis-rental-3d-preview.vercel.app/) (optimized with offline-safe font stacks and static routes).                                         | ✅ Complete |
 | **GitHub Collaborator**           | Ready for `desent-bot` invitation with Read access.                                                                                                                                                                                                                                 | ✅ Complete |
 
 ---
