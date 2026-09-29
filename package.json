@@ -2,6 +2,12 @@
   "name": "decent-agy",
   "version": "0.1.0",
   "private": true,
+  "description": "Interactive Bali Workspace Designer for monis.rent — Desent Solutions Coding Challenge 2",
+  "author": {
+    "name": "Dada Khalandar",
+    "email": "kerry.blig12@gmail.com",
+    "url": "https://github.com/mmedini2129"
+  },
   "scripts": {
     "dev": "next dev",
     "build": "next build --webpack",
