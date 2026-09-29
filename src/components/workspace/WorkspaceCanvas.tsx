@@ -51,6 +51,10 @@ export function WorkspaceCanvas({
   const [isViewLocked, setIsViewLocked] = useState<boolean>(false);
   const isStanding = config.deskHeightState === "standing";
   const currentHeight = config.deskHeightCm || (isStanding ? 108 : 74);
+  const heightRatio = Math.max(0, Math.min(1, (currentHeight - 70) / (118 - 70)));
+  // Smoothly zoom out in standing mode so the elevated desk, monitor, and light bar fit comfortably in view
+  const standingScaleFactor = 1 - heightRatio * 0.14;
+  const standingYOffset = heightRatio * 20;
 
   // 3D Camera Orbit & Rotation State
   const [rotY, setRotY] = useState<number>(0); // Horizontal orbit angle: -36deg to +36deg
@@ -479,21 +483,26 @@ export function WorkspaceCanvas({
             transformStyle: "preserve-3d",
             rotateX: rotX,
             rotateY: rotY,
-            scale: stageScale * zoomLevel,
+            scale: stageScale * zoomLevel * standingScaleFactor,
+            y: standingYOffset,
           }}
           animate={
             isDragging
-              ? undefined
+              ? {
+                  scale: stageScale * zoomLevel * standingScaleFactor,
+                  y: standingYOffset,
+                }
               : {
                   rotateX: rotX,
                   rotateY: rotY,
-                  scale: stageScale * zoomLevel,
+                  scale: stageScale * zoomLevel * standingScaleFactor,
+                  y: standingYOffset,
                 }
           }
           transition={{
             type: "spring",
-            stiffness: 160,
-            damping: 24,
+            stiffness: 140,
+            damping: 22,
             mass: 0.8,
           }}
           className="relative shrink-0 select-none pointer-events-auto"
