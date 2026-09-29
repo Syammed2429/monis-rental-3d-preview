@@ -22,42 +22,63 @@ export function DeskRenderer({
   onClick,
   children,
 }: DeskRendererProps) {
-  // Tabletop & leg styling
+  // Tabletop & hydraulic leg styling
   const finishStyles: Record<
     DeskFinish,
-    { top: string; edge: string; bevel: string; legColor: string; innerLegColor: string }
+    {
+      top: string;
+      edge: string;
+      bevel: string;
+      frameColor: string;
+      innerPiston: string;
+      outerColumn: string;
+      collar: string;
+      foot: string;
+    }
   > = {
     "natural-bamboo": {
       top: "bg-gradient-to-b from-[#e3c48f] via-[#d5b074] to-[#c79e60]",
       edge: "bg-[#ad8348]",
       bevel: "border-amber-200/40",
-      legColor: "bg-neutral-800",
-      innerLegColor:
-        "bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 border-x border-white/10",
+      frameColor: "bg-neutral-900 border-neutral-700/60",
+      innerPiston:
+        "bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 border-x border-neutral-600/50",
+      outerColumn: "bg-neutral-850 bg-neutral-900 border-x border-neutral-700/60 shadow-xl",
+      collar: "bg-neutral-950 border border-neutral-700/80",
+      foot: "bg-neutral-900 border-t border-neutral-700/80",
     },
     walnut: {
       top: "bg-gradient-to-b from-[#5c4033] via-[#4a3328] to-[#39241b]",
       edge: "bg-[#291710]",
       bevel: "border-amber-900/30",
-      legColor: "bg-zinc-900",
-      innerLegColor:
-        "bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 border-x border-white/10",
+      frameColor: "bg-zinc-950 border-zinc-700/60",
+      innerPiston:
+        "bg-gradient-to-r from-zinc-800 via-zinc-700 to-zinc-800 border-x border-zinc-600/50",
+      outerColumn: "bg-zinc-900 border-x border-zinc-700/60 shadow-xl",
+      collar: "bg-neutral-950 border border-zinc-700/80",
+      foot: "bg-zinc-900 border-t border-zinc-700/80",
     },
     "matte-black": {
       top: "bg-gradient-to-b from-[#2a2e39] via-[#21242d] to-[#181a20]",
       edge: "bg-[#111216]",
       bevel: "border-white/10",
-      legColor: "bg-neutral-900",
-      innerLegColor:
-        "bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 border-x border-white/10",
+      frameColor: "bg-neutral-950 border-white/10",
+      innerPiston:
+        "bg-gradient-to-r from-neutral-800 via-neutral-700 to-neutral-800 border-x border-white/15",
+      outerColumn: "bg-neutral-900 border-x border-white/10 shadow-xl",
+      collar: "bg-neutral-950 border border-neutral-700/80",
+      foot: "bg-neutral-900 border-t border-white/10",
     },
     "minimal-white": {
       top: "bg-gradient-to-b from-[#f8fafc] via-[#f1f5f9] to-[#e2e8f0]",
       edge: "bg-[#cbd5e1]",
       bevel: "border-white/80",
-      legColor: "bg-slate-200",
-      innerLegColor:
+      frameColor: "bg-slate-300 border-slate-400",
+      innerPiston:
         "bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 border-x border-slate-300",
+      outerColumn: "bg-slate-200 border-x border-slate-300 shadow-lg",
+      collar: "bg-slate-400 border border-slate-500",
+      foot: "bg-slate-200 border-t border-slate-300",
     },
   };
 
@@ -68,77 +89,14 @@ export function DeskRenderer({
   const heightRatio = Math.max(0, Math.min(1, (currentHeight - 70) / (118 - 70)));
   const elevationY = -(heightRatio * 52);
 
-  // Upper telescoping segment height: starts at 72px (h-18) and grows as the desk rises,
-  // so it always stays plugged into the top of the stationary lower column.
-  const telescopingLegHeight = 72 + Math.abs(elevationY);
-
   return (
     <div
       className="pointer-events-none absolute inset-x-0 bottom-6 flex flex-col items-center select-none"
       style={{ transformStyle: "preserve-3d" }}
     >
-      {/* 1. Stationary Lower Base Columns & Heavy-Duty T-Feet (Firmly pinned to floor) */}
-      <div
-        className="pointer-events-none absolute bottom-0 z-20 h-34.5 w-115 max-w-115"
-        style={{ transform: "translateZ(0px)", transformStyle: "preserve-3d" }}
-      >
-        {/* Left Stationary Column & T-Foot (Centerline: left 80px) */}
-        <div
-          className="pointer-events-none absolute bottom-0 left-20 flex -translate-x-1/2 flex-col items-center"
-          style={{ transform: "translateZ(0px)" }}
-        >
-          {/* Bushing Collar at top of lower column */}
-          <div className="flex h-2.5 w-12 items-center justify-center rounded-t-sm border border-white/20 bg-neutral-950 shadow-md">
-            <div className="h-1 w-9 rounded-xs bg-black/90" />
-          </div>
-
-          {/* Lower Outer Stationary Column */}
-          <div
-            className={`h-28 w-11 ${currentFinish.legColor} relative overflow-hidden border-x border-white/10 shadow-xl transition-colors duration-500`}
-          >
-            {/* Subtle inner shadow indicating hollow column sleeve */}
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-3 bg-linear-to-b from-black/60 to-transparent" />
-            <div className="pointer-events-none absolute top-0 bottom-0 left-1 w-0.5 bg-white/10" />
-          </div>
-
-          {/* Heavy-Duty T-Foot resting flat on the floor */}
-          <div className="flex h-4 w-24 items-center justify-between rounded-lg border-t border-white/20 bg-neutral-900 px-2 shadow-2xl">
-            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
-            <div className="h-1 w-8 rounded-full bg-neutral-800" />
-            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
-          </div>
-        </div>
-
-        {/* Right Stationary Column & T-Foot (Centerline: right 80px) */}
-        <div
-          className="pointer-events-none absolute right-20 bottom-0 flex translate-x-1/2 flex-col items-center"
-          style={{ transform: "translateZ(0px)" }}
-        >
-          {/* Bushing Collar at top of lower column */}
-          <div className="flex h-2.5 w-12 items-center justify-center rounded-t-sm border border-white/20 bg-neutral-950 shadow-md">
-            <div className="h-1 w-9 rounded-xs bg-black/90" />
-          </div>
-
-          {/* Lower Outer Stationary Column */}
-          <div
-            className={`h-28 w-11 ${currentFinish.legColor} relative overflow-hidden border-x border-white/10 shadow-xl transition-colors duration-500`}
-          >
-            <div className="pointer-events-none absolute inset-x-0 top-0 h-3 bg-linear-to-b from-black/60 to-transparent" />
-            <div className="pointer-events-none absolute top-0 bottom-0 left-1 w-0.5 bg-white/10" />
-          </div>
-
-          {/* Heavy-Duty T-Foot resting flat on the floor */}
-          <div className="flex h-4 w-24 items-center justify-between rounded-lg border-t border-white/20 bg-neutral-900 px-2 shadow-2xl">
-            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
-            <div className="h-1 w-8 rounded-full bg-neutral-800" />
-            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
-          </div>
-        </div>
-      </div>
-
-      {/* 2. Elevating Tabletop & Telescoping Upper Segments (Rises smoothly from lower base) */}
+      {/* 1. Elevating Assembly: Tabletop + Upper Hydraulic Piston Columns (z-10, slides inside lower sleeve) */}
       <motion.div
-        className="absolute bottom-34.5 z-20 flex w-115 max-w-115 flex-col items-center"
+        className="absolute bottom-34.5 z-10 flex w-115 max-w-115 flex-col items-center"
         style={{ transformStyle: "preserve-3d", transform: "translateZ(0px)" }}
         animate={{ y: elevationY }}
         transition={{ type: "spring", stiffness: 140, damping: 22 }}
@@ -183,7 +141,9 @@ export function DeskRenderer({
           />
 
           {/* Under-desk Steel Frame Crossbar */}
-          <div className="mx-auto h-3 w-[82%] rounded-b-md bg-neutral-900/90 shadow-inner" />
+          <div
+            className={`mx-auto h-3 w-[84%] rounded-b-md ${currentFinish.frameColor} shadow-inner`}
+          />
 
           {/* Motorized Height Controller Display (Right Hand Side) */}
           <div
@@ -232,35 +192,126 @@ export function DeskRenderer({
           </div>
         </div>
 
-        {/* Upper Telescoping Steel Leg Segments (Hanging from under-desk frame, sliding inside lower base columns) */}
+        {/* Upper Hydraulic Actuator Columns (Anchored to frame, piston slides inside lower sleeve) */}
         <div
-          className="pointer-events-none absolute inset-x-0 top-[13.5px] z-5"
+          className="pointer-events-none absolute inset-x-0 top-14 z-10"
           style={{ transform: "translateZ(0px)" }}
         >
-          {/* Left Upper Telescoping Leg (Centerline: left 80px) */}
-          <div className="absolute top-0 left-20 -translate-x-1/2">
+          {/* Left Upper Hydraulic Actuator Assembly (Centerline: left 80px) */}
+          <div className="absolute top-0 left-20 flex -translate-x-1/2 flex-col items-center">
+            {/* Upper Mounting Flange / Motor Housing Bracket */}
             <div
-              className={`w-9 ${currentFinish.innerLegColor} relative shadow-md transition-colors duration-500`}
-              style={{ height: telescopingLegHeight }}
+              className={`h-2.5 w-11 rounded-b-xs ${currentFinish.frameColor} flex items-center justify-between border-x border-b border-white/10 px-1 shadow-md`}
             >
+              <div className="h-1 w-1 rounded-full bg-white/20" />
+              <div className="h-0.5 w-5 rounded-full bg-white/10" />
+              <div className="h-1 w-1 rounded-full bg-white/20" />
+            </div>
+
+            {/* Telescoping Hydraulic Piston Rod */}
+            <div
+              className={`h-32 w-9 ${currentFinish.innerPiston} relative shadow-md transition-colors duration-500`}
+            >
+              {/* Center specular cylinder highlight */}
+              <div className="absolute inset-y-0 left-1/2 w-2.5 -translate-x-1/2 bg-white/10 blur-[0.5px]" />
               {/* Vertical machining guide stripe */}
-              <div className="absolute inset-y-0 left-1 w-0.5 bg-white/10" />
-              <div className="absolute inset-y-0 right-1 w-0.5 bg-black/20" />
+              <div className="absolute inset-y-0 left-1 w-0.5 bg-white/15" />
+              <div className="absolute inset-y-0 right-1 w-0.5 bg-black/30" />
             </div>
           </div>
 
-          {/* Right Upper Telescoping Leg (Centerline: right 80px) */}
-          <div className="absolute top-0 right-20 translate-x-1/2">
+          {/* Right Upper Hydraulic Actuator Assembly (Centerline: right 80px) */}
+          <div className="absolute top-0 right-20 flex translate-x-1/2 flex-col items-center">
+            {/* Upper Mounting Flange / Motor Housing Bracket */}
             <div
-              className={`w-9 ${currentFinish.innerLegColor} relative shadow-md transition-colors duration-500`}
-              style={{ height: telescopingLegHeight }}
+              className={`h-2.5 w-11 rounded-b-xs ${currentFinish.frameColor} flex items-center justify-between border-x border-b border-white/10 px-1 shadow-md`}
             >
-              <div className="absolute inset-y-0 left-1 w-0.5 bg-white/10" />
-              <div className="absolute inset-y-0 right-1 w-0.5 bg-black/20" />
+              <div className="h-1 w-1 rounded-full bg-white/20" />
+              <div className="h-0.5 w-5 rounded-full bg-white/10" />
+              <div className="h-1 w-1 rounded-full bg-white/20" />
+            </div>
+
+            {/* Telescoping Hydraulic Piston Rod */}
+            <div
+              className={`h-32 w-9 ${currentFinish.innerPiston} relative shadow-md transition-colors duration-500`}
+            >
+              <div className="absolute inset-y-0 left-1/2 w-2.5 -translate-x-1/2 bg-white/10 blur-[0.5px]" />
+              <div className="absolute inset-y-0 left-1 w-0.5 bg-white/15" />
+              <div className="absolute inset-y-0 right-1 w-0.5 bg-black/30" />
             </div>
           </div>
         </div>
       </motion.div>
+
+      {/* 2. Stationary Lower Base Columns & Heavy-Duty T-Feet (z-20, in FRONT of upper piston) */}
+      <div
+        className="pointer-events-none absolute bottom-0 z-20 h-34.5 w-115 max-w-115"
+        style={{ transform: "translateZ(0px)", transformStyle: "preserve-3d" }}
+      >
+        {/* Left Stationary Column & T-Foot (Centerline: left 80px) */}
+        <div
+          className="pointer-events-none absolute bottom-0 left-20 flex -translate-x-1/2 flex-col items-center"
+          style={{ transform: "translateZ(0px)" }}
+        >
+          {/* Engineered Bushing Collar with Rubber Wiper Seal (Upper piston enters here) */}
+          <div
+            className={`flex h-3 w-11.5 items-center justify-center rounded-t-sm ${currentFinish.collar} shadow-md`}
+          >
+            <div className="h-1 w-9 rounded-xs border-b border-white/10 bg-black/95 shadow-inner" />
+          </div>
+
+          {/* Lower Outer Stationary Column Sleeve */}
+          <div
+            className={`h-27.5 w-11 ${currentFinish.outerColumn} relative overflow-hidden transition-colors duration-500`}
+          >
+            {/* Hollow cylinder depth shadow inside collar */}
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-4 bg-linear-to-b from-black/80 via-black/40 to-transparent" />
+            {/* Outer sleeve highlights */}
+            <div className="pointer-events-none absolute top-0 bottom-0 left-1 w-0.5 bg-white/10" />
+            <div className="pointer-events-none absolute top-0 right-1 bottom-0 w-0.5 bg-black/30" />
+          </div>
+
+          {/* Heavy-Duty Welded T-Foot resting flat on the floor */}
+          <div
+            className={`flex h-4 w-24 items-center justify-between rounded-lg ${currentFinish.foot} px-2 shadow-2xl`}
+          >
+            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
+            <div className="h-1 w-8 rounded-full bg-neutral-800" />
+            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
+          </div>
+        </div>
+
+        {/* Right Stationary Column & T-Foot (Centerline: right 80px) */}
+        <div
+          className="pointer-events-none absolute right-20 bottom-0 flex translate-x-1/2 flex-col items-center"
+          style={{ transform: "translateZ(0px)" }}
+        >
+          {/* Engineered Bushing Collar with Rubber Wiper Seal */}
+          <div
+            className={`flex h-3 w-11.5 items-center justify-center rounded-t-sm ${currentFinish.collar} shadow-md`}
+          >
+            <div className="h-1 w-9 rounded-xs border-b border-white/10 bg-black/95 shadow-inner" />
+          </div>
+
+          {/* Lower Outer Stationary Column Sleeve */}
+          <div
+            className={`h-27.5 w-11 ${currentFinish.outerColumn} relative overflow-hidden transition-colors duration-500`}
+          >
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-4 bg-linear-to-b from-black/80 via-black/40 to-transparent" />
+            <div className="pointer-events-none absolute top-0 bottom-0 left-1 w-0.5 bg-white/10" />
+            <div className="pointer-events-none absolute top-0 right-1 bottom-0 w-0.5 bg-black/30" />
+          </div>
+
+          {/* Heavy-Duty Welded T-Foot resting flat on the floor */}
+          <div
+            className={`flex h-4 w-24 items-center justify-between rounded-lg ${currentFinish.foot} px-2 shadow-2xl`}
+          >
+            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
+            <div className="h-1 w-8 rounded-full bg-neutral-800" />
+            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
