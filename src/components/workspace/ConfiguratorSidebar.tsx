@@ -189,47 +189,47 @@ export function ConfiguratorSidebar({
             </span>
           </div>
 
-          {/* Horizontally Scrollable Touch-Friendly Tab Bar */}
-          <div className="overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none [&::-webkit-scrollbar]:hidden">
-            <TabsList className="w-full flex sm:grid sm:grid-cols-6 min-w-[480px] sm:min-w-0 h-auto p-1 bg-neutral-950 border border-white/10 rounded-xl gap-1">
+          {/* Horizontally Scrollable Touch-Friendly Tab Bar using shadcn ScrollArea */}
+          <ScrollArea orientation="horizontal" className="w-full pb-1">
+            <TabsList className="inline-flex w-max min-w-full items-center p-1 bg-neutral-950/90 border border-white/10 rounded-xl gap-1 h-auto">
               <TabsTrigger
                 value="desks"
-                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
               >
                 Desks
               </TabsTrigger>
               <TabsTrigger
                 value="chairs"
-                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
               >
                 Chairs
               </TabsTrigger>
               <TabsTrigger
                 value="monitors"
-                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
               >
                 Monitors
               </TabsTrigger>
               <TabsTrigger
                 value="peripherals"
-                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
               >
                 Keyboards
               </TabsTrigger>
               <TabsTrigger
                 value="lighting"
-                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
               >
                 Lighting
               </TabsTrigger>
               <TabsTrigger
                 value="bali-lifestyle"
-                className="flex-1 text-xs py-2 data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 font-medium"
+                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
               >
                 Bali Extras
               </TabsTrigger>
             </TabsList>
-          </div>
+          </ScrollArea>
 
           {/* Dot Indicators — tap any dot to jump to that tab */}
           {(() => {
