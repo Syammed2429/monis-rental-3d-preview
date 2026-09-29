@@ -40,6 +40,9 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark h-full font-sans antialiased">
+         <head>
+        <script defer src="https://cloud.umami.is/script.js" data-website-id="6871c814-bcda-4b12-bdd4-b9758738b908"></script>
+      </head>
       <body className="flex min-h-full flex-col bg-[#0c0e14] text-neutral-100">
         {children}
         <Analytics />
