@@ -77,7 +77,11 @@ export default function Home() {
           return { ...prev, peripheralsId: itemId };
         }
         if (category === "lighting" && itemId.startsWith("light-")) {
-          return { ...prev, lightingId: itemId, lampPowered: true };
+          return {
+            ...prev,
+            lightingId: itemId,
+            lampPowered: prev.lightingId === itemId ? prev.lampPowered : true,
+          };
         }
         // Lifestyle items: activate if not already
         if (itemId === "lifestyle-plant-monstera") {

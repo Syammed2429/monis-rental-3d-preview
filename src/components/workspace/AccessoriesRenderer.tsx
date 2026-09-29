@@ -164,10 +164,10 @@ export function AccessoriesRenderer({
             onSelectItem ? onSelectItem("lighting", lightingId) : onSelectCategory?.("lighting");
           }}
           className="absolute bottom-0 left-22 pointer-events-auto cursor-pointer group/lamp flex flex-col items-center z-35 cursor-grab active:cursor-grabbing"
-          title={`Slide along desk • Click to toggle & select (${lampPowered ? "ON" : "OFF"})`}
+          title={`Slide along desk • Click to turn ${lampPowered ? "OFF" : "ON"}`}
         >
-          <div className="absolute -top-6 opacity-0 group-hover/lamp:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-            💡 Slide Lamp • Click to Toggle & Select
+          <div className="absolute -top-6 opacity-0 group-hover/lamp:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-50">
+            💡 Slide Lamp • Click to Turn {lampPowered ? "OFF" : "ON"}
           </div>
           {/* Light Fixture Horizontal Bar */}
           <div className="w-22 h-2 bg-slate-100 rounded-full border border-slate-300 shadow-md relative">
@@ -210,8 +210,11 @@ export function AccessoriesRenderer({
             onSelectItem ? onSelectItem("lighting", "light-screenbar") : onSelectCategory?.("lighting");
           }}
           className="absolute -top-[195px] left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-35"
-          title={`Click to toggle ScreenBar & select (${lampPowered ? "ON" : "OFF"})`}
+          title={`Click to turn ScreenBar ${lampPowered ? "OFF" : "ON"}`}
         >
+          <div className="absolute -top-6 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-50">
+            💡 ScreenBar • Click to Turn {lampPowered ? "OFF" : "ON"}
+          </div>
           {/* ScreenBar Clamped atop Monitor Bezel */}
           <div className="w-56 h-2 bg-neutral-900 rounded-full border border-neutral-700 shadow-lg relative flex items-center justify-center">
             <div

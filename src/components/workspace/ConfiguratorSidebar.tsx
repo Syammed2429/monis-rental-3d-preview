@@ -8,7 +8,7 @@ import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/com
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, Plus, SlidersHorizontal } from "lucide-react";
+import { Check, Plus, SlidersHorizontal, Lightbulb } from "lucide-react";
 import { sound } from "@/lib/audio";
 
 interface ConfiguratorSidebarProps {
@@ -797,6 +797,45 @@ export function ConfiguratorSidebar({
                         </span>
                       ))}
                     </div>
+
+                    {/* Interactive Lamp Power Toggle Switch */}
+                    {isSelected && (
+                      <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+                        <span className="text-xs text-neutral-300 flex items-center gap-1.5 font-medium">
+                          <Lightbulb
+                            className={`w-3.5 h-3.5 transition-colors ${
+                              config.lampPowered ? "text-amber-400 fill-amber-400/30" : "text-neutral-500"
+                            }`}
+                          />
+                          Lamp Power:
+                        </span>
+                        <Button
+                          type="button"
+                          size="sm"
+                          variant="outline"
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            sound.playLamp();
+                            onChangeConfig((prev) => ({
+                              ...prev,
+                              lampPowered: !prev.lampPowered,
+                            }));
+                          }}
+                          className={`text-xs h-7 px-3 rounded-full font-medium transition-all ${
+                            config.lampPowered
+                              ? "bg-amber-400/20 text-amber-300 border-amber-400/50 hover:bg-amber-400/30 shadow-[0_0_12px_rgba(251,191,36,0.25)]"
+                              : "bg-neutral-900 border-white/15 text-neutral-400 hover:text-white"
+                          }`}
+                        >
+                          <span
+                            className={`w-2 h-2 rounded-full mr-1.5 transition-all ${
+                              config.lampPowered ? "bg-amber-400 shadow-[0_0_6px_#fbbf24]" : "bg-neutral-600"
+                            }`}
+                          />
+                          {config.lampPowered ? "ON (Turn Off)" : "OFF (Turn On)"}
+                        </Button>
+                      </div>
+                    )}
 
                     <Button
                       size="sm"

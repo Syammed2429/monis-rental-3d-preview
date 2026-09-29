@@ -27,6 +27,7 @@ import {
   RotateCcw,
   RotateCw,
   Eye,
+  Lightbulb,
 } from "lucide-react";
 import { sound } from "@/lib/audio";
 
@@ -421,6 +422,21 @@ export function WorkspaceCanvas({
           >
             <Moon className="w-3.5 h-3.5" />
           </button>
+
+          {/* Quick Desk Light Power Switch (if lighting equipped) */}
+          {config.lightingId && (
+            <button
+              onClick={handleToggleLamp}
+              className={`p-1.5 rounded-full transition-all ${
+                config.lampPowered
+                  ? "bg-amber-400/25 text-amber-300 ring-1 ring-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.35)]"
+                  : "text-neutral-500 hover:text-neutral-300"
+              }`}
+              title={config.lampPowered ? "Lamp is ON • Click to turn off" : "Lamp is OFF • Click to turn on"}
+            >
+              <Lightbulb className="w-3.5 h-3.5" />
+            </button>
+          )}
 
           <div className="w-[1px] h-3.5 bg-white/10 mx-0.5" />
 
