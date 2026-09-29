@@ -195,7 +195,7 @@ Designed on monis.rent`;
               </div>
               <div className="flex-between">
                 <span className="text-neutral-400 text-[10px] font-sans">Guest</span>
-                <span className="text-white truncate max-w-[160px]">{submittedData?.fullName}</span>
+                <span className="text-white truncate max-w-40">{submittedData?.fullName}</span>
               </div>
               <div className="flex-between">
                 <span className="text-neutral-400 text-[10px] font-sans">WhatsApp</span>
@@ -285,11 +285,6 @@ Designed on monis.rent`;
                     className="flex-between p-2 rounded-xl bg-neutral-950/60 border border-white/5 text-xs gap-2"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      {item.image ? (
-                        <div className="w-9 h-9 rounded-lg bg-neutral-900 border border-white/10 shrink-0 overflow-hidden flex-center p-0.5">
-                          <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
-                        </div>
-                      ) : null}
                       <div className="truncate mr-1">
                         <div className="text-white font-medium truncate">{item.name}</div>
                         <div className="text-neutral-500 text-[10px] font-mono">{item.brand}</div>
@@ -369,7 +364,7 @@ Designed on monis.rent`;
                           align="start"
                           side="bottom"
                           sideOffset={6}
-                          className="bg-neutral-950/95 backdrop-blur-xl border border-white/15 text-white min-w-[320px] max-w-[380px] p-1.5 font-sans shadow-2xl rounded-2xl"
+                          className="bg-neutral-950/95 backdrop-blur-xl border border-white/15 text-white min-w-[320px] max-w-95 p-1.5 font-sans shadow-2xl rounded-2xl"
                         >
                           {BALI_DELIVERY_AREAS.map((a) => (
                             <SelectItem key={a.id} value={a.id} className="text-xs py-2 px-2.5 rounded-xl cursor-pointer">

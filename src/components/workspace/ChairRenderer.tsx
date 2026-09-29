@@ -114,7 +114,7 @@ export function ChairRenderer({ chairId, color, isStanding, onClick }: ChairRend
           </div>
 
           {/* Gas Lift Hydraulic Cylinder */}
-          <div className="w-3 h-8 bg-gradient-to-r from-neutral-700 via-neutral-400 to-neutral-800 shadow-inner" />
+          <div className="w-3 h-8 bg-linear-to-r from-neutral-700 via-neutral-400 to-neutral-800 shadow-inner" />
 
           {/* 5-Star Spider Caster Base */}
           <div className="relative w-36 h-5 flex justify-center items-center">
@@ -171,7 +171,7 @@ export function ChairRenderer({ chairId, color, isStanding, onClick }: ChairRend
             />
           </div>
 
-          <div className="w-3 h-8 bg-gradient-to-r from-slate-400 via-slate-100 to-slate-500 shadow-md" />
+          <div className="w-3 h-8 bg-linear-to-r from-slate-400 via-slate-100 to-slate-500 shadow-md" />
 
           <div className="relative w-36 h-5 flex justify-center items-center">
             <div className="w-5 h-5 rounded-full bg-slate-400 border border-white shadow-sm relative z-10" />
@@ -188,13 +188,13 @@ export function ChairRenderer({ chairId, color, isStanding, onClick }: ChairRend
       {chairId === "chair-executive-leather" && (
         <div className="relative flex flex-col items-center">
           <div
-            className={`w-18 h-7 rounded-lg bg-gradient-to-b ${activeColors.leather} border-t border-white/20 shadow-md relative z-20 flex items-center justify-center`}
+            className={`w-18 h-7 rounded-lg bg-linear-to-b ${activeColors.leather} border-t border-white/20 shadow-md relative z-20 flex items-center justify-center`}
           >
             <div className="w-12 h-0.5 bg-black/30 rounded-full" />
           </div>
 
           <div
-            className={`w-32 h-32 -mt-1 rounded-xl bg-gradient-to-b ${activeColors.leather} border border-white/10 shadow-xl relative flex flex-col items-center justify-around py-2`}
+            className={`w-32 h-32 -mt-1 rounded-xl bg-linear-to-b ${activeColors.leather} border border-white/10 shadow-xl relative flex flex-col items-center justify-around py-2`}
           >
             <div className="w-22 h-5 rounded-md bg-black/20 border-t border-white/10" />
             <div className="w-24 h-5 rounded-md bg-black/20 border-t border-white/10" />
@@ -202,23 +202,23 @@ export function ChairRenderer({ chairId, color, isStanding, onClick }: ChairRend
 
             <div className="absolute top-10 -left-4 w-4 h-16 bg-neutral-900 rounded-lg border border-white/10 shadow-md">
               <div
-                className={`w-5 -ml-0.5 h-9 rounded-md bg-gradient-to-b ${activeColors.leather} border-t border-white/20`}
+                className={`w-5 -ml-0.5 h-9 rounded-md bg-linear-to-b ${activeColors.leather} border-t border-white/20`}
               />
             </div>
             <div className="absolute top-10 -right-4 w-4 h-16 bg-neutral-900 rounded-lg border border-white/10 shadow-md">
               <div
-                className={`w-5 -ml-0.5 h-9 rounded-md bg-gradient-to-b ${activeColors.leather} border-t border-white/20`}
+                className={`w-5 -ml-0.5 h-9 rounded-md bg-linear-to-b ${activeColors.leather} border-t border-white/20`}
               />
             </div>
           </div>
 
           <div
-            className={`w-36 h-9 -mt-2 rounded-xl bg-gradient-to-b ${activeColors.leather} border-t-2 border-white/25 shadow-xl relative z-10 flex items-center justify-center`}
+            className={`w-36 h-9 -mt-2 rounded-xl bg-linear-to-b ${activeColors.leather} border-t-2 border-white/25 shadow-xl relative z-10 flex items-center justify-center`}
           >
             <div className="w-[82%] h-5 rounded-lg bg-black/20" />
           </div>
 
-          <div className="w-3.5 h-7 bg-gradient-to-r from-neutral-600 via-neutral-300 to-neutral-700" />
+          <div className="w-3.5 h-7 bg-linear-to-r from-neutral-600 via-neutral-300 to-neutral-700" />
 
           <div className="relative w-36 h-5 flex justify-center items-center">
             <div className="w-5 h-5 rounded-full bg-slate-300 border border-white shadow-sm relative z-10" />
@@ -242,9 +242,9 @@ export function ChairRenderer({ chairId, color, isStanding, onClick }: ChairRend
             <div className="absolute -bottom-1 right-1.5 w-2.5 h-1.5 bg-neutral-700 rounded-full" />
           </div>
 
-          <div className="w-3 h-20 bg-gradient-to-b from-neutral-800 via-neutral-700 to-neutral-900 shadow-inner" />
+          <div className="w-3 h-20 bg-linear-to-b from-neutral-800 via-neutral-700 to-neutral-900 shadow-inner" />
 
-          <div className="w-26 h-8 rounded-b-full bg-gradient-to-b from-neutral-800 to-neutral-950 border-t border-white/15 shadow-xl relative flex justify-center">
+          <div className="w-26 h-8 rounded-b-full bg-linear-to-b from-neutral-800 to-neutral-950 border-t border-white/15 shadow-xl relative flex justify-center">
             <div className="w-18 h-1 bg-orange-500/80 rounded-full mt-1" />
           </div>
         </div>

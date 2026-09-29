@@ -4,7 +4,6 @@ export const PRODUCTS: ProductItem[] = [
   // --- DESKS (4 options) ---
   {
     id: "desk-dual-motor",
-    image: "/products/desk-dual-motor.jpg",
     name: "Dual-Motor Electric Standing Desk",
     brand: "Monis Pro",
     category: "desks",
@@ -25,7 +24,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "desk-bamboo-electric",
-    image: "/products/desk-bamboo-electric.jpg",
     name: "Electrical Adjustable Bamboo Desk",
     brand: "Monis Eco",
     category: "desks",
@@ -44,7 +42,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "desk-walnut-executive",
-    image: "/products/desk-walnut-executive.jpg",
     name: "Executive Walnut Sit-Stand Desk",
     brand: "Monis Executive",
     category: "desks",
@@ -63,7 +60,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "desk-compact-minimal",
-    image: "/products/desk-compact-minimal.jpg",
     name: "Mechanical Adjustable Compact Desk",
     brand: "Monis Lite",
     category: "desks",
@@ -84,7 +80,6 @@ export const PRODUCTS: ProductItem[] = [
   // --- CHAIRS (4 options) ---
   {
     id: "chair-ergonomic-mesh",
-    image: "/products/chair-ergonomic-mesh.jpg",
     name: "Monis Ergonomic 4D Mesh Chair",
     brand: "Monis Ergonomics",
     category: "chairs",
@@ -104,7 +99,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "chair-aeron-style",
-    image: "/products/chair-aeron-style.jpg",
     name: "Full-Pellicle Mesh Pro Chair",
     brand: "ErgoPro Studio",
     category: "chairs",
@@ -123,7 +117,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "chair-executive-leather",
-    image: "/products/chair-executive-leather.jpg",
     name: "Executive Comfort Lounge Chair",
     brand: "LuxeSeating",
     category: "chairs",
@@ -142,7 +135,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "chair-active-stool",
-    image: "/products/chair-active-stool.jpg",
     name: "Ergonomic Active Wobble Stool",
     brand: "MotionSeat",
     category: "chairs",
@@ -163,7 +155,6 @@ export const PRODUCTS: ProductItem[] = [
   // --- MONITORS (4 options) ---
   {
     id: "monitor-studio-display",
-    image: "/products/monitor-studio-display.jpg",
     name: "27\" 5K Apple Studio Display",
     brand: "Apple",
     category: "monitors",
@@ -177,7 +168,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "monitor-ultrawide-curved",
-    image: "/products/monitor-ultrawide-curved.jpg",
     name: "34\" WQHD Curved Monitor",
     brand: "Xiaomi Mi",
     category: "monitors",
@@ -191,7 +181,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "monitor-4k-multimedia",
-    image: "/products/monitor-4k-multimedia.jpg",
     name: "27\" 4K USB-C Multimedia Monitor",
     brand: "Redmi / Dell",
     category: "monitors",
@@ -205,7 +194,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "monitor-dual-setup",
-    image: "/products/monitor-dual-setup.jpg",
     name: "Dual 27\" Borderless Workstation",
     brand: "Monis Pro Twin",
     category: "monitors",
@@ -221,7 +209,6 @@ export const PRODUCTS: ProductItem[] = [
   // --- PERIPHERALS (3 options) ---
   {
     id: "peripherals-mx-combo",
-    image: "/products/peripherals-mx-combo.jpg",
     name: "Logitech MX Master 3S + MX Keys",
     brand: "Logitech",
     category: "peripherals",
@@ -234,7 +221,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "peripherals-apple-magic",
-    image: "/products/peripherals-apple-magic.jpg",
     name: "Apple Magic Keyboard + Magic Trackpad",
     brand: "Apple",
     category: "peripherals",
@@ -247,7 +233,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "peripherals-custom-mech",
-    image: "/products/peripherals-custom-mech.jpg",
     name: "Custom Mechanical Keyboard & Mouse",
     brand: "Keychron / Epomaker",
     category: "peripherals",
@@ -262,7 +247,6 @@ export const PRODUCTS: ProductItem[] = [
   // --- LIGHTING (3 options) ---
   {
     id: "light-smart-lamp",
-    image: "/products/light-smart-lamp.jpg",
     name: "Anglepoise Architectural Desk Lamp",
     brand: "Monis Studio",
     category: "lighting",
@@ -275,7 +259,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "light-screenbar",
-    image: "/products/light-screenbar.jpg",
     name: "ScreenBar Halo Monitor Light Bar",
     brand: "Baseus / BenQ",
     category: "lighting",
@@ -288,7 +271,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "light-xiaomi-1s",
-    image: "/products/light-xiaomi-1s.jpg",
     name: "Xiaomi Smart LED Desk Lamp 1S",
     brand: "Xiaomi",
     category: "lighting",
@@ -303,7 +285,6 @@ export const PRODUCTS: ProductItem[] = [
   // --- BALI LIFESTYLE & VILLA EXTRAS (Directly matching the concept sketch!) ---
   {
     id: "lifestyle-plant-monstera",
-    image: "/products/lifestyle-plant-monstera.jpg",
     name: "Tropical Monstera in Ceramic Pot",
     brand: "Bali Botanic",
     category: "bali-lifestyle",
@@ -316,7 +297,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "lifestyle-coffee-nespresso",
-    image: "/products/lifestyle-coffee-nespresso.jpg",
     name: "Coffee Station: Nespresso Machine",
     brand: "Nespresso",
     category: "bali-lifestyle",
@@ -329,7 +309,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "lifestyle-outdoor-surfboard",
-    image: "/products/lifestyle-outdoor-surfboard.jpg",
     name: "Outdoor Gear: Bali Wave Surfboard",
     brand: "Canggu Surf Co.",
     category: "bali-lifestyle",
@@ -342,7 +321,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "lifestyle-outdoor-scooter",
-    image: "/products/lifestyle-outdoor-scooter.jpg",
     name: "Outdoor Gear: Niu Electric Scooter",
     brand: "Niu Bali",
     category: "bali-lifestyle",
@@ -355,7 +333,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "lifestyle-relax-beanbag",
-    image: "/products/lifestyle-relax-beanbag.jpg",
     name: "Relax Zone: Waterproof Villa Bean Bag",
     brand: "Bali Lounge",
     category: "bali-lifestyle",
@@ -368,7 +345,6 @@ export const PRODUCTS: ProductItem[] = [
   },
   {
     id: "lifestyle-laptop-stand",
-    image: "/products/lifestyle-laptop-stand.jpg",
     name: "Aluminum Ergonomic Laptop Stand",
     brand: "Monis Gear",
     category: "bali-lifestyle",
@@ -384,7 +360,6 @@ export const PRODUCTS: ProductItem[] = [
 export const PRESETS: PresetSetup[] = [
   {
     id: "preset-nomad-coder",
-    image: "/products/preset-nomad-coder.jpg",
     name: "The Bali Nomad Coder",
     badge: "Most Popular",
     tagline: "The complete setup from the sketch with ultrawide display, plant, coffee, and surfboard.",
@@ -410,7 +385,6 @@ export const PRESETS: PresetSetup[] = [
   },
   {
     id: "preset-studio-creator",
-    image: "/products/preset-studio-creator.jpg",
     name: "The 5K Studio Creator",
     badge: "Ultra Premium",
     tagline: "5K Retina Apple display, walnut desk, Aeron chair, and outdoor beanbag relax zone.",
@@ -436,7 +410,6 @@ export const PRESETS: PresetSetup[] = [
   },
   {
     id: "preset-minimalist-founder",
-    image: "/products/preset-minimalist-founder.jpg",
     name: "The Minimalist Founder",
     badge: "Clean & Zen",
     tagline: "4K USB-C screen, active wobble stool, natural bamboo, and fresh living Monstera.",
@@ -462,7 +435,6 @@ export const PRESETS: PresetSetup[] = [
   },
   {
     id: "preset-island-explorer",
-    image: "/products/preset-island-explorer.jpg",
     name: "The Island Explorer",
     badge: "Work & Adventure",
     tagline: "Dual displays for trading/coding, electric scooter, surfboard, and coffee station.",

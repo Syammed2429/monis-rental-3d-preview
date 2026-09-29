@@ -43,7 +43,7 @@ export function AccessoriesRenderer({
             e.stopPropagation();
             onSelectItem ? onSelectItem("peripherals", peripheralsId) : onSelectCategory?.("peripherals");
           }}
-          className="absolute top-1 left-1/2 -translate-x-1/2 w-[410px] h-[34px] rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center pointer-events-auto cursor-grab active:cursor-grabbing group/mat z-20"
+          className="absolute top-1 left-1/2 -translate-x-1/2 w-102.5 h-8.5 rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center pointer-events-auto cursor-grab active:cursor-grabbing group/mat z-20"
           title="Slide desk mat • Click to configure peripherals"
         >
           <div className="absolute -top-6 opacity-0 group-hover/mat:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
@@ -74,13 +74,13 @@ export function AccessoriesRenderer({
             {peripheralsId === "peripherals-apple-magic" && (
               <div className="flex items-center gap-5">
                 {/* Apple Magic Keyboard Silver */}
-                <div className="w-40 h-5 rounded-md bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 border border-white/80 shadow-md flex items-center px-1.5 justify-between">
+                <div className="w-40 h-5 rounded-md bg-linear-to-r from-slate-200 via-slate-100 to-slate-200 border border-white/80 shadow-md flex items-center px-1.5 justify-between">
                   <div className="w-30 h-2.5 bg-white rounded-xs shadow-xs" />
                   <div className="w-1.5 h-1.5 rounded-full bg-slate-300 border border-slate-400" />
                 </div>
 
                 {/* Apple Magic Trackpad Silver */}
-                <div className="w-9 h-6.5 rounded-md bg-gradient-to-br from-slate-100 to-slate-200 border border-white shadow-md" />
+                <div className="w-9 h-6.5 rounded-md bg-linear-to-br from-slate-100 to-slate-200 border border-white shadow-md" />
               </div>
             )}
 
@@ -88,7 +88,7 @@ export function AccessoriesRenderer({
               <div className="flex items-center gap-5">
                 {/* Custom Mechanical Keyboard */}
                 <div className="w-42 h-5.5 rounded-md bg-zinc-950 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.25)] flex items-center px-1.5 justify-between relative overflow-hidden">
-                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-amber-500/10" />
+                  <div className="absolute inset-0 bg-linear-to-r from-emerald-500/10 via-cyan-500/10 to-amber-500/10" />
                   <div className="w-32 h-3 bg-neutral-900 rounded flex gap-0.5 items-center px-1 relative z-10">
                     <div className="w-22 h-1.5 bg-emerald-950 rounded-xs border border-emerald-500/40" />
                     <div className="w-7 h-1.5 bg-amber-950 rounded-xs border border-amber-500/40" />
@@ -128,7 +128,7 @@ export function AccessoriesRenderer({
           </div>
           {/* Laptop Screen with clean modern wallpaper */}
           <div className="w-24 h-16 rounded-md bg-neutral-900 p-1 border border-neutral-700 shadow-xl flex flex-col">
-            <div className="w-full flex-1 rounded bg-gradient-to-tr from-emerald-950 via-teal-900 to-slate-900 flex flex-col justify-between p-1 select-none border border-white/5">
+            <div className="w-full flex-1 rounded bg-linear-to-tr from-emerald-950 via-teal-900 to-slate-900 flex flex-col justify-between p-1 select-none border border-white/5">
               <div className="flex justify-between items-center text-[5.5px] text-neutral-300">
                 <span className="font-semibold text-emerald-300">Secondary</span>
                 <span>100% ⚡</span>
@@ -142,7 +142,7 @@ export function AccessoriesRenderer({
             </div>
           </div>
           {/* Laptop Base */}
-          <div className="w-26 h-1.5 bg-gradient-to-r from-slate-400 via-slate-200 to-slate-400 rounded-b shadow-sm" />
+          <div className="w-26 h-1.5 bg-linear-to-r from-slate-400 via-slate-200 to-slate-400 rounded-b shadow-sm" />
           {/* Angled CNC Aluminum Riser Stand (Grounded on wooden surface) */}
           <div className="w-14 h-7 border-x-3 border-b-3 border-slate-400/80 rounded-b-md shadow-md -mt-0.5" />
         </motion.div>
@@ -163,7 +163,7 @@ export function AccessoriesRenderer({
             onToggleLamp?.();
             onSelectItem ? onSelectItem("lighting", lightingId) : onSelectCategory?.("lighting");
           }}
-          className="absolute bottom-0 left-22 pointer-events-auto cursor-pointer group/lamp flex flex-col items-center z-35 cursor-grab active:cursor-grabbing"
+          className="absolute bottom-0 left-22 pointer-events-auto cursor-pointer group/lamp flex flex-col items-center z-35 active:cursor-grabbing"
           title={`Slide along desk • Click to turn ${lampPowered ? "OFF" : "ON"}`}
         >
           <div className="absolute -top-6 opacity-0 group-hover/lamp:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-50">
@@ -182,7 +182,7 @@ export function AccessoriesRenderer({
           </div>
 
           {/* Pivoting Stem */}
-          <div className="w-1.5 h-26 bg-gradient-to-b from-slate-200 to-slate-400 relative">
+          <div className="w-1.5 h-26 bg-linear-to-b from-slate-200 to-slate-400 relative">
             <div className="absolute top-4 -right-1 w-2.5 h-6 rounded-full border-r-2 border-amber-500" />
           </div>
 
@@ -197,7 +197,7 @@ export function AccessoriesRenderer({
 
           {/* Dynamic Light Beam Cast */}
           {lampPowered && (
-            <div className="absolute top-[8px] -left-12 w-44 h-36 bg-[radial-gradient(ellipse_at_top,rgba(254,240,138,0.25)_0%,transparent_75%)] pointer-events-none blur-xs" />
+            <div className="absolute top-2 -left-12 w-44 h-36 bg-[radial-gradient(ellipse_at_top,rgba(254,240,138,0.25)_0%,transparent_75%)] pointer-events-none blur-xs" />
           )}
         </motion.div>
       )}
@@ -209,7 +209,7 @@ export function AccessoriesRenderer({
             onToggleLamp?.();
             onSelectItem ? onSelectItem("lighting", "light-screenbar") : onSelectCategory?.("lighting");
           }}
-          className="absolute -top-[195px] left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-35"
+          className="absolute -top-48.75 left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-35"
           title={`Click to turn ScreenBar ${lampPowered ? "OFF" : "ON"}`}
         >
           <div className="absolute -top-6 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-50">
@@ -228,7 +228,7 @@ export function AccessoriesRenderer({
 
           {/* Downward Light Glow Cast */}
           {lampPowered && (
-            <div className="absolute top-[6px] -left-16 w-88 h-60 bg-[radial-gradient(ellipse_at_top,rgba(254,243,199,0.2)_0%,transparent_80%)] pointer-events-none blur-xs" />
+            <div className="absolute top-1.5 -left-16 w-88 h-60 bg-[radial-gradient(ellipse_at_top,rgba(254,243,199,0.2)_0%,transparent_80%)] pointer-events-none blur-xs" />
           )}
         </div>
       )}
@@ -279,7 +279,7 @@ export function AccessoriesRenderer({
           </svg>
 
           {/* Terracotta Balinese Planter (Rests flush on desk wood) */}
-          <div className="w-12 h-9 bg-gradient-to-b from-amber-700 via-amber-800 to-amber-950 rounded-b-xl border-t-2 border-amber-600 shadow-xl flex items-center justify-center">
+          <div className="w-12 h-9 bg-linear-to-b from-amber-700 via-amber-800 to-amber-950 rounded-b-xl border-t-2 border-amber-600 shadow-xl flex items-center justify-center">
             <div className="w-8 h-1 bg-amber-900/60 rounded-full" />
           </div>
           <div className="w-14 h-1.5 bg-amber-900 rounded-full shadow-md" />
@@ -321,7 +321,7 @@ export function AccessoriesRenderer({
           </div>
           {/* Nespresso Machine */}
           <div className="w-10 h-18 rounded-t-lg bg-neutral-900 border border-neutral-700 shadow-xl flex flex-col items-center justify-between p-1">
-            <div className="w-6 h-1.5 bg-gradient-to-r from-slate-400 via-white to-slate-400 rounded-full shadow-sm" />
+            <div className="w-6 h-1.5 bg-linear-to-r from-slate-400 via-white to-slate-400 rounded-full shadow-sm" />
             <div className="flex flex-col items-center">
               <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mb-0.5" />
               <div className="w-2.5 h-2 bg-neutral-950 rounded-b" />

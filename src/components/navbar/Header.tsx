@@ -67,7 +67,7 @@ export function Header({
             title="monis.rent - Remote Work Made Efficient in Bali"
           >
             {/* Monis Brand Logo Mark */}
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex-center shadow-[0_0_16px_rgba(16,185,129,0.35)] group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-xl bg-linear-to-tr from-emerald-500 to-teal-400 flex-center shadow-[0_0_16px_rgba(16,185,129,0.35)] group-hover:scale-105 transition-transform">
               <span className="font-mono font-black text-neutral-950 text-lg leading-none">
                 m
               </span>
@@ -173,7 +173,7 @@ export function Header({
             title="Copy shareable link to this workspace setup"
           >
             {copied ? (
-              <Check className="w-3.5 h-3.5 text-emerald-400 stroke-[3]" />
+              <Check className="w-3.5 h-3.5 text-emerald-400 stroke-3" />
             ) : (
               <Share2 className="w-3.5 h-3.5 text-neutral-400" />
             )}

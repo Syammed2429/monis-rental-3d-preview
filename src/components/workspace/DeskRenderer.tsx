@@ -75,12 +75,12 @@ export function DeskRenderer({
     >
       {/* 1. Stationary Lower Base Columns & Heavy-Duty T-Feet (Firmly pinned to floor) */}
       <div
-        className="absolute bottom-0 w-[460px] max-w-[460px] h-[138px] pointer-events-none z-20"
+        className="absolute bottom-0 w-115 max-w-115 h-34.5 pointer-events-none z-20"
         style={{ transform: "translateZ(0px)", transformStyle: "preserve-3d" }}
       >
         {/* Left Stationary Column & T-Foot (Centerline: left 80px) */}
         <div
-          className="absolute bottom-0 left-[80px] -translate-x-1/2 flex flex-col items-center pointer-events-none"
+          className="absolute bottom-0 left-20 -translate-x-1/2 flex flex-col items-center pointer-events-none"
           style={{ transform: "translateZ(0px)" }}
         >
           {/* Bushing Collar at top of lower column */}
@@ -93,7 +93,7 @@ export function DeskRenderer({
             className={`w-11 h-28 ${currentFinish.legColor} border-x border-white/10 shadow-xl relative overflow-hidden transition-colors duration-500`}
           >
             {/* Subtle inner shadow indicating hollow column sleeve */}
-            <div className="absolute inset-x-0 top-0 h-3 bg-gradient-to-b from-black/60 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-3 bg-linear-to-b from-black/60 to-transparent pointer-events-none" />
             <div className="absolute top-0 bottom-0 left-1 w-0.5 bg-white/10 pointer-events-none" />
           </div>
 
@@ -107,7 +107,7 @@ export function DeskRenderer({
 
         {/* Right Stationary Column & T-Foot (Centerline: right 80px) */}
         <div
-          className="absolute bottom-0 right-[80px] translate-x-1/2 flex flex-col items-center pointer-events-none"
+          className="absolute bottom-0 right-20 translate-x-1/2 flex flex-col items-center pointer-events-none"
           style={{ transform: "translateZ(0px)" }}
         >
           {/* Bushing Collar at top of lower column */}
@@ -119,7 +119,7 @@ export function DeskRenderer({
           <div
             className={`w-11 h-28 ${currentFinish.legColor} border-x border-white/10 shadow-xl relative overflow-hidden transition-colors duration-500`}
           >
-            <div className="absolute inset-x-0 top-0 h-3 bg-gradient-to-b from-black/60 to-transparent pointer-events-none" />
+            <div className="absolute inset-x-0 top-0 h-3 bg-linear-to-b from-black/60 to-transparent pointer-events-none" />
             <div className="absolute top-0 bottom-0 left-1 w-0.5 bg-white/10 pointer-events-none" />
           </div>
 
@@ -134,7 +134,7 @@ export function DeskRenderer({
 
       {/* 2. Elevating Tabletop & Telescoping Upper Segments (Rises smoothly from lower base) */}
       <motion.div
-        className="absolute bottom-[138px] w-[460px] max-w-[460px] flex flex-col items-center z-20"
+        className="absolute bottom-34.5 w-115 max-w-115 flex flex-col items-center z-20"
         style={{ transformStyle: "preserve-3d", transform: "translateZ(0px)" }}
         animate={{ y: elevationY }}
         transition={{ type: "spring", stiffness: 140, damping: 22 }}
@@ -230,13 +230,13 @@ export function DeskRenderer({
 
         {/* Upper Telescoping Steel Leg Segments (Hanging from under-desk frame, sliding inside lower base columns) */}
         <div
-          className="absolute top-[54px] inset-x-0 pointer-events-none z-5"
+          className="absolute top-[13.5px] inset-x-0 pointer-events-none z-5"
           style={{ transform: "translateZ(0px)" }}
         >
           {/* Left Upper Telescoping Leg (Centerline: left 80px) */}
-          <div className="absolute top-0 left-[80px] -translate-x-1/2">
+          <div className="absolute top-0 left-20 -translate-x-1/2">
             <div
-              className={`w-9 h-[116px] ${currentFinish.innerLegColor} shadow-md transition-colors duration-500 relative`}
+              className={`w-9 h-18 ${currentFinish.innerLegColor} shadow-md transition-colors duration-500 relative`}
             >
               {/* Vertical machining guide stripe */}
               <div className="absolute inset-y-0 left-1 w-0.5 bg-white/10" />
@@ -245,9 +245,9 @@ export function DeskRenderer({
           </div>
 
           {/* Right Upper Telescoping Leg (Centerline: right 80px) */}
-          <div className="absolute top-0 right-[80px] translate-x-1/2">
+          <div className="absolute top-0 right-20 translate-x-1/2">
             <div
-              className={`w-9 h-[116px] ${currentFinish.innerLegColor} shadow-md transition-colors duration-500 relative`}
+              className={`w-9 h-18 ${currentFinish.innerLegColor} shadow-md transition-colors duration-500 relative`}
             >
               <div className="absolute inset-y-0 left-1 w-0.5 bg-white/10" />
               <div className="absolute inset-y-0 right-1 w-0.5 bg-black/20" />

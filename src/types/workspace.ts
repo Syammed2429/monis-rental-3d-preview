@@ -25,7 +25,6 @@ export interface ProductItem {
   defaultFinish?: string;
   availableFinishes?: { id: string; name: string; hex: string }[];
   popular?: boolean;
-  image?: string;
 }
 
 export interface WorkspaceConfig {

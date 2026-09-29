@@ -265,91 +265,91 @@ export function WorkspaceCanvas({
       <RoomBackdrop timeOfDay={config.timeOfDay} />
 
       {/* 2. Top Canvas Floating HUD Toolbar */}
-      <div className="relative z-30 p-2.5 sm:p-5 flex items-center justify-between pointer-events-auto">
-        {/* Left: Mode Badge & Motorized Height Controller */}
-        <div className="flex items-center gap-1.5 sm:gap-2">
-          <Badge
-            variant="outline"
-            className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-white/90 font-medium px-2.5 py-1 text-[11px] gap-1.5 shadow-lg hidden sm:inline-flex"
-          >
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            <span>Interactive 3D Studio</span>
-          </Badge>
+      <div className="relative z-30 px-2.5 py-2 sm:px-4 sm:py-3 flex flex-wrap items-center gap-1.5 pointer-events-auto">
+        {/* "Interactive 3D Studio" badge — desktop only */}
+        <Badge
+          variant="outline"
+          className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-white/90 font-medium px-2.5 py-1 text-[11px] gap-1.5 shadow-lg hidden sm:inline-flex"
+        >
+          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span>Interactive 3D Studio</span>
+        </Badge>
 
-          {/* Quick Sit / Stand Preset Button */}
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleToggleHeight}
-            className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-white hover:bg-neutral-800 text-[11px] h-7.5 px-2.5 gap-1.5 shadow-lg"
-          >
-            <ArrowUpDown className="w-3.5 h-3.5 text-emerald-400" />
-            <span suppressHydrationWarning>{isStanding ? "Standing" : "Sitting"}</span>
-            <span className="font-mono text-emerald-400 font-bold" suppressHydrationWarning>
-              ({Math.round(currentHeight)} cm)
-            </span>
-          </Button>
+        {/* Quick Sit / Stand Preset Button */}
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleToggleHeight}
+          className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-white hover:bg-neutral-800 text-[11px] h-7 px-2 gap-1 shadow-lg"
+        >
+          <ArrowUpDown className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
+          <span suppressHydrationWarning>{isStanding ? "Standing" : "Sitting"}</span>
+          <span className="font-mono text-emerald-400 font-bold hidden xs:inline" suppressHydrationWarning>
+            ({Math.round(currentHeight)} cm)
+          </span>
+        </Button>
 
-          {/* Micro Height Stepper (Fine-Tuning) */}
-          <div className="flex items-center bg-neutral-900/85 backdrop-blur-md border border-white/15 rounded-md p-0.5 shadow-lg">
-            <button
-              onClick={() => handleStepHeight(2)}
-              disabled={currentHeight >= 118}
-              className="p-1 text-neutral-400 hover:text-emerald-400 disabled:opacity-30 transition-colors"
-              title="Raise desk +2cm"
-            >
-              <ChevronUp className="w-3.5 h-3.5" />
-            </button>
-            <button
-              onClick={() => handleStepHeight(-2)}
-              disabled={currentHeight <= 70}
-              className="p-1 text-neutral-400 hover:text-emerald-400 disabled:opacity-30 transition-colors"
-              title="Lower desk -2cm"
-            >
-              <ChevronDown className="w-3.5 h-3.5" />
-            </button>
-          </div>
-
-          {/* Lock View Button (Desktop & Mobile) */}
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleToggleLockView}
-            className={`backdrop-blur-md text-[11px] h-7.5 px-2 sm:px-2.5 gap-1.5 shadow-lg transition-all ${
-              isViewLocked
-                ? "bg-amber-500/20 border-amber-500/50 text-amber-300 hover:bg-amber-500/30 ring-1 ring-amber-400/40 font-semibold"
-                : "bg-neutral-900/85 border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800"
-            }`}
-            title={
-              isViewLocked
-                ? "Unlock View (Allow 3D Orbit)"
-                : "Lock View (Disable 3D rotation so you can arrange desk items freely)"
-            }
+        {/* Micro Height Stepper (Fine-Tuning) */}
+        <div className="flex items-center bg-neutral-900/85 backdrop-blur-md border border-white/15 rounded-md p-0.5 shadow-lg">
+          <button
+            onClick={() => handleStepHeight(2)}
+            disabled={currentHeight >= 118}
+            className="p-1 text-neutral-400 hover:text-emerald-400 disabled:opacity-30 transition-colors"
+            title="Raise desk +2cm"
           >
-            {isViewLocked ? (
-              <Lock className="w-3 h-3 text-amber-400 stroke-[2.5]" />
-            ) : (
-              <Unlock className="w-3 h-3 text-neutral-400" />
-            )}
-            <span className="hidden xs:inline">{isViewLocked ? "View Locked" : "Lock View"}</span>
-            <span className="xs:hidden">{isViewLocked ? "Locked" : "Lock"}</span>
-          </Button>
-
-          {/* Quick Desk Items Layout Reset Button */}
-          <Button
-            size="sm"
-            variant="outline"
-            onClick={handleResetLayout}
-            className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800 text-[11px] h-7.5 px-2 sm:px-2.5 gap-1.5 shadow-lg hidden sm:inline-flex"
-            title="Items on desk can be freely dragged. Click to reset items to original positions."
+            <ChevronUp className="w-3.5 h-3.5" />
+          </button>
+          <button
+            onClick={() => handleStepHeight(-2)}
+            disabled={currentHeight <= 70}
+            className="p-1 text-neutral-400 hover:text-emerald-400 disabled:opacity-30 transition-colors"
+            title="Lower desk -2cm"
           >
-            <Sparkles className="w-3 h-3 text-emerald-400" />
-            <span>Rearrange Desk</span>
-          </Button>
+            <ChevronDown className="w-3.5 h-3.5" />
+          </button>
         </div>
 
+        {/* Lock View Button */}
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleToggleLockView}
+          className={`backdrop-blur-md text-[11px] h-7 px-2 gap-1 shadow-lg transition-all ${
+            isViewLocked
+              ? "bg-amber-500/20 border-amber-500/50 text-amber-300 hover:bg-amber-500/30 ring-1 ring-amber-400/40 font-semibold"
+              : "bg-neutral-900/85 border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800"
+          }`}
+          title={
+            isViewLocked
+              ? "Unlock View (Allow 3D Orbit)"
+              : "Lock View (Disable 3D rotation so you can arrange desk items freely)"
+          }
+        >
+          {isViewLocked ? (
+            <Lock className="w-3 h-3 text-amber-400 stroke-[2.5]" />
+          ) : (
+            <Unlock className="w-3 h-3 text-neutral-400" />
+          )}
+          <span className="hidden sm:inline">{isViewLocked ? "View Locked" : "Lock View"}</span>
+        </Button>
+
+        {/* Quick Desk Items Layout Reset — hidden on mobile */}
+        <Button
+          size="sm"
+          variant="outline"
+          onClick={handleResetLayout}
+          className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800 text-[11px] h-7 px-2 gap-1 shadow-lg hidden sm:inline-flex"
+          title="Items on desk can be freely dragged. Click to reset items to original positions."
+        >
+          <Sparkles className="w-3 h-3 text-emerald-400" />
+          <span>Rearrange</span>
+        </Button>
+
+        {/* Spacer pushes ambient pill to the right */}
+        <div className="flex-1" />
+
         {/* Right: Ambient Bali Time of Day & Zoom Controls */}
-        <div className="flex items-center gap-1 bg-neutral-900/85 backdrop-blur-md border border-white/15 p-1 rounded-full shadow-lg">
+        <div className="flex items-center gap-0.5 bg-neutral-900/85 backdrop-blur-md border border-white/15 p-1 rounded-full shadow-lg shrink-0">
           <button
             onClick={() => handleTimeOfDay("daylight")}
             className={`p-1.5 rounded-full transition-all ${
@@ -384,7 +384,7 @@ export function WorkspaceCanvas({
             <Moon className="w-3.5 h-3.5" />
           </button>
 
-          {/* Quick Desk Light Power Switch (if lighting equipped) */}
+          {/* Lamp toggle — only when lighting selected */}
           {config.lightingId && (
             <button
               onClick={handleToggleLamp}
