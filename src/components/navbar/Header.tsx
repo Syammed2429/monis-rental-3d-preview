@@ -50,7 +50,11 @@ export function Header({
     if (typeof window !== "undefined") {
       const shareParams = serializeConfigToUrl(currentConfig);
       const shareUrl = `${window.location.origin}${window.location.pathname}${shareParams.startsWith("?") ? shareParams : ""}`;
-      await copyToClipboard(shareUrl);
+      try {
+        await copyToClipboard(shareUrl);
+      } catch {
+        // safe fallback
+      }
       setCopied(true);
       setTimeout(() => setCopied(false), 2200);
     }

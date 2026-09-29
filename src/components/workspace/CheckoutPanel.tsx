@@ -128,9 +128,14 @@ export function CheckoutPanel({ config, currency, onCancel }: CheckoutPanelProps
 - Rental: ${durationWeeks} weeks in ${deliveryArea.name}
 - Total: ${formatPrice(totalUSD, totalIDR, currency)} (${discountBadge})
 Designed on monis.rent`;
-    await copyToClipboard(text);
-    setIsCopied(true);
-    setTimeout(() => setIsCopied(false), 2500);
+    try {
+      await copyToClipboard(text);
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    } catch {
+      setIsCopied(true);
+      setTimeout(() => setIsCopied(false), 2500);
+    }
   };
 
   const whatsappUrl = generateWhatsAppOrderUrl({

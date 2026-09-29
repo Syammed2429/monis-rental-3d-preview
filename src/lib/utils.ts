@@ -8,33 +8,39 @@ export * from "./pricing";
 export async function copyToClipboard(text: string): Promise<boolean> {
   if (typeof window === "undefined") return false;
 
-  // 1. Try modern Async Clipboard API if available and permitted
-  if (navigator?.clipboard && typeof navigator.clipboard.writeText === "function") {
-    try {
+  // 1. Try modern Async Clipboard API if available and in secure context
+  try {
+    if (
+      typeof navigator !== "undefined" &&
+      navigator?.clipboard &&
+      typeof navigator.clipboard.writeText === "function"
+    ) {
       await navigator.clipboard.writeText(text);
       return true;
-    } catch {
-      // Fall through to legacy fallback
     }
+  } catch {
+    // Permission denied or non-secure context — proceed to legacy fallback
   }
 
-  // 2. Fallback using temporary textarea + execCommand for mobile LAN / non-secure contexts
+  // 2. Cross-platform fallback using temporary textarea + execCommand for iOS & non-secure LAN
   try {
     const textArea = document.createElement("textarea");
     textArea.value = text;
-    textArea.style.position = "fixed";
-    textArea.style.top = "0";
-    textArea.style.left = "0";
-    textArea.style.width = "2em";
-    textArea.style.height = "2em";
+    // Prevent zoom and scrolling on iOS
+    textArea.style.fontSize = "12pt";
+    textArea.style.border = "0";
     textArea.style.padding = "0";
-    textArea.style.border = "none";
-    textArea.style.outline = "none";
-    textArea.style.boxShadow = "none";
-    textArea.style.background = "transparent";
+    textArea.style.margin = "0";
+    textArea.style.position = "fixed";
+    textArea.style.left = "-9999px";
+    textArea.style.top = "-9999px";
+    textArea.setAttribute("readonly", "");
+
     document.body.appendChild(textArea);
     textArea.focus();
     textArea.select();
+    textArea.setSelectionRange(0, text.length);
+
     const successful = document.execCommand("copy");
     document.body.removeChild(textArea);
     return successful;
