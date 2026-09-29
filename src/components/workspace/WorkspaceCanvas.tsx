@@ -513,8 +513,11 @@ export function WorkspaceCanvas({
             onSelectItem={onSelectItem}
           />
 
-          {/* Ergonomic Chair tucked neatly in knee hole behind desk */}
-          <div
+          {/* Ergonomic Chair tucked neatly in knee hole behind desk (Tightly bounded hitbox, z-10) */}
+          <ChairRenderer
+            chairId={config.chairId}
+            color={config.chairColor}
+            isStanding={isStanding}
             onClick={() => {
               sound.playClick();
               if (onSelectItem) {
@@ -523,19 +526,7 @@ export function WorkspaceCanvas({
                 onSelectCategory?.("chairs");
               }
             }}
-            className="absolute inset-0 pointer-events-auto cursor-pointer group/chair z-15"
-            style={{ transformStyle: "preserve-3d" }}
-            title="Configure Chair • Click to select"
-          >
-            <div className="absolute bottom-[220px] left-1/2 -translate-x-1/2 opacity-0 group-hover/chair:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-30">
-              Ergonomic Chair • Click to Select
-            </div>
-            <ChairRenderer
-              chairId={config.chairId}
-              color={config.chairColor}
-              isStanding={isStanding}
-            />
-          </div>
+          />
 
           {/* Desk Frame, Telescoping Legs, and Mounted Monitor & Peripherals */}
           <DeskRenderer
@@ -553,7 +544,7 @@ export function WorkspaceCanvas({
               }
             }}
           >
-            {/* Monitor Mounted Directly Atop Desk Surface (Rests on bottom-0 • Horizontally Draggable along desk) */}
+            {/* Monitor Mounted Directly Atop Desk Surface (Rests on bottom-0 • Horizontally Draggable along desk • z-30) */}
             <motion.div
               key={`monitor-${layoutKey}`}
               drag="x"
@@ -561,7 +552,7 @@ export function WorkspaceCanvas({
               dragElastic={0.06}
               dragMomentum={false}
               onPointerDown={(e) => e.stopPropagation()}
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center cursor-grab active:cursor-grabbing"
+              className="absolute bottom-0 left-1/2 -translate-x-1/2 z-30 pointer-events-auto group/mon flex flex-col items-center cursor-grab active:cursor-grabbing"
               style={{ transformStyle: "preserve-3d", transform: "translateZ(10px)", touchAction: "none" }}
               whileDrag={{ scale: 1.03 }}
               onClick={(e) => {
@@ -572,10 +563,10 @@ export function WorkspaceCanvas({
                   onSelectCategory?.("monitors");
                 }
               }}
-              title="Slide monitor along desk • Click to select"
+              title="Display • Slide along desk or click to customize"
             >
-              <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-                🖥️ Slide Monitor • Click to Select
+              <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-40">
+                🖥️ Display • Slide or Click to Customize
               </div>
               <MonitorRenderer
                 monitorId={config.monitorId}

@@ -134,26 +134,31 @@ export function DeskRenderer({
 
       {/* 2. Elevating Tabletop & Telescoping Upper Segments (Rises smoothly from lower base) */}
       <motion.div
-        className="absolute bottom-[138px] w-[460px] max-w-[460px] flex flex-col items-center z-10"
+        className="absolute bottom-[138px] w-[460px] max-w-[460px] flex flex-col items-center z-20"
         style={{ transformStyle: "preserve-3d", transform: "translateZ(0px)" }}
         animate={{ y: elevationY }}
         transition={{ type: "spring", stiffness: 140, damping: 22 }}
       >
-        {/* Tabletop Surface Assembly */}
+        {/* Mounted Items Atop Tabletop (Monitors & Peripherals) - Sibling container with zero pointer capture */}
+        {children && (
+          <div
+            className="absolute inset-x-0 top-0 h-0 pointer-events-none z-30"
+            style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
+          >
+            {children}
+          </div>
+        )}
+
+        {/* Dedicated Clickable Wooden Tabletop Surface Assembly */}
         <div
           onClick={onClick}
-          className="relative w-full z-20 pointer-events-auto cursor-pointer"
-          title="Configure Desk"
+          className="relative w-full z-20 pointer-events-auto cursor-pointer group/desk"
+          title="Motorized Desk • Click to customize finish & height"
         >
-          {/* Mounted Items Atop Tabletop (Monitors & Peripherals) */}
-          {children && (
-            <div
-              className="absolute inset-x-0 top-0 h-0 pointer-events-auto z-10"
-              style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
-            >
-              {children}
-            </div>
-          )}
+          {/* Floating Hover Badge on Desk Surface */}
+          <div className="absolute -top-7 left-1/2 -translate-x-1/2 opacity-0 group-hover/desk:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-40">
+            🪵 Motorized Desk • Click to Customize
+          </div>
 
           {/* Main Top Bevel & Shadow */}
           <div

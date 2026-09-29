@@ -7,9 +7,10 @@ interface ChairRendererProps {
   chairId: string;
   color: ChairColor;
   isStanding: boolean;
+  onClick?: () => void;
 }
 
-export function ChairRenderer({ chairId, color, isStanding }: ChairRendererProps) {
+export function ChairRenderer({ chairId, color, isStanding, onClick }: ChairRendererProps) {
   // Color presets
   const colorMap: Record<ChairColor, { mesh: string; frame: string; accent: string; leather: string }> = {
     "stealth-black": {
@@ -42,14 +43,20 @@ export function ChairRenderer({ chairId, color, isStanding }: ChairRendererProps
 
   return (
     <motion.div
-      className="absolute bottom-6 left-1/2 -translate-x-1/2 z-15 pointer-events-auto cursor-pointer select-none flex flex-col items-center"
+      onClick={onClick}
+      className="absolute bottom-6 left-1/2 -translate-x-1/2 z-10 pointer-events-auto cursor-pointer select-none flex flex-col items-center group/chair"
       style={{ transformStyle: "preserve-3d", transform: "translateZ(-20px)" }}
       animate={{
         y: isStanding ? 8 : 0,
         scale: isStanding ? 0.96 : 1,
       }}
       transition={{ type: "spring", stiffness: 120, damping: 20 }}
+      title="Ergonomic Chair • Click to customize"
     >
+      {/* Floating Hover Badge on Chair */}
+      <div className="absolute -top-10 left-1/2 -translate-x-1/2 opacity-0 group-hover/chair:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-30">
+        🪑 Ergonomic Chair • Click to Select
+      </div>
       {/* 1. Monis Ergonomic 4D Mesh Chair */}
       {chairId === "chair-ergonomic-mesh" && (
         <div className="relative flex flex-col items-center">
