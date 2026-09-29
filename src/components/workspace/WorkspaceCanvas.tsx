@@ -59,7 +59,6 @@ export function WorkspaceCanvas({
   // 3D Camera Orbit & Rotation State
   const [rotY, setRotY] = useState<number>(0); // Horizontal orbit angle: -36deg to +36deg
   const [rotX, setRotX] = useState<number>(4); // Vertical pitch angle: 0deg to +24deg
-  const [isAutoRotating, setIsAutoRotating] = useState<boolean>(false);
   const [isDragging, setIsDragging] = useState<boolean>(false);
   const [activePreset, setActivePreset] = useState<
     "front" | "iso-left" | "iso-right" | "side" | "top" | "custom"
@@ -100,26 +99,6 @@ export function WorkspaceCanvas({
     };
   }, []);
 
-  // Studio Showcase Auto-Tour (Cinematic breathing sweep)
-  useEffect(() => {
-    if (!isAutoRotating) return;
-    let animFrameId: number;
-
-    const loop = (currentTime: number) => {
-      // Elegant sine sweep between -32° and +32°
-      const targetY = Math.sin(currentTime / 1800) * 32;
-      const targetX = 6 + Math.cos(currentTime / 2200) * 3;
-      setRotY(Number(targetY.toFixed(1)));
-      setRotX(Number(targetX.toFixed(1)));
-      animFrameId = requestAnimationFrame(loop);
-    };
-
-    animFrameId = requestAnimationFrame(loop);
-    return () => {
-      cancelAnimationFrame(animFrameId);
-    };
-  }, [isAutoRotating]);
-
   // Pointer Event Handlers for 3D Drag Orbit
   const handlePointerDown = (e: React.PointerEvent<HTMLDivElement>) => {
     if (isViewLocked) return;
@@ -132,9 +111,6 @@ export function WorkspaceCanvas({
       rotY,
       rotX,
     };
-    if (isAutoRotating) {
-      setIsAutoRotating(false);
-    }
     try {
       e.currentTarget.setPointerCapture(e.pointerId);
     } catch {}
@@ -186,7 +162,6 @@ export function WorkspaceCanvas({
   // Camera Presets
   const handleSelectPreset = (preset: "front" | "iso-left" | "iso-right" | "top") => {
     sound.playClick();
-    setIsAutoRotating(false);
     setActivePreset(preset);
     switch (preset) {
       case "front":
@@ -208,27 +183,9 @@ export function WorkspaceCanvas({
     }
   };
 
-  const handleToggleAutoTour = () => {
-    sound.playSelect();
-    setIsAutoRotating((prev) => {
-      const next = !prev;
-      if (next) {
-        setIsViewLocked(false);
-        setActivePreset("custom");
-      }
-      return next;
-    });
-  };
-
   const handleToggleLockView = () => {
     sound.playClick();
-    setIsViewLocked((prev) => {
-      const next = !prev;
-      if (next && isAutoRotating) {
-        setIsAutoRotating(false);
-      }
-      return next;
-    });
+    setIsViewLocked((prev) => !prev);
   };
 
   // Toggle desk height preset (74cm / 108cm)
@@ -638,13 +595,6 @@ export function WorkspaceCanvas({
                 Locked — drag items freely
               </span>
             </>
-          ) : isAutoRotating ? (
-            <>
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-ping" />
-              <span className="text-emerald-400 font-medium">
-                Studio Tour Active ({Math.round(rotY)}°)
-              </span>
-            </>
           ) : isDragging ? (
             <>
               <Orbit className="w-3 h-3 text-emerald-400 animate-spin" />
@@ -665,13 +615,13 @@ export function WorkspaceCanvas({
           )}
         </div>
 
-        {/* Camera Presets & Tour Pill */}
+        {/* Camera Presets Pill */}
         <div className="flex items-center gap-1 bg-neutral-900/90 backdrop-blur-md border border-white/15 p-1 rounded-full shadow-2xl">
           {/* Front 0° */}
           <button
             onClick={() => handleSelectPreset("front")}
             className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
-              activePreset === "front" && !isAutoRotating
+              activePreset === "front"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
@@ -685,7 +635,7 @@ export function WorkspaceCanvas({
           <button
             onClick={() => handleSelectPreset("iso-left")}
             className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
-              activePreset === "iso-left" && !isAutoRotating
+              activePreset === "iso-left"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
@@ -699,7 +649,7 @@ export function WorkspaceCanvas({
           <button
             onClick={() => handleSelectPreset("iso-right")}
             className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
-              activePreset === "iso-right" && !isAutoRotating
+              activePreset === "iso-right"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
@@ -713,7 +663,7 @@ export function WorkspaceCanvas({
           <button
             onClick={() => handleSelectPreset("top")}
             className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all hidden sm:flex items-center gap-1 ${
-              activePreset === "top" && !isAutoRotating
+              activePreset === "top"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
@@ -722,25 +672,8 @@ export function WorkspaceCanvas({
             <span>Top</span>
           </button>
 
-          <div className="w-[1px] h-3.5 bg-white/10 mx-0.5" />
-
-          {/* 360° Turntable Tour Toggle */}
-          <button
-            onClick={handleToggleAutoTour}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1.5 ${
-              isAutoRotating
-                ? "bg-emerald-500 text-neutral-950 font-semibold shadow-md shadow-emerald-500/20"
-                : "text-neutral-300 hover:text-white hover:bg-white/5"
-            }`}
-            title={isAutoRotating ? "Pause 360° Tour" : "Start 360° Turntable Tour"}
-          >
-            <Orbit className={`w-3.5 h-3.5 ${isAutoRotating ? "animate-spin" : ""}`} />
-            <span className="hidden sm:inline">{isAutoRotating ? "Touring" : "360° Tour"}</span>
-            <span className="sm:hidden">Tour</span>
-          </button>
-
           {/* Quick Snap Reset */}
-          {(rotY !== 0 || rotX !== 4) && !isAutoRotating && (
+          {(rotY !== 0 || rotX !== 4) && (
             <button
               onClick={() => handleSelectPreset("front")}
               className="p-1 text-neutral-400 hover:text-emerald-400 transition-colors ml-0.5"
