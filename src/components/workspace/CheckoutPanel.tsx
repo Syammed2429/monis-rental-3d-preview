@@ -447,6 +447,7 @@ Designed on monis.rent`;
                     id="full-name"
                     {...register("fullName")}
                     autoComplete="name"
+                    maxLength={60}
                     aria-invalid={errors.fullName ? "true" : "false"}
                     aria-describedby={errors.fullName ? "name-error" : undefined}
                     placeholder="Alex Rivera"

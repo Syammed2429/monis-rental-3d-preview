@@ -17,12 +17,38 @@ describe("Checkout Zod Schema Validation (QA & Pentest)", () => {
     assert.equal(parsed.success, true);
   });
 
-  it("rejects names shorter than 2 characters", () => {
-    const invalid = { ...validData, fullName: "A" };
-    const parsed = checkoutFormSchema.safeParse(invalid);
-    assert.equal(parsed.success, false);
-    if (!parsed.success) {
-      assert.ok(parsed.error.issues.some((i) => i.path.includes("fullName")));
+  it("validates full names properly (Unicode, hyphens, apostrophes)", () => {
+    const validNames = [
+      "Elena Rostova",
+      "Muhammed Ghouse",
+      "Jean-Luc Picard",
+      "O'Connor",
+      "María García",
+      "René Müller",
+      "Dada Khalandar",
+      "Li Wei",
+    ];
+    for (const name of validNames) {
+      const parsed = checkoutFormSchema.safeParse({ ...validData, fullName: name });
+      assert.equal(parsed.success, true, `Expected valid name: ${name}`);
+    }
+
+    const invalidNames = [
+      "A", // too short (<2 chars)
+      "123456", // numbers only
+      "John123", // numbers mixed
+      "<script>alert(1)</script>", // XSS / code injection
+      "--", // punctuation only
+      "...", // punctuation only
+      "@#$%^", // symbols
+      "a".repeat(65), // over max 60 chars
+    ];
+    for (const name of invalidNames) {
+      const parsed = checkoutFormSchema.safeParse({ ...validData, fullName: name });
+      assert.equal(parsed.success, false, `Expected invalid name to fail: ${name}`);
+      if (!parsed.success) {
+        assert.ok(parsed.error.issues.some((i) => i.path.includes("fullName")));
+      }
     }
   });
 

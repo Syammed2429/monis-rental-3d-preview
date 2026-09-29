@@ -15,7 +15,11 @@ export const checkoutFormSchema = z.object({
     .string()
     .trim()
     .min(2, "Full name must be at least 2 characters")
-    .max(80, "Name is too long"),
+    .max(60, "Full name cannot exceed 60 characters")
+    .regex(
+      /^[\p{L}][\p{L}\s.'-]*[\p{L}.]$/u,
+      "Please enter a valid full name (letters, spaces, hyphens, and apostrophes only)"
+    ),
   whatsapp: z
     .string()
     .trim()
