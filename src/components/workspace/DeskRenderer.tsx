@@ -94,109 +94,14 @@ export function DeskRenderer({
       className="pointer-events-none absolute inset-x-0 bottom-6 flex flex-col items-center select-none"
       style={{ transformStyle: "preserve-3d" }}
     >
-      {/* 1. Elevating Assembly: Tabletop + Upper Hydraulic Piston Columns (z-10, slides inside lower sleeve) */}
+      {/* 1. Layer 1: Upper Hydraulic Actuator Columns (z-10, rises with elevation, slides INSIDE lower sleeve) */}
       <motion.div
-        className="absolute bottom-34.5 z-10 flex w-115 max-w-115 flex-col items-center"
+        className="pointer-events-none absolute bottom-34.5 z-10 w-115 max-w-115"
         style={{ transformStyle: "preserve-3d", transform: "translateZ(0px)" }}
         animate={{ y: elevationY }}
         transition={{ type: "spring", stiffness: 140, damping: 22 }}
       >
-        {/* Mounted Items Atop Tabletop (Monitors & Peripherals) - Sibling container with zero pointer capture */}
-        {children && (
-          <div
-            className="pointer-events-none absolute inset-x-0 top-0 z-30 h-0"
-            style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
-          >
-            {children}
-          </div>
-        )}
-
-        {/* Dedicated Clickable Wooden Tabletop Surface Assembly */}
-        <div
-          onClick={onClick}
-          className="group/desk pointer-events-auto relative z-20 w-full cursor-pointer"
-          title="Motorized Desk • Click to customize finish & height"
-        >
-          {/* Floating Hover Badge on Desk Surface */}
-          <div className="pointer-events-none absolute -top-7 left-1/2 z-40 -translate-x-1/2 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[9px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/desk:opacity-100">
-            🪵 Motorized Desk • Click to Customize
-          </div>
-
-          {/* Main Top Bevel & Shadow */}
-          <div
-            className={`h-11 w-full rounded-2xl ${currentFinish.top} border-t ${currentFinish.bevel} relative overflow-hidden shadow-xl transition-colors duration-500`}
-          >
-            {/* Subtle Timber Grain / Surface Luster */}
-            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.4),transparent_70%)] opacity-20" />
-
-            {/* Rear Cable Grommet */}
-            <div className="absolute top-2 left-1/2 flex h-2.5 w-12 -translate-x-1/2 items-center justify-center rounded-full border border-white/10 bg-black/40">
-              <div className="h-1 w-4 rounded-full bg-black/70" />
-            </div>
-          </div>
-
-          {/* Tabletop Front Edge (giving 3D depth) */}
-          <div
-            className={`h-3 w-full rounded-b-xl ${currentFinish.edge} shadow-md transition-colors duration-500`}
-          />
-
-          {/* Under-desk Steel Frame Crossbar */}
-          <div
-            className={`mx-auto h-3 w-[84%] rounded-b-md ${currentFinish.frameColor} shadow-inner`}
-          />
-
-          {/* Motorized Height Controller Display (Right Hand Side) */}
-          <div
-            className="pointer-events-auto absolute right-8 -bottom-6 z-30 flex items-center gap-1.5 rounded-md border border-white/15 bg-neutral-900 px-2.5 py-1 shadow-xl transition-all select-none hover:border-emerald-500/60"
-            title="Motorized Sit-Stand Memory Controller"
-          >
-            {/* Digital LED Screen - Click toggles Sitting/Standing preset */}
-            <button
-              onClick={(e) => {
-                e.stopPropagation();
-                onToggleHeight?.();
-              }}
-              className="flex items-center gap-1 font-mono text-[11px] font-bold tracking-wider text-emerald-400 transition-colors hover:text-emerald-300"
-              title="Click to toggle Sit/Stand preset"
-            >
-              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
-              <span suppressHydrationWarning>{Math.round(currentHeight)}</span>
-              <span className="text-[9px] text-emerald-500/70">cm</span>
-            </button>
-
-            {/* Micro Touch Stepper Buttons */}
-            <div className="flex flex-col gap-0.5 border-l border-neutral-700 pl-1.5">
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onStepHeight?.(2);
-                }}
-                disabled={currentHeight >= 118}
-                className="text-[9px] leading-none text-neutral-400 transition-all hover:text-emerald-400 active:scale-125 disabled:opacity-30"
-                title="Raise desk (+2 cm)"
-              >
-                ▲
-              </button>
-              <button
-                onClick={(e) => {
-                  e.stopPropagation();
-                  onStepHeight?.(-2);
-                }}
-                disabled={currentHeight <= 70}
-                className="text-[9px] leading-none text-neutral-400 transition-all hover:text-emerald-400 active:scale-125 disabled:opacity-30"
-                title="Lower desk (-2 cm)"
-              >
-                ▼
-              </button>
-            </div>
-          </div>
-        </div>
-
-        {/* Upper Hydraulic Actuator Columns (Anchored to frame, piston slides inside lower sleeve) */}
-        <div
-          className="pointer-events-none absolute inset-x-0 top-14 z-10"
-          style={{ transform: "translateZ(0px)" }}
-        >
+        <div className="absolute inset-x-0 top-14">
           {/* Left Upper Hydraulic Actuator Assembly (Centerline: left 80px) */}
           <div className="absolute top-0 left-20 flex -translate-x-1/2 flex-col items-center">
             {/* Upper Mounting Flange / Motor Housing Bracket */}
@@ -243,7 +148,7 @@ export function DeskRenderer({
         </div>
       </motion.div>
 
-      {/* 2. Stationary Lower Base Columns & Heavy-Duty T-Feet (z-20, in FRONT of upper piston) */}
+      {/* 2. Layer 2: Stationary Lower Base Columns & Heavy-Duty T-Feet (z-20, in FRONT of upper piston) */}
       <div
         className="pointer-events-none absolute bottom-0 z-20 h-34.5 w-115 max-w-115"
         style={{ transform: "translateZ(0px)", transformStyle: "preserve-3d" }}
@@ -312,6 +217,105 @@ export function DeskRenderer({
           </div>
         </div>
       </div>
+
+      {/* 3. Layer 3: Elevating Tabletop & Controller & Mounted Items (z-30, in FRONT of lower columns) */}
+      <motion.div
+        className="absolute bottom-34.5 z-30 flex w-115 max-w-115 flex-col items-center"
+        style={{ transformStyle: "preserve-3d", transform: "translateZ(0px)" }}
+        animate={{ y: elevationY }}
+        transition={{ type: "spring", stiffness: 140, damping: 22 }}
+      >
+        {/* Mounted Items Atop Tabletop (Monitors & Peripherals) - Sibling container with zero pointer capture */}
+        {children && (
+          <div
+            className="pointer-events-none absolute inset-x-0 top-0 z-30 h-0"
+            style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
+          >
+            {children}
+          </div>
+        )}
+
+        {/* Dedicated Clickable Wooden Tabletop Surface Assembly */}
+        <div
+          onClick={onClick}
+          className="group/desk pointer-events-auto relative z-20 w-full cursor-pointer"
+          title="Motorized Desk • Click to customize finish & height"
+        >
+          {/* Floating Hover Badge on Desk Surface */}
+          <div className="pointer-events-none absolute -top-7 left-1/2 z-40 -translate-x-1/2 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[9px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/desk:opacity-100">
+            🪵 Motorized Desk • Click to Customize
+          </div>
+
+          {/* Main Top Bevel & Shadow */}
+          <div
+            className={`h-11 w-full rounded-2xl ${currentFinish.top} border-t ${currentFinish.bevel} relative overflow-hidden shadow-xl transition-colors duration-500`}
+          >
+            {/* Subtle Timber Grain / Surface Luster */}
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.4),transparent_70%)] opacity-20" />
+
+            {/* Rear Cable Grommet */}
+            <div className="absolute top-2 left-1/2 flex h-2.5 w-12 -translate-x-1/2 items-center justify-center rounded-full border border-white/10 bg-black/40">
+              <div className="h-1 w-4 rounded-full bg-black/70" />
+            </div>
+          </div>
+
+          {/* Tabletop Front Edge (giving 3D depth) */}
+          <div
+            className={`h-3 w-full rounded-b-xl ${currentFinish.edge} shadow-md transition-colors duration-500`}
+          />
+
+          {/* Under-desk Steel Frame Crossbar */}
+          <div
+            className={`mx-auto h-3 w-[84%] rounded-b-md ${currentFinish.frameColor} shadow-inner`}
+          />
+
+          {/* Motorized Height Controller Display (Mounted to front underside of desk, z-40, always in FRONT) */}
+          <div
+            className="pointer-events-auto absolute right-8 -bottom-6 z-40 flex items-center gap-1.5 rounded-md border border-white/15 bg-neutral-900 px-2.5 py-1 shadow-2xl transition-all select-none hover:border-emerald-500/60"
+            title="Motorized Sit-Stand Memory Controller"
+          >
+            {/* Digital LED Screen - Click toggles Sitting/Standing preset */}
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                onToggleHeight?.();
+              }}
+              className="flex items-center gap-1 font-mono text-[11px] font-bold tracking-wider text-emerald-400 transition-colors hover:text-emerald-300"
+              title="Click to toggle Sit/Stand preset"
+            >
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
+              <span suppressHydrationWarning>{Math.round(currentHeight)}</span>
+              <span className="text-[9px] text-emerald-500/70">cm</span>
+            </button>
+
+            {/* Micro Touch Stepper Buttons */}
+            <div className="flex flex-col gap-0.5 border-l border-neutral-700 pl-1.5">
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStepHeight?.(2);
+                }}
+                disabled={currentHeight >= 118}
+                className="text-[9px] leading-none text-neutral-400 transition-all hover:text-emerald-400 active:scale-125 disabled:opacity-30"
+                title="Raise desk (+2 cm)"
+              >
+                ▲
+              </button>
+              <button
+                onClick={(e) => {
+                  e.stopPropagation();
+                  onStepHeight?.(-2);
+                }}
+                disabled={currentHeight <= 70}
+                className="text-[9px] leading-none text-neutral-400 transition-all hover:text-emerald-400 active:scale-125 disabled:opacity-30"
+                title="Lower desk (-2 cm)"
+              >
+                ▼
+              </button>
+            </div>
+          </div>
+        </div>
+      </motion.div>
     </div>
   );
 }
