@@ -9,9 +9,7 @@ export const checkoutFormSchema = z.object({
     .string()
     .min(7, "Please enter a valid WhatsApp or phone number (min 7 digits)")
     .regex(/^[\d\s+\-().]+$/, "Please enter a valid phone number with country code"),
-  areaId: z
-    .string()
-    .min(1, "Please select your Bali delivery area"),
+  areaId: z.string().min(1, "Please select your Bali delivery area"),
   durationWeeks: z
     .number()
     .min(1, "Minimum rental duration is 1 week")

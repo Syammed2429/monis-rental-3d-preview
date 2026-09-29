@@ -15,9 +15,9 @@ export default function GlobalError({
 
   return (
     <html lang="en">
-      <body className="min-h-screen bg-[#0c0e14] text-neutral-100 flex items-center justify-center p-4 font-sans">
-        <div className="max-w-md w-full p-8 rounded-3xl bg-neutral-900 border border-white/10 text-center space-y-6 shadow-2xl">
-          <div className="w-14 h-14 rounded-2xl bg-rose-500/20 border border-rose-500/30 text-rose-400 flex items-center justify-center mx-auto text-2xl font-bold">
+      <body className="flex min-h-screen items-center justify-center bg-[#0c0e14] p-4 font-sans text-neutral-100">
+        <div className="w-full max-w-md space-y-6 rounded-3xl border border-white/10 bg-neutral-900 p-8 text-center shadow-2xl">
+          <div className="mx-auto flex h-14 w-14 items-center justify-center rounded-2xl border border-rose-500/30 bg-rose-500/20 text-2xl font-bold text-rose-400">
             !
           </div>
 
@@ -31,7 +31,7 @@ export default function GlobalError({
           <button
             type="button"
             onClick={() => reset()}
-            className="w-full bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-10 rounded-xl transition-all"
+            className="h-10 w-full rounded-xl bg-emerald-500 text-xs font-bold text-neutral-950 transition-all hover:bg-emerald-400"
           >
             Reload Application
           </button>

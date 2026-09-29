@@ -1,4 +1,4 @@
-import { WorkspaceConfig, DeskFinish, ChairColor, TimeOfDay } from "@/types/workspace";
+import { ChairColor, DeskFinish, TimeOfDay, WorkspaceConfig } from "@/types/workspace";
 import { PRODUCTS } from "@/data/products";
 
 const VALID_DESK_FINISHES: DeskFinish[] = [
@@ -40,7 +40,7 @@ export function serializeConfigToUrl(config: WorkspaceConfig): string {
     if (config.timeOfDay && config.timeOfDay !== "sunset") params.set("ambiance", config.timeOfDay);
 
     const query = params.toString();
-    return query ? `?${query}` : (typeof window !== "undefined" ? window.location.pathname : "");
+    return query ? `?${query}` : typeof window !== "undefined" ? window.location.pathname : "";
   } catch (err) {
     console.warn("Failed to serialize config to URL:", err);
     return "";

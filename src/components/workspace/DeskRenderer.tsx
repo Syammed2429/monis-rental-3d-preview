@@ -70,71 +70,71 @@ export function DeskRenderer({
 
   return (
     <div
-      className="absolute inset-x-0 bottom-6 flex flex-col items-center pointer-events-none select-none"
+      className="pointer-events-none absolute inset-x-0 bottom-6 flex flex-col items-center select-none"
       style={{ transformStyle: "preserve-3d" }}
     >
       {/* 1. Stationary Lower Base Columns & Heavy-Duty T-Feet (Firmly pinned to floor) */}
       <div
-        className="absolute bottom-0 w-115 max-w-115 h-34.5 pointer-events-none z-20"
+        className="pointer-events-none absolute bottom-0 z-20 h-34.5 w-115 max-w-115"
         style={{ transform: "translateZ(0px)", transformStyle: "preserve-3d" }}
       >
         {/* Left Stationary Column & T-Foot (Centerline: left 80px) */}
         <div
-          className="absolute bottom-0 left-20 -translate-x-1/2 flex flex-col items-center pointer-events-none"
+          className="pointer-events-none absolute bottom-0 left-20 flex -translate-x-1/2 flex-col items-center"
           style={{ transform: "translateZ(0px)" }}
         >
           {/* Bushing Collar at top of lower column */}
-          <div className="w-12 h-2.5 bg-neutral-950 rounded-t-sm border border-white/20 shadow-md flex items-center justify-center">
-            <div className="w-9 h-1 bg-black/90 rounded-xs" />
+          <div className="flex h-2.5 w-12 items-center justify-center rounded-t-sm border border-white/20 bg-neutral-950 shadow-md">
+            <div className="h-1 w-9 rounded-xs bg-black/90" />
           </div>
 
           {/* Lower Outer Stationary Column */}
           <div
-            className={`w-11 h-28 ${currentFinish.legColor} border-x border-white/10 shadow-xl relative overflow-hidden transition-colors duration-500`}
+            className={`h-28 w-11 ${currentFinish.legColor} relative overflow-hidden border-x border-white/10 shadow-xl transition-colors duration-500`}
           >
             {/* Subtle inner shadow indicating hollow column sleeve */}
-            <div className="absolute inset-x-0 top-0 h-3 bg-linear-to-b from-black/60 to-transparent pointer-events-none" />
-            <div className="absolute top-0 bottom-0 left-1 w-0.5 bg-white/10 pointer-events-none" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-3 bg-linear-to-b from-black/60 to-transparent" />
+            <div className="pointer-events-none absolute top-0 bottom-0 left-1 w-0.5 bg-white/10" />
           </div>
 
           {/* Heavy-Duty T-Foot resting flat on the floor */}
-          <div className="w-24 h-4 bg-neutral-900 rounded-lg border-t border-white/20 shadow-2xl flex justify-between px-2 items-center">
-            <div className="w-3 h-1.5 bg-neutral-700/80 rounded-full shadow-inner" />
-            <div className="w-8 h-1 bg-neutral-800 rounded-full" />
-            <div className="w-3 h-1.5 bg-neutral-700/80 rounded-full shadow-inner" />
+          <div className="flex h-4 w-24 items-center justify-between rounded-lg border-t border-white/20 bg-neutral-900 px-2 shadow-2xl">
+            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
+            <div className="h-1 w-8 rounded-full bg-neutral-800" />
+            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
           </div>
         </div>
 
         {/* Right Stationary Column & T-Foot (Centerline: right 80px) */}
         <div
-          className="absolute bottom-0 right-20 translate-x-1/2 flex flex-col items-center pointer-events-none"
+          className="pointer-events-none absolute right-20 bottom-0 flex translate-x-1/2 flex-col items-center"
           style={{ transform: "translateZ(0px)" }}
         >
           {/* Bushing Collar at top of lower column */}
-          <div className="w-12 h-2.5 bg-neutral-950 rounded-t-sm border border-white/20 shadow-md flex items-center justify-center">
-            <div className="w-9 h-1 bg-black/90 rounded-xs" />
+          <div className="flex h-2.5 w-12 items-center justify-center rounded-t-sm border border-white/20 bg-neutral-950 shadow-md">
+            <div className="h-1 w-9 rounded-xs bg-black/90" />
           </div>
 
           {/* Lower Outer Stationary Column */}
           <div
-            className={`w-11 h-28 ${currentFinish.legColor} border-x border-white/10 shadow-xl relative overflow-hidden transition-colors duration-500`}
+            className={`h-28 w-11 ${currentFinish.legColor} relative overflow-hidden border-x border-white/10 shadow-xl transition-colors duration-500`}
           >
-            <div className="absolute inset-x-0 top-0 h-3 bg-linear-to-b from-black/60 to-transparent pointer-events-none" />
-            <div className="absolute top-0 bottom-0 left-1 w-0.5 bg-white/10 pointer-events-none" />
+            <div className="pointer-events-none absolute inset-x-0 top-0 h-3 bg-linear-to-b from-black/60 to-transparent" />
+            <div className="pointer-events-none absolute top-0 bottom-0 left-1 w-0.5 bg-white/10" />
           </div>
 
           {/* Heavy-Duty T-Foot resting flat on the floor */}
-          <div className="w-24 h-4 bg-neutral-900 rounded-lg border-t border-white/20 shadow-2xl flex justify-between px-2 items-center">
-            <div className="w-3 h-1.5 bg-neutral-700/80 rounded-full shadow-inner" />
-            <div className="w-8 h-1 bg-neutral-800 rounded-full" />
-            <div className="w-3 h-1.5 bg-neutral-700/80 rounded-full shadow-inner" />
+          <div className="flex h-4 w-24 items-center justify-between rounded-lg border-t border-white/20 bg-neutral-900 px-2 shadow-2xl">
+            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
+            <div className="h-1 w-8 rounded-full bg-neutral-800" />
+            <div className="h-1.5 w-3 rounded-full bg-neutral-700/80 shadow-inner" />
           </div>
         </div>
       </div>
 
       {/* 2. Elevating Tabletop & Telescoping Upper Segments (Rises smoothly from lower base) */}
       <motion.div
-        className="absolute bottom-34.5 w-115 max-w-115 flex flex-col items-center z-20"
+        className="absolute bottom-34.5 z-20 flex w-115 max-w-115 flex-col items-center"
         style={{ transformStyle: "preserve-3d", transform: "translateZ(0px)" }}
         animate={{ y: elevationY }}
         transition={{ type: "spring", stiffness: 140, damping: 22 }}
@@ -142,7 +142,7 @@ export function DeskRenderer({
         {/* Mounted Items Atop Tabletop (Monitors & Peripherals) - Sibling container with zero pointer capture */}
         {children && (
           <div
-            className="absolute inset-x-0 top-0 h-0 pointer-events-none z-30"
+            className="pointer-events-none absolute inset-x-0 top-0 z-30 h-0"
             style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
           >
             {children}
@@ -152,38 +152,38 @@ export function DeskRenderer({
         {/* Dedicated Clickable Wooden Tabletop Surface Assembly */}
         <div
           onClick={onClick}
-          className="relative w-full z-20 pointer-events-auto cursor-pointer group/desk"
+          className="group/desk pointer-events-auto relative z-20 w-full cursor-pointer"
           title="Motorized Desk • Click to customize finish & height"
         >
           {/* Floating Hover Badge on Desk Surface */}
-          <div className="absolute -top-7 left-1/2 -translate-x-1/2 opacity-0 group-hover/desk:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-40">
+          <div className="pointer-events-none absolute -top-7 left-1/2 z-40 -translate-x-1/2 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[9px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/desk:opacity-100">
             🪵 Motorized Desk • Click to Customize
           </div>
 
           {/* Main Top Bevel & Shadow */}
           <div
-            className={`w-full h-11 rounded-2xl ${currentFinish.top} border-t ${currentFinish.bevel} shadow-xl relative overflow-hidden transition-colors duration-500`}
+            className={`h-11 w-full rounded-2xl ${currentFinish.top} border-t ${currentFinish.bevel} relative overflow-hidden shadow-xl transition-colors duration-500`}
           >
             {/* Subtle Timber Grain / Surface Luster */}
-            <div className="absolute inset-0 opacity-20 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.4),transparent_70%)]" />
+            <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_top,rgba(255,255,255,0.4),transparent_70%)] opacity-20" />
 
             {/* Rear Cable Grommet */}
-            <div className="absolute top-2 left-1/2 -translate-x-1/2 w-12 h-2.5 rounded-full bg-black/40 border border-white/10 flex items-center justify-center">
-              <div className="w-4 h-1 bg-black/70 rounded-full" />
+            <div className="absolute top-2 left-1/2 flex h-2.5 w-12 -translate-x-1/2 items-center justify-center rounded-full border border-white/10 bg-black/40">
+              <div className="h-1 w-4 rounded-full bg-black/70" />
             </div>
           </div>
 
           {/* Tabletop Front Edge (giving 3D depth) */}
           <div
-            className={`w-full h-3 rounded-b-xl ${currentFinish.edge} shadow-md transition-colors duration-500`}
+            className={`h-3 w-full rounded-b-xl ${currentFinish.edge} shadow-md transition-colors duration-500`}
           />
 
           {/* Under-desk Steel Frame Crossbar */}
-          <div className="mx-auto w-[82%] h-3 bg-neutral-900/90 rounded-b-md shadow-inner" />
+          <div className="mx-auto h-3 w-[82%] rounded-b-md bg-neutral-900/90 shadow-inner" />
 
           {/* Motorized Height Controller Display (Right Hand Side) */}
           <div
-            className="pointer-events-auto absolute -bottom-6 right-8 flex items-center gap-1.5 px-2.5 py-1 rounded-md bg-neutral-900 border border-white/15 shadow-xl hover:border-emerald-500/60 transition-all select-none z-30"
+            className="pointer-events-auto absolute right-8 -bottom-6 z-30 flex items-center gap-1.5 rounded-md border border-white/15 bg-neutral-900 px-2.5 py-1 shadow-xl transition-all select-none hover:border-emerald-500/60"
             title="Motorized Sit-Stand Memory Controller"
           >
             {/* Digital LED Screen - Click toggles Sitting/Standing preset */}
@@ -192,23 +192,23 @@ export function DeskRenderer({
                 e.stopPropagation();
                 onToggleHeight?.();
               }}
-              className="font-mono text-[11px] font-bold tracking-wider text-emerald-400 flex items-center gap-1 hover:text-emerald-300 transition-colors"
+              className="flex items-center gap-1 font-mono text-[11px] font-bold tracking-wider text-emerald-400 transition-colors hover:text-emerald-300"
               title="Click to toggle Sit/Stand preset"
             >
-              <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse" />
+              <span className="h-1.5 w-1.5 animate-pulse rounded-full bg-emerald-400" />
               <span suppressHydrationWarning>{Math.round(currentHeight)}</span>
               <span className="text-[9px] text-emerald-500/70">cm</span>
             </button>
 
             {/* Micro Touch Stepper Buttons */}
-            <div className="flex flex-col gap-0.5 pl-1.5 border-l border-neutral-700">
+            <div className="flex flex-col gap-0.5 border-l border-neutral-700 pl-1.5">
               <button
                 onClick={(e) => {
                   e.stopPropagation();
                   onStepHeight?.(2);
                 }}
                 disabled={currentHeight >= 118}
-                className="text-[9px] leading-none text-neutral-400 hover:text-emerald-400 active:scale-125 disabled:opacity-30 transition-all"
+                className="text-[9px] leading-none text-neutral-400 transition-all hover:text-emerald-400 active:scale-125 disabled:opacity-30"
                 title="Raise desk (+2 cm)"
               >
                 ▲
@@ -219,7 +219,7 @@ export function DeskRenderer({
                   onStepHeight?.(-2);
                 }}
                 disabled={currentHeight <= 70}
-                className="text-[9px] leading-none text-neutral-400 hover:text-emerald-400 active:scale-125 disabled:opacity-30 transition-all"
+                className="text-[9px] leading-none text-neutral-400 transition-all hover:text-emerald-400 active:scale-125 disabled:opacity-30"
                 title="Lower desk (-2 cm)"
               >
                 ▼
@@ -230,13 +230,13 @@ export function DeskRenderer({
 
         {/* Upper Telescoping Steel Leg Segments (Hanging from under-desk frame, sliding inside lower base columns) */}
         <div
-          className="absolute top-[13.5px] inset-x-0 pointer-events-none z-5"
+          className="pointer-events-none absolute inset-x-0 top-[13.5px] z-5"
           style={{ transform: "translateZ(0px)" }}
         >
           {/* Left Upper Telescoping Leg (Centerline: left 80px) */}
           <div className="absolute top-0 left-20 -translate-x-1/2">
             <div
-              className={`w-9 h-18 ${currentFinish.innerLegColor} shadow-md transition-colors duration-500 relative`}
+              className={`h-18 w-9 ${currentFinish.innerLegColor} relative shadow-md transition-colors duration-500`}
             >
               {/* Vertical machining guide stripe */}
               <div className="absolute inset-y-0 left-1 w-0.5 bg-white/10" />
@@ -247,7 +247,7 @@ export function DeskRenderer({
           {/* Right Upper Telescoping Leg (Centerline: right 80px) */}
           <div className="absolute top-0 right-20 translate-x-1/2">
             <div
-              className={`w-9 h-18 ${currentFinish.innerLegColor} shadow-md transition-colors duration-500 relative`}
+              className={`h-18 w-9 ${currentFinish.innerLegColor} relative shadow-md transition-colors duration-500`}
             >
               <div className="absolute inset-y-0 left-1 w-0.5 bg-white/10" />
               <div className="absolute inset-y-0 right-1 w-0.5 bg-black/20" />

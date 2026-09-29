@@ -26,8 +26,8 @@ export function FinishPicker<T extends string = string>({
   className = "",
 }: FinishPickerProps<T>) {
   return (
-    <div className={`pt-2 border-t border-white/5 ${className}`}>
-      {label && <span className="text-[11px] text-neutral-400 mb-1.5 block">{label}</span>}
+    <div className={`border-t border-white/5 pt-2 ${className}`}>
+      {label && <span className="mb-1.5 block text-[11px] text-neutral-400">{label}</span>}
       <div className="flex items-center gap-2">
         {options.map((opt) => {
           const isSelected = selectedId === opt.id;
@@ -40,10 +40,10 @@ export function FinishPicker<T extends string = string>({
                 sound.playClick();
                 onChange(opt.id);
               }}
-              className={`w-6 h-6 rounded-full flex-center transition-all ${
+              className={`flex-center h-6 w-6 rounded-full transition-all ${
                 isSelected
-                  ? "ring-2 ring-emerald-400 ring-offset-2 ring-offset-neutral-900 scale-110"
-                  : "hover:scale-105 opacity-80 hover:opacity-100 ring-1 ring-white/10"
+                  ? "scale-110 ring-2 ring-emerald-400 ring-offset-2 ring-offset-neutral-900"
+                  : "opacity-80 ring-1 ring-white/10 hover:scale-105 hover:opacity-100"
               }`}
               style={{ backgroundColor: opt.hex || opt.color }}
               title={opt.name}
@@ -51,7 +51,7 @@ export function FinishPicker<T extends string = string>({
             >
               {isSelected && (
                 <Check
-                  className={`w-3.5 h-3.5 stroke-[3] ${
+                  className={`h-3.5 w-3.5 stroke-[3] ${
                     opt.id === "minimal-white" ? "text-neutral-900" : "text-emerald-300"
                   }`}
                 />

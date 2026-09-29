@@ -1,10 +1,5 @@
-export type ProductCategory = 
-  | "desks" 
-  | "chairs" 
-  | "monitors" 
-  | "peripherals" 
-  | "lighting" 
-  | "bali-lifestyle";
+export type ProductCategory =
+  "desks" | "chairs" | "monitors" | "peripherals" | "lighting" | "bali-lifestyle";
 
 export type DeskFinish = "natural-bamboo" | "walnut" | "matte-black" | "minimal-white";
 export type ChairColor = "stealth-black" | "mineral-grey" | "cognac-leather" | "terracotta";
@@ -43,7 +38,7 @@ export interface WorkspaceConfig {
   plantId: string | null;
   coffeeId: string | null;
   outdoorId: string | null; // surfboard or scooter
-  relaxId: string | null;  // beanbag
+  relaxId: string | null; // beanbag
   timeOfDay: TimeOfDay;
 }
 

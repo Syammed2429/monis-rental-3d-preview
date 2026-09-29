@@ -1,32 +1,23 @@
 "use client";
 
 import { useState } from "react";
-import { useForm, Controller, useWatch } from "react-hook-form";
+import { Controller, useForm, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import confetti from "canvas-confetti";
-import { WorkspaceConfig, Currency } from "@/types/workspace";
-import { BALI_DELIVERY_AREAS } from "@/data/products";
-import { checkoutFormSchema, CheckoutFormData } from "@/lib/validations/checkout";
-import { Slider } from "@/components/ui/slider";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Textarea } from "@/components/ui/textarea";
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import {
-  CheckCircle2,
-  Calendar,
-  ShieldCheck,
-  Truck,
+  AlertCircle,
   ArrowRight,
-  Share2,
+  Calendar,
   Check,
+  CheckCircle2,
   ChevronLeft,
   MessageCircle,
-  AlertCircle,
+  Share2,
+  ShieldCheck,
   ShoppingBag,
+  Truck,
 } from "lucide-react";
+import { Currency, WorkspaceConfig } from "@/types/workspace";
 import { sound } from "@/lib/audio";
 import {
   calculateWorkspaceTotals,
@@ -34,6 +25,21 @@ import {
   generateBookingRef,
   generateWhatsAppOrderUrl,
 } from "@/lib/pricing";
+import { CheckoutFormData, checkoutFormSchema } from "@/lib/validations/checkout";
+import { BALI_DELIVERY_AREAS } from "@/data/products";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { Slider } from "@/components/ui/slider";
+import { Textarea } from "@/components/ui/textarea";
 
 interface CheckoutPanelProps {
   config: WorkspaceConfig;
@@ -80,7 +86,8 @@ export function CheckoutPanel({ config, currency, onCancel }: CheckoutPanelProps
     discountedWeeklyIDR,
   } = calculateWorkspaceTotals(config, durationWeeks);
 
-  const deliveryArea = BALI_DELIVERY_AREAS.find((a) => a.id === selectedAreaId) || BALI_DELIVERY_AREAS[0];
+  const deliveryArea =
+    BALI_DELIVERY_AREAS.find((a) => a.id === selectedAreaId) || BALI_DELIVERY_AREAS[0];
   const deliveryFeeUSD = deliveryArea.feeUSD;
   const deliveryFeeIDR = deliveryFeeUSD * 16000;
 
@@ -136,24 +143,26 @@ Designed on monis.rent`;
   });
 
   return (
-    <div className="w-full h-full flex flex-col bg-neutral-900/70 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
+    <div className="flex h-full w-full flex-col overflow-hidden rounded-3xl border border-white/10 bg-neutral-900/70 shadow-2xl backdrop-blur-xl">
       {/* Panel Header */}
-      <div className="flex-between px-4 py-3 border-b border-white/10 bg-neutral-950/60 shrink-0">
+      <div className="flex-between shrink-0 border-b border-white/10 bg-neutral-950/60 px-4 py-3">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 flex-center">
-            <ShoppingBag className="w-3.5 h-3.5" />
+          <div className="flex-center h-7 w-7 rounded-xl border border-emerald-500/25 bg-emerald-500/15 text-emerald-400">
+            <ShoppingBag className="h-3.5 w-3.5" />
           </div>
           <div>
-            <p className="text-sm font-bold text-white leading-none">
+            <p className="text-sm leading-none font-bold text-white">
               {orderConfirmed ? "Booking Confirmed 🌴" : "Rent Your Setup"}
             </p>
-            <p className="text-[10px] text-neutral-400 mt-0.5">
-              {orderConfirmed ? `Ref #MN-BALI-${bookingRef}` : "Zero deposit · Next-day Bali delivery"}
+            <p className="mt-0.5 text-[10px] text-neutral-400">
+              {orderConfirmed
+                ? `Ref #MN-BALI-${bookingRef}`
+                : "Zero deposit · Next-day Bali delivery"}
             </p>
           </div>
         </div>
         <div className="flex items-center gap-2">
-          <Badge className="bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 text-[10px] px-2 py-0.5 hidden sm:flex">
+          <Badge className="hidden border border-emerald-500/20 bg-emerald-500/10 px-2 py-0.5 text-[10px] text-emerald-400 sm:flex">
             Fast Dispatch
           </Badge>
           {!orderConfirmed && (
@@ -162,9 +171,9 @@ Designed on monis.rent`;
                 sound.playClick();
                 onCancel();
               }}
-              className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-white/5"
+              className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-neutral-400 transition-colors hover:bg-white/5 hover:text-white"
             >
-              <ChevronLeft className="w-3.5 h-3.5" />
+              <ChevronLeft className="h-3.5 w-3.5" />
               <span>Designer</span>
             </button>
           )}
@@ -175,9 +184,9 @@ Designed on monis.rent`;
       <div className="flex-1 overflow-y-auto">
         {orderConfirmed ? (
           /* Confirmation View */
-          <div className="p-5 space-y-5 text-center">
-            <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex-center mx-auto shadow-lg shadow-emerald-500/20 animate-bounce">
-              <CheckCircle2 className="w-7 h-7" />
+          <div className="space-y-5 p-5 text-center">
+            <div className="mx-auto flex-center h-14 w-14 animate-bounce rounded-full border border-emerald-500/40 bg-emerald-500/20 text-emerald-400 shadow-lg shadow-emerald-500/20">
+              <CheckCircle2 className="h-7 w-7" />
             </div>
 
             <div className="space-y-1">
@@ -188,45 +197,55 @@ Designed on monis.rent`;
             </div>
 
             {/* Booking Card */}
-            <div className="p-4 rounded-2xl bg-neutral-950/80 border border-white/10 text-left space-y-3 font-mono text-xs">
-              <div className="flex-between pb-2 border-b border-white/10">
-                <span className="text-neutral-400 text-[10px] uppercase font-sans">Booking Ref</span>
-                <span className="text-emerald-400 font-bold">#MN-BALI-{bookingRef}</span>
+            <div className="space-y-3 rounded-2xl border border-white/10 bg-neutral-950/80 p-4 text-left font-mono text-xs">
+              <div className="flex-between border-b border-white/10 pb-2">
+                <span className="font-sans text-[10px] text-neutral-400 uppercase">
+                  Booking Ref
+                </span>
+                <span className="font-bold text-emerald-400">#MN-BALI-{bookingRef}</span>
               </div>
               <div className="flex-between">
-                <span className="text-neutral-400 text-[10px] font-sans">Guest</span>
-                <span className="text-white truncate max-w-40">{submittedData?.fullName}</span>
+                <span className="font-sans text-[10px] text-neutral-400">Guest</span>
+                <span className="max-w-40 truncate text-white">{submittedData?.fullName}</span>
               </div>
               <div className="flex-between">
-                <span className="text-neutral-400 text-[10px] font-sans">WhatsApp</span>
+                <span className="font-sans text-[10px] text-neutral-400">WhatsApp</span>
                 <span className="text-white">{submittedData?.whatsapp}</span>
               </div>
               <div className="flex-between">
-                <span className="text-neutral-400 text-[10px] font-sans">Villa Area</span>
+                <span className="font-sans text-[10px] text-neutral-400">Villa Area</span>
                 <span className="text-white">{deliveryArea.name}</span>
               </div>
               <div className="flex-between">
-                <span className="text-neutral-400 text-[10px] font-sans">Duration</span>
-                <span className="text-white">{durationWeeks} wks ({discountBadge})</span>
+                <span className="font-sans text-[10px] text-neutral-400">Duration</span>
+                <span className="text-white">
+                  {durationWeeks} wks ({discountBadge})
+                </span>
               </div>
-              <div className="flex-between pt-2 border-t border-white/10 font-bold">
-                <span className="text-white text-[10px] font-sans">Total Rental</span>
-                <span className="text-emerald-400 text-sm">
+              <div className="flex-between border-t border-white/10 pt-2 font-bold">
+                <span className="font-sans text-[10px] text-white">Total Rental</span>
+                <span className="text-sm text-emerald-400">
                   {formatPrice(totalUSD, totalIDR, currency)}
                 </span>
               </div>
             </div>
 
             {/* Delivery Timeline Pill */}
-            <div className="p-3 bg-neutral-950/60 border border-white/10 rounded-2xl space-y-2 text-left">
-              <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">What happens next</p>
+            <div className="space-y-2 rounded-2xl border border-white/10 bg-neutral-950/60 p-3 text-left">
+              <p className="text-[10px] font-semibold tracking-wider text-neutral-400 uppercase">
+                What happens next
+              </p>
               <div className="space-y-2 text-xs">
                 <div className="flex items-start gap-2 text-neutral-300">
-                  <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex-center text-[10px] shrink-0 mt-0.5 font-mono">1</div>
+                  <div className="mt-0.5 flex-center h-4 w-4 shrink-0 rounded-full bg-emerald-500/20 font-mono text-[10px] text-emerald-400">
+                    1
+                  </div>
                   <span>Our dispatch team contacts you on WhatsApp within 1 hour.</span>
                 </div>
                 <div className="flex items-start gap-2 text-neutral-300">
-                  <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex-center text-[10px] shrink-0 mt-0.5 font-mono">2</div>
+                  <div className="mt-0.5 flex-center h-4 w-4 shrink-0 rounded-full bg-emerald-500/20 font-mono text-[10px] text-emerald-400">
+                    2
+                  </div>
                   <span>Next-day courier delivery & white-glove assembly at your villa.</span>
                 </div>
               </div>
@@ -237,9 +256,9 @@ Designed on monis.rent`;
               href={whatsappUrl}
               target="_blank"
               rel="noopener noreferrer"
-              className="w-full bg-[#25D366] hover:bg-[#20ba59] text-neutral-950 font-bold text-xs h-10 rounded-xl flex-center gap-2 shadow-lg shadow-[#25D366]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+              className="flex-center h-10 w-full gap-2 rounded-xl bg-[#25D366] text-xs font-bold text-neutral-950 shadow-lg shadow-[#25D366]/20 transition-all hover:scale-[1.02] hover:bg-[#20ba59] active:scale-[0.98]"
             >
-              <MessageCircle className="w-4 h-4 fill-neutral-950" />
+              <MessageCircle className="h-4 w-4 fill-neutral-950" />
               <span>Confirm on WhatsApp Instantly</span>
             </a>
 
@@ -247,14 +266,18 @@ Designed on monis.rent`;
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                className="flex-1 border-white/15 text-xs h-9 hover:bg-white/5 gap-1.5"
+                className="h-9 flex-1 gap-1.5 border-white/15 text-xs hover:bg-white/5"
                 onClick={handleCopySummary}
               >
-                {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
+                {isCopied ? (
+                  <Check className="h-3.5 w-3.5 text-emerald-400" />
+                ) : (
+                  <Share2 className="h-3.5 w-3.5" />
+                )}
                 {isCopied ? "Copied!" : "Copy Summary"}
               </Button>
               <Button
-                className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-9"
+                className="h-9 flex-1 bg-emerald-500 text-xs font-bold text-neutral-950 hover:bg-emerald-400"
                 onClick={() => {
                   onCancel();
                   setOrderConfirmed(false);
@@ -267,14 +290,14 @@ Designed on monis.rent`;
           </div>
         ) : (
           /* Checkout Form */
-          <form onSubmit={handleSubmit(onValidSubmit)} className="p-4 space-y-5">
+          <form onSubmit={handleSubmit(onValidSubmit)} className="space-y-5 p-4">
             {/* Items Summary */}
             <div className="space-y-2">
               <div className="flex-between">
-                <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-semibold">
+                <span className="text-[10px] font-semibold tracking-wider text-neutral-400 uppercase">
                   Your Setup ({items.length} items)
                 </span>
-                <span className="text-[11px] text-emerald-400 font-mono">
+                <span className="font-mono text-[11px] text-emerald-400">
                   {formatPrice(baseWeeklyUSD, baseWeeklyIDR, currency)}/wk
                 </span>
               </div>
@@ -282,15 +305,15 @@ Designed on monis.rent`;
                 {items.map((item, i) => (
                   <div
                     key={i}
-                    className="flex-between p-2 rounded-xl bg-neutral-950/60 border border-white/5 text-xs gap-2"
+                    className="flex-between gap-2 rounded-xl border border-white/5 bg-neutral-950/60 p-2 text-xs"
                   >
-                    <div className="flex items-center gap-2.5 min-w-0">
-                      <div className="truncate mr-1">
-                        <div className="text-white font-medium truncate">{item.name}</div>
-                        <div className="text-neutral-500 text-[10px] font-mono">{item.brand}</div>
+                    <div className="flex min-w-0 items-center gap-2.5">
+                      <div className="mr-1 truncate">
+                        <div className="truncate font-medium text-white">{item.name}</div>
+                        <div className="font-mono text-[10px] text-neutral-500">{item.brand}</div>
                       </div>
                     </div>
-                    <span className="text-neutral-300 font-mono shrink-0 text-right">
+                    <span className="shrink-0 text-right font-mono text-neutral-300">
                       {formatPrice(item.weeklyPriceUSD, item.weeklyPriceIDR, currency)}
                       <span className="text-[9px] text-neutral-500">/wk</span>
                     </span>
@@ -300,19 +323,22 @@ Designed on monis.rent`;
             </div>
 
             {/* Duration Slider */}
-            <div className="p-3.5 rounded-2xl bg-neutral-950/60 border border-white/10 space-y-3">
+            <div className="space-y-3 rounded-2xl border border-white/10 bg-neutral-950/60 p-3.5">
               <div className="flex-between">
                 <Label className="text-xs font-semibold text-white">
                   Duration:{" "}
-                  <span className="text-emerald-400 font-bold font-mono">
+                  <span className="font-mono font-bold text-emerald-400">
                     {durationWeeks} {durationWeeks === 1 ? "wk" : "wks"}
                   </span>
-                  <span className="text-neutral-500 text-[10px] ml-1.5 font-normal">
+                  <span className="ml-1.5 text-[10px] font-normal text-neutral-500">
                     (~{Math.round((durationWeeks / 4.33) * 10) / 10} mo)
                   </span>
                 </Label>
                 {discountRate > 0 && (
-                  <Badge variant="outline" className="bg-emerald-500/10 text-emerald-300 border-emerald-500/30 text-[10px] font-mono">
+                  <Badge
+                    variant="outline"
+                    className="border-emerald-500/30 bg-emerald-500/10 font-mono text-[10px] text-emerald-300"
+                  >
                     {discountBadge}
                   </Badge>
                 )}
@@ -334,7 +360,7 @@ Designed on monis.rent`;
                   />
                 )}
               />
-              <div className="flex justify-between text-[9px] text-neutral-500 font-mono">
+              <div className="flex justify-between font-mono text-[9px] text-neutral-500">
                 <span>1 wk</span>
                 <span>4 wks −10%</span>
                 <span>8 wks −20%</span>
@@ -344,7 +370,7 @@ Designed on monis.rent`;
 
             {/* Delivery Details */}
             <div className="space-y-3">
-              <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-semibold">
+              <span className="text-[10px] font-semibold tracking-wider text-neutral-400 uppercase">
                 Delivery Details
               </span>
 
@@ -357,24 +383,28 @@ Designed on monis.rent`;
                     control={control}
                     render={({ field }) => (
                       <Select value={field.value} onValueChange={(v) => v && field.onChange(v)}>
-                        <SelectTrigger className="bg-neutral-950 border-white/15 text-xs text-white h-9 font-sans w-full px-3">
+                        <SelectTrigger className="h-9 w-full border-white/15 bg-neutral-950 px-3 font-sans text-xs text-white">
                           <SelectValue placeholder="Area">{deliveryArea.name}</SelectValue>
                         </SelectTrigger>
                         <SelectContent
                           align="start"
                           side="bottom"
                           sideOffset={6}
-                          className="bg-neutral-950/95 backdrop-blur-xl border border-white/15 text-white min-w-[320px] max-w-95 p-1.5 font-sans shadow-2xl rounded-2xl"
+                          className="max-w-95 min-w-[320px] rounded-2xl border border-white/15 bg-neutral-950/95 p-1.5 font-sans text-white shadow-2xl backdrop-blur-xl"
                         >
                           {BALI_DELIVERY_AREAS.map((a) => (
-                            <SelectItem key={a.id} value={a.id} className="text-xs py-2 px-2.5 rounded-xl cursor-pointer">
+                            <SelectItem
+                              key={a.id}
+                              value={a.id}
+                              className="cursor-pointer rounded-xl px-2.5 py-2 text-xs"
+                            >
                               <div className="flex-between w-full gap-3">
                                 <span className="font-medium text-white">{a.name}</span>
                                 <span
-                                  className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-semibold shrink-0 ${
+                                  className={`shrink-0 rounded px-1.5 py-0.5 font-mono text-[10px] font-semibold ${
                                     a.feeUSD === 0
-                                      ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
-                                      : "bg-amber-500/15 text-amber-300 border border-amber-500/30"
+                                      ? "border border-emerald-500/30 bg-emerald-500/15 text-emerald-400"
+                                      : "border border-amber-500/30 bg-amber-500/15 text-amber-300"
                                   }`}
                                 >
                                   {a.feeUSD === 0 ? "FREE" : `+$${a.feeUSD}`}
@@ -391,8 +421,8 @@ Designed on monis.rent`;
                 {/* ETA */}
                 <div className="space-y-1">
                   <Label className="text-[11px] text-neutral-300">ETA</Label>
-                  <div className="h-9 px-2.5 rounded-md bg-neutral-950 border border-white/10 flex items-center text-[11px] text-emerald-400 font-mono gap-1.5">
-                    <Calendar className="w-3 h-3 shrink-0" />
+                  <div className="flex h-9 items-center gap-1.5 rounded-md border border-white/10 bg-neutral-950 px-2.5 font-mono text-[11px] text-emerald-400">
+                    <Calendar className="h-3 w-3 shrink-0" />
                     <span className="truncate">{deliveryArea.estimatedDelivery}</span>
                   </div>
                 </div>
@@ -411,13 +441,16 @@ Designed on monis.rent`;
                     aria-invalid={errors.fullName ? "true" : "false"}
                     aria-describedby={errors.fullName ? "name-error" : undefined}
                     placeholder="Alex Rivera"
-                    className={`bg-neutral-950 text-xs text-white h-9 ${
+                    className={`h-9 bg-neutral-950 text-xs text-white ${
                       errors.fullName ? "border-rose-500" : "border-white/15"
                     }`}
                   />
                   {errors.fullName && (
-                    <p id="name-error" className="text-[10px] text-rose-400 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" /> {errors.fullName.message}
+                    <p
+                      id="name-error"
+                      className="flex items-center gap-1 text-[10px] text-rose-400"
+                    >
+                      <AlertCircle className="h-3 w-3" /> {errors.fullName.message}
                     </p>
                   )}
                 </div>
@@ -432,13 +465,16 @@ Designed on monis.rent`;
                     aria-invalid={errors.whatsapp ? "true" : "false"}
                     aria-describedby={errors.whatsapp ? "whatsapp-error" : undefined}
                     placeholder="+62 812 ..."
-                    className={`bg-neutral-950 text-xs text-white h-9 ${
+                    className={`h-9 bg-neutral-950 text-xs text-white ${
                       errors.whatsapp ? "border-rose-500" : "border-white/15"
                     }`}
                   />
                   {errors.whatsapp && (
-                    <p id="whatsapp-error" className="text-[10px] text-rose-400 flex items-center gap-1">
-                      <AlertCircle className="w-3 h-3" /> {errors.whatsapp.message}
+                    <p
+                      id="whatsapp-error"
+                      className="flex items-center gap-1 text-[10px] text-rose-400"
+                    >
+                      <AlertCircle className="h-3 w-3" /> {errors.whatsapp.message}
                     </p>
                   )}
                 </div>
@@ -456,29 +492,32 @@ Designed on monis.rent`;
                   aria-invalid={errors.villaAddress ? "true" : "false"}
                   aria-describedby={errors.villaAddress ? "address-error" : undefined}
                   placeholder="Villa Luna Canggu, Jl. Pantai Batu Bolong No. 12, Room 3"
-                  className={`bg-neutral-950 text-xs text-white h-16 resize-none ${
+                  className={`h-16 resize-none bg-neutral-950 text-xs text-white ${
                     errors.villaAddress ? "border-rose-500" : "border-white/15"
                   }`}
                 />
                 {errors.villaAddress && (
-                  <p id="address-error" className="text-[10px] text-rose-400 flex items-center gap-1">
-                    <AlertCircle className="w-3 h-3" /> {errors.villaAddress.message}
+                  <p
+                    id="address-error"
+                    className="flex items-center gap-1 text-[10px] text-rose-400"
+                  >
+                    <AlertCircle className="h-3 w-3" /> {errors.villaAddress.message}
                   </p>
                 )}
               </div>
             </div>
 
             {/* Inclusions strip */}
-            <div className="px-3 py-2 bg-emerald-950/20 border border-emerald-500/20 rounded-xl flex-between text-xs text-emerald-300">
+            <div className="flex-between rounded-xl border border-emerald-500/20 bg-emerald-950/20 px-3 py-2 text-xs text-emerald-300">
               <div className="flex items-center gap-1.5">
-                <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                <ShieldCheck className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
                 <span>White-glove setup · Surge protectors included</span>
               </div>
-              <span className="font-bold font-mono shrink-0">FREE</span>
+              <span className="shrink-0 font-mono font-bold">FREE</span>
             </div>
 
             {/* Pricing breakdown */}
-            <div className="border-t border-white/10 pt-3 space-y-1.5 text-xs font-mono">
+            <div className="space-y-1.5 border-t border-white/10 pt-3 font-mono text-xs">
               <div className="flex-between text-neutral-400">
                 <span>Subtotal ({durationWeeks} wks):</span>
                 <span>{formatPrice(subtotalUSD, subtotalIDR, currency)}</span>
@@ -492,14 +531,20 @@ Designed on monis.rent`;
               <div className="flex-between text-neutral-400">
                 <span>Delivery & Assembly:</span>
                 <span>
-                  {deliveryFeeUSD === 0 ? "FREE" : formatPrice(deliveryFeeUSD, deliveryFeeIDR, currency)}
+                  {deliveryFeeUSD === 0
+                    ? "FREE"
+                    : formatPrice(deliveryFeeUSD, deliveryFeeIDR, currency)}
                 </span>
               </div>
-              <div className="flex-between text-sm font-bold text-white pt-2 border-t border-white/10">
-                <span>Total ({durationWeeks} {durationWeeks === 1 ? "week" : "weeks"}):</span>
-                <span className="text-emerald-400">{formatPrice(totalUSD, totalIDR, currency)}</span>
+              <div className="flex-between border-t border-white/10 pt-2 text-sm font-bold text-white">
+                <span>
+                  Total ({durationWeeks} {durationWeeks === 1 ? "week" : "weeks"}):
+                </span>
+                <span className="text-emerald-400">
+                  {formatPrice(totalUSD, totalIDR, currency)}
+                </span>
               </div>
-              <div className="text-[10px] text-neutral-400 font-sans text-right">
+              <div className="text-right font-sans text-[10px] text-neutral-400">
                 (~{formatPrice(discountedWeeklyUSD, discountedWeeklyIDR, currency)}/week)
               </div>
             </div>
@@ -508,11 +553,11 @@ Designed on monis.rent`;
             <Button
               type="submit"
               disabled={isSubmitting}
-              className="w-full bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-10 rounded-xl shadow-lg shadow-emerald-500/20 gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
+              className="h-10 w-full gap-2 rounded-xl bg-emerald-500 text-xs font-bold text-neutral-950 shadow-lg shadow-emerald-500/20 transition-all hover:scale-[1.01] hover:bg-emerald-400 active:scale-[0.99]"
             >
-              <Truck className="w-4 h-4" />
+              <Truck className="h-4 w-4" />
               <span>Confirm & Schedule Next-Day Delivery</span>
-              <ArrowRight className="w-3.5 h-3.5" />
+              <ArrowRight className="h-3.5 w-3.5" />
             </Button>
           </form>
         )}

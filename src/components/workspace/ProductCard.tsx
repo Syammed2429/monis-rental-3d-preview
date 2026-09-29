@@ -1,12 +1,12 @@
 "use client";
 
 import React from "react";
-import { ProductItem, Currency } from "@/types/workspace";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
+import { Check, Plus } from "lucide-react";
+import { Currency, ProductItem } from "@/types/workspace";
+import { formatPrice } from "@/lib/pricing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Check, Plus } from "lucide-react";
-import { formatPrice } from "@/lib/pricing";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 interface ProductCardProps {
   item: ProductItem;
@@ -40,69 +40,67 @@ export function ProductCard({
     <Card
       id={`product-card-${item.id}`}
       onClick={onSelect}
-      className={`border transition-all duration-300 cursor-pointer overflow-hidden ${
+      className={`cursor-pointer overflow-hidden border transition-all duration-300 ${
         isFocused
-          ? "bg-neutral-950/90 border-emerald-400 ring-2 ring-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)] scale-[1.01]"
+          ? "scale-[1.01] border-emerald-400 bg-neutral-950/90 shadow-[0_0_25px_rgba(16,185,129,0.35)] ring-2 ring-emerald-400"
           : isSelected
-          ? "bg-neutral-950/80 border-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
-          : "bg-neutral-950/40 border-white/10 hover:border-white/20 hover:bg-neutral-950/60"
+            ? "border-emerald-500/80 bg-neutral-950/80 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
+            : "border-white/10 bg-neutral-950/40 hover:border-white/20 hover:bg-neutral-950/60"
       } ${className}`}
     >
-      <CardHeader className="p-3.5 pb-2 space-y-1.5">
+      <CardHeader className="space-y-1.5 p-3.5 pb-2">
         <div className="flex-between gap-2">
           <div>
-            <div className="flex items-center gap-1.5 flex-wrap">
+            <div className="flex flex-wrap items-center gap-1.5">
               {item.brand && (
-                <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
+                <span className="font-mono text-[10px] font-semibold tracking-wider text-emerald-400 uppercase">
                   {item.brand}
                 </span>
               )}
               {item.tag && (
                 <Badge
                   variant="secondary"
-                  className="text-[10px] px-1.5 py-0 h-4 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
+                  className="h-4 border border-emerald-500/20 bg-emerald-500/10 px-1.5 py-0 text-[10px] text-emerald-300"
                 >
                   {item.tag}
                 </Badge>
               )}
               {isFocused && (
-                <Badge className="text-[9px] px-1.5 py-0 h-4 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
+                <Badge className="h-4 animate-pulse border border-emerald-500/40 bg-emerald-500/20 px-1.5 py-0 text-[9px] text-emerald-300">
                   Active in 3D
                 </Badge>
               )}
               {item.popular && item.tag !== "Most Popular" && (
-                <Badge className="bg-emerald-500/20 text-emerald-300 border-emerald-500/40 text-[9px] hover:bg-emerald-500/30">
+                <Badge className="border-emerald-500/40 bg-emerald-500/20 text-[9px] text-emerald-300 hover:bg-emerald-500/30">
                   Most Popular
                 </Badge>
               )}
             </div>
-            <CardTitle className="text-sm font-semibold text-white mt-1">
-              {item.name}
-            </CardTitle>
+            <CardTitle className="mt-1 text-sm font-semibold text-white">{item.name}</CardTitle>
           </div>
 
-          <div className="text-right shrink-0">
-            <div className="text-sm font-bold text-white font-mono">
+          <div className="shrink-0 text-right">
+            <div className="font-mono text-sm font-bold text-white">
               {pricePrefix}
               {formatPrice(item.weeklyPriceUSD, item.weeklyPriceIDR, currency)}
-              <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
+              <span className="text-[10px] font-normal text-neutral-400">/wk</span>
             </div>
           </div>
         </div>
 
-        <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
+        <CardDescription className="mt-1 line-clamp-2 text-xs text-neutral-400">
           {item.description}
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="p-3.5 pt-1 space-y-3">
+      <CardContent className="space-y-3 p-3.5 pt-1">
         {/* Specs Tags */}
         {item.specs && item.specs.length > 0 && (
           <div className="flex flex-wrap gap-1.5">
             {item.specs.map((spec, i) => (
               <span
                 key={i}
-                className="text-[10px] bg-neutral-900 text-neutral-300 px-2 py-0.5 rounded-md border border-white/5"
+                className="rounded-md border border-white/5 bg-neutral-900 px-2 py-0.5 text-[10px] text-neutral-300"
               >
                 {spec}
               </span>
@@ -118,20 +116,20 @@ export function ProductCard({
           size="sm"
           variant={isSelected ? "default" : "outline"}
           onClick={onSelect}
-          className={`w-full text-xs h-9 transition-all ${
+          className={`h-9 w-full text-xs transition-all ${
             isSelected
-              ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-semibold"
-              : "border-white/10 hover:border-emerald-500/40 text-neutral-300 hover:text-white"
+              ? "bg-emerald-500 font-semibold text-neutral-950 hover:bg-emerald-400"
+              : "border-white/10 text-neutral-300 hover:border-emerald-500/40 hover:text-white"
           }`}
         >
           {isSelected ? (
             <span className="flex-center gap-1.5">
-              <Check className="w-3.5 h-3.5 text-neutral-950 stroke-[3]" />
+              <Check className="h-3.5 w-3.5 stroke-[3] text-neutral-950" />
               <span>{selectedLabel || defaultSelectedLabel}</span>
             </span>
           ) : (
             <span className="flex-center gap-1.5">
-              <Plus className="w-3.5 h-3.5 text-neutral-400" />
+              <Plus className="h-3.5 w-3.5 text-neutral-400" />
               <span>{unselectedLabel || defaultUnselectedLabel}</span>
             </span>
           )}

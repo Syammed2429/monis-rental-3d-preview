@@ -1,22 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
+import { Lightbulb, SlidersHorizontal } from "lucide-react";
 import {
-  ProductItem,
-  ProductCategory,
-  WorkspaceConfig,
+  ChairColor,
   Currency,
   DeskFinish,
-  ChairColor,
+  ProductCategory,
+  ProductItem,
+  WorkspaceConfig,
 } from "@/types/workspace";
-import { PRODUCTS } from "@/data/products";
-import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { ScrollArea } from "@/components/ui/scroll-area";
-import { Button } from "@/components/ui/button";
-import { Lightbulb, SlidersHorizontal } from "lucide-react";
 import { sound } from "@/lib/audio";
-import { ProductCard } from "@/components/workspace/ProductCard";
+import { PRODUCTS } from "@/data/products";
+import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { FinishPicker } from "@/components/workspace/FinishPicker";
+import { ProductCard } from "@/components/workspace/ProductCard";
 
 interface ConfiguratorSidebarProps {
   config: WorkspaceConfig;
@@ -124,8 +124,14 @@ export function ConfiguratorSidebar({
       onChangeConfig((prev) => ({ ...prev, plantId: prev.plantId ? null : productId }));
     } else if (productId === "lifestyle-coffee-nespresso") {
       onChangeConfig((prev) => ({ ...prev, coffeeId: prev.coffeeId ? null : productId }));
-    } else if (productId === "lifestyle-outdoor-surfboard" || productId === "lifestyle-outdoor-scooter") {
-      onChangeConfig((prev) => ({ ...prev, outdoorId: prev.outdoorId === productId ? null : productId }));
+    } else if (
+      productId === "lifestyle-outdoor-surfboard" ||
+      productId === "lifestyle-outdoor-scooter"
+    ) {
+      onChangeConfig((prev) => ({
+        ...prev,
+        outdoorId: prev.outdoorId === productId ? null : productId,
+      }));
     } else if (productId === "lifestyle-relax-beanbag") {
       onChangeConfig((prev) => ({ ...prev, relaxId: prev.relaxId ? null : productId }));
     } else if (productId === "lifestyle-laptop-stand") {
@@ -136,22 +142,24 @@ export function ConfiguratorSidebar({
   const isLifestyleActive = (productId: string) => {
     if (productId === "lifestyle-plant-monstera") return Boolean(config.plantId);
     if (productId === "lifestyle-coffee-nespresso") return Boolean(config.coffeeId);
-    if (productId === "lifestyle-outdoor-surfboard") return config.outdoorId === "lifestyle-outdoor-surfboard";
-    if (productId === "lifestyle-outdoor-scooter") return config.outdoorId === "lifestyle-outdoor-scooter";
+    if (productId === "lifestyle-outdoor-surfboard")
+      return config.outdoorId === "lifestyle-outdoor-surfboard";
+    if (productId === "lifestyle-outdoor-scooter")
+      return config.outdoorId === "lifestyle-outdoor-scooter";
     if (productId === "lifestyle-relax-beanbag") return Boolean(config.relaxId);
     if (productId === "lifestyle-laptop-stand") return Boolean(config.laptopStand);
     return false;
   };
 
   return (
-    <div className="flex flex-col h-full bg-neutral-900/60 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+    <div className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/10 bg-neutral-900/60 shadow-2xl backdrop-blur-xl">
       {/* Top Header */}
-      <div className="p-3 sm:p-4 border-b border-white/10 flex-between shrink-0 bg-neutral-950/40">
+      <div className="flex-between shrink-0 border-b border-white/10 bg-neutral-950/40 p-3 sm:p-4">
         <div className="flex items-center gap-2">
-          <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
-          <h2 className="text-sm font-semibold text-white tracking-tight">Customize Equipment</h2>
+          <SlidersHorizontal className="h-4 w-4 text-emerald-400" />
+          <h2 className="text-sm font-semibold tracking-tight text-white">Customize Equipment</h2>
         </div>
-        <span className="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
+        <span className="flex items-center gap-1 font-mono text-[11px] text-emerald-400">
           Next-day Bali delivery
         </span>
       </div>
@@ -160,16 +168,16 @@ export function ConfiguratorSidebar({
       <Tabs
         value={activeCategory}
         onValueChange={handleTabChange}
-        className="flex-1 flex flex-col min-h-0"
+        className="flex min-h-0 flex-1 flex-col"
       >
-        <div className="p-2.5 pb-1 border-b border-white/5 bg-neutral-950/20 shrink-0">
+        <div className="shrink-0 border-b border-white/5 bg-neutral-950/20 p-2.5 pb-1">
           <ScrollArea className="w-full pb-1">
-            <TabsList className="flex items-center gap-1 bg-neutral-950/80 p-1 rounded-xl border border-white/10 w-max min-w-full">
+            <TabsList className="flex w-max min-w-full items-center gap-1 rounded-xl border border-white/10 bg-neutral-950/80 p-1">
               {CATEGORY_TABS.map((tab) => (
                 <TabsTrigger
                   key={tab.id}
                   value={tab.id}
-                  className="text-xs px-3 py-1.5 rounded-lg data-[state=active]:bg-neutral-800 data-[state=active]:text-emerald-400 data-[state=active]:shadow-sm transition-all"
+                  className="rounded-lg px-3 py-1.5 text-xs transition-all data-[state=active]:bg-neutral-800 data-[state=active]:text-emerald-400 data-[state=active]:shadow-sm"
                 >
                   {tab.label}
                 </TabsTrigger>
@@ -189,7 +197,9 @@ export function ConfiguratorSidebar({
               >
                 <div
                   className={`rounded-full transition-all duration-300 ${
-                    activeCategory === tab.id ? "w-5 h-1.5 bg-emerald-400" : "w-1.5 h-1.5 bg-neutral-600 hover:bg-neutral-400"
+                    activeCategory === tab.id
+                      ? "h-1.5 w-5 bg-emerald-400"
+                      : "h-1.5 w-1.5 bg-neutral-600 hover:bg-neutral-400"
                   }`}
                 />
               </button>
@@ -198,12 +208,13 @@ export function ConfiguratorSidebar({
         </div>
 
         {/* Scrollable Products List Container */}
-        <ScrollArea className="flex-1 min-h-0 w-full">
-          <div className="p-3 sm:p-4 space-y-3.5 pr-3">
+        <ScrollArea className="min-h-0 w-full flex-1">
+          <div className="space-y-3.5 p-3 pr-3 sm:p-4">
             {/* DESKS */}
-            <TabsContent value="desks" className="space-y-3 m-0 focus-visible:outline-none">
+            <TabsContent value="desks" className="m-0 space-y-3 focus-visible:outline-none">
               <div className="text-xs text-neutral-400">
-                Select your sit-stand workstation foundation. All motorized desks include anti-collision sensors.
+                Select your sit-stand workstation foundation. All motorized desks include
+                anti-collision sensors.
               </div>
               {PRODUCTS.filter((p) => p.category === "desks").map((desk) => {
                 const isSelected = config.deskId === desk.id;
@@ -233,9 +244,10 @@ export function ConfiguratorSidebar({
             </TabsContent>
 
             {/* CHAIRS */}
-            <TabsContent value="chairs" className="space-y-3 m-0 focus-visible:outline-none">
+            <TabsContent value="chairs" className="m-0 space-y-3 focus-visible:outline-none">
               <div className="text-xs text-neutral-400">
-                Ergonomic seating engineered for long engineering and creative sessions in humid Bali climates.
+                Ergonomic seating engineered for long engineering and creative sessions in humid
+                Bali climates.
               </div>
               {PRODUCTS.filter((p) => p.category === "chairs").map((chair) => {
                 const isSelected = config.chairId === chair.id;
@@ -265,9 +277,10 @@ export function ConfiguratorSidebar({
             </TabsContent>
 
             {/* MONITORS */}
-            <TabsContent value="monitors" className="space-y-3 m-0 focus-visible:outline-none">
+            <TabsContent value="monitors" className="m-0 space-y-3 focus-visible:outline-none">
               <div className="text-xs text-neutral-400">
-                High-refresh rate, USB-C 90W single-cable power delivery displays. Includes heavy-duty gas spring arm.
+                High-refresh rate, USB-C 90W single-cable power delivery displays. Includes
+                heavy-duty gas spring arm.
               </div>
               {PRODUCTS.filter((p) => p.category === "monitors").map((monitor) => {
                 const isSelected = config.monitorId === monitor.id;
@@ -288,9 +301,10 @@ export function ConfiguratorSidebar({
             </TabsContent>
 
             {/* KEYBOARDS & PERIPHERALS */}
-            <TabsContent value="peripherals" className="space-y-3 m-0 focus-visible:outline-none">
+            <TabsContent value="peripherals" className="m-0 space-y-3 focus-visible:outline-none">
               <div className="text-xs text-neutral-400">
-                Tactile typing experience & ergonomic mice to keep your wrists pain-free during all-day coding.
+                Tactile typing experience & ergonomic mice to keep your wrists pain-free during
+                all-day coding.
               </div>
               {PRODUCTS.filter((p) => p.category === "peripherals").map((item) => {
                 const isSelected = config.peripheralsId === item.id;
@@ -311,9 +325,10 @@ export function ConfiguratorSidebar({
             </TabsContent>
 
             {/* LIGHTING */}
-            <TabsContent value="lighting" className="space-y-3 m-0 focus-visible:outline-none">
+            <TabsContent value="lighting" className="m-0 space-y-3 focus-visible:outline-none">
               <div className="text-xs text-neutral-400">
-                Asymmetric optical screenbars and ambient lamps to reduce eye strain during tropical evening coding.
+                Asymmetric optical screenbars and ambient lamps to reduce eye strain during tropical
+                evening coding.
               </div>
               {PRODUCTS.filter((p) => p.category === "lighting").map((light) => {
                 const isSelected = config.lightingId === light.id;
@@ -330,11 +345,13 @@ export function ConfiguratorSidebar({
                     unselectedLabel="Equip Lighting"
                   >
                     {isSelected && (
-                      <div className="pt-2 border-t border-white/10 flex-between">
-                        <span className="text-xs text-neutral-300 flex items-center gap-1.5 font-medium">
+                      <div className="flex-between border-t border-white/10 pt-2">
+                        <span className="flex items-center gap-1.5 text-xs font-medium text-neutral-300">
                           <Lightbulb
-                            className={`w-3.5 h-3.5 transition-colors ${
-                              config.lampPowered ? "text-amber-400 fill-amber-400/30" : "text-neutral-500"
+                            className={`h-3.5 w-3.5 transition-colors ${
+                              config.lampPowered
+                                ? "fill-amber-400/30 text-amber-400"
+                                : "text-neutral-500"
                             }`}
                           />
                           Lamp Power:
@@ -351,15 +368,17 @@ export function ConfiguratorSidebar({
                               lampPowered: !prev.lampPowered,
                             }));
                           }}
-                          className={`text-xs h-7 px-3 rounded-full font-medium transition-all ${
+                          className={`h-7 rounded-full px-3 text-xs font-medium transition-all ${
                             config.lampPowered
-                              ? "bg-amber-400/20 text-amber-300 border-amber-400/50 hover:bg-amber-400/30 shadow-[0_0_12px_rgba(251,191,36,0.25)]"
-                              : "bg-neutral-900 border-white/15 text-neutral-400 hover:text-white"
+                              ? "border-amber-400/50 bg-amber-400/20 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.25)] hover:bg-amber-400/30"
+                              : "border-white/15 bg-neutral-900 text-neutral-400 hover:text-white"
                           }`}
                         >
                           <span
-                            className={`w-2 h-2 rounded-full mr-1.5 transition-all ${
-                              config.lampPowered ? "bg-amber-400 shadow-[0_0_6px_#fbbf24]" : "bg-neutral-600"
+                            className={`mr-1.5 h-2 w-2 rounded-full transition-all ${
+                              config.lampPowered
+                                ? "bg-amber-400 shadow-[0_0_6px_#fbbf24]"
+                                : "bg-neutral-600"
                             }`}
                           />
                           {config.lampPowered ? "ON (Turn Off)" : "OFF (Turn On)"}
@@ -372,9 +391,13 @@ export function ConfiguratorSidebar({
             </TabsContent>
 
             {/* BALI LIFESTYLE & VILLA EXTRAS */}
-            <TabsContent value="bali-lifestyle" className="space-y-3 m-0 focus-visible:outline-none">
+            <TabsContent
+              value="bali-lifestyle"
+              className="m-0 space-y-3 focus-visible:outline-none"
+            >
               <div className="text-xs text-neutral-400">
-                The iconic Bali lifestyle extensions from the concept sketch: Surfboard, Scooter, Bean Bag, Coffee Station, and Monstera Plant.
+                The iconic Bali lifestyle extensions from the concept sketch: Surfboard, Scooter,
+                Bean Bag, Coffee Station, and Monstera Plant.
               </div>
               {PRODUCTS.filter((p) => p.category === "bali-lifestyle").map((item) => {
                 const isSelected = isLifestyleActive(item.id);

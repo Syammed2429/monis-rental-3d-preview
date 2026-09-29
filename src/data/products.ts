@@ -1,4 +1,4 @@
-import { ProductItem, BaliDeliveryArea, PresetSetup } from "@/types/workspace";
+import { BaliDeliveryArea, PresetSetup, ProductItem } from "@/types/workspace";
 
 export const PRODUCTS: ProductItem[] = [
   // --- DESKS (4 options) ---
@@ -9,10 +9,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "desks",
     weeklyPriceUSD: 22,
     weeklyPriceIDR: 350000,
-    description: "Dual-motor motorized height adjustment (70-118cm), 3-stage steel columns with 120kg load capacity and whisper-quiet motor.",
+    description:
+      "Dual-motor motorized height adjustment (70-118cm), 3-stage steel columns with 120kg load capacity and whisper-quiet motor.",
     tag: "Most Popular",
     popular: true,
-    specs: ["140 × 70 cm Top", "70 - 118 cm Height Range", "Dual Motors (36 mm/s)", "4 Memory Presets"],
+    specs: [
+      "140 × 70 cm Top",
+      "70 - 118 cm Height Range",
+      "Dual Motors (36 mm/s)",
+      "4 Memory Presets",
+    ],
     dimensions: "140 x 70 x 70-118 cm",
     defaultFinish: "natural-bamboo",
     availableFinishes: [
@@ -29,10 +35,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "desks",
     weeklyPriceUSD: 18,
     weeklyPriceIDR: 290000,
-    description: "Sustainably harvested solid bamboo tabletop with motorized sit-stand column, anti-collision sensor, and integrated cable tray.",
+    description:
+      "Sustainably harvested solid bamboo tabletop with motorized sit-stand column, anti-collision sensor, and integrated cable tray.",
     tag: "Eco Friendly",
     popular: false,
-    specs: ["120 × 70 cm Top", "Smooth Electric Motor", "Scratch-resistant Lacquer", "Soft Cable Grommet"],
+    specs: [
+      "120 × 70 cm Top",
+      "Smooth Electric Motor",
+      "Scratch-resistant Lacquer",
+      "Soft Cable Grommet",
+    ],
     dimensions: "120 x 70 x 72-116 cm",
     defaultFinish: "natural-bamboo",
     availableFinishes: [
@@ -47,10 +59,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "desks",
     weeklyPriceUSD: 26,
     weeklyPriceIDR: 420000,
-    description: "Premium beveled walnut grain finish with black steel frame, wireless charging surface embedded, and integrated power hub.",
+    description:
+      "Premium beveled walnut grain finish with black steel frame, wireless charging surface embedded, and integrated power hub.",
     tag: "Premium",
     popular: false,
-    specs: ["160 × 75 cm Top", "Heavy Duty Dual Motors", "Qi Wireless Fast Charger", "Beveled Soft Edge"],
+    specs: [
+      "160 × 75 cm Top",
+      "Heavy Duty Dual Motors",
+      "Qi Wireless Fast Charger",
+      "Beveled Soft Edge",
+    ],
     dimensions: "160 x 75 x 70-120 cm",
     defaultFinish: "walnut",
     availableFinishes: [
@@ -65,7 +83,8 @@ export const PRODUCTS: ProductItem[] = [
     category: "desks",
     weeklyPriceUSD: 14,
     weeklyPriceIDR: 220000,
-    description: "Pneumatic counter-balance gas lift desk designed for compact villa bedrooms and cozy nomad studios without power outlets required.",
+    description:
+      "Pneumatic counter-balance gas lift desk designed for compact villa bedrooms and cozy nomad studios without power outlets required.",
     tag: "Budget Choice",
     popular: false,
     specs: ["100 × 60 cm Top", "Gas-Spring Assisted", "Zero Cable Dependency", "Matte Powdercoat"],
@@ -85,7 +104,8 @@ export const PRODUCTS: ProductItem[] = [
     category: "chairs",
     weeklyPriceUSD: 15,
     weeklyPriceIDR: 240000,
-    description: "Breathable Korean mesh back, high-density molded foam seat, 4D adjustable armrests, multi-angle tilt lock, and silent 60mm casters.",
+    description:
+      "Breathable Korean mesh back, high-density molded foam seat, 4D adjustable armrests, multi-angle tilt lock, and silent 60mm casters.",
     tag: "Best for Humidity",
     popular: true,
     specs: ["Breathable Mesh", "4D Armrests", "Adaptive Lumbar", "Silent Casters"],
@@ -104,10 +124,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "chairs",
     weeklyPriceUSD: 24,
     weeklyPriceIDR: 380000,
-    description: "Iconic Aeron-style suspended pellicle mesh across seat and back for zero pressure points and maximum cooling during tropical Bali workdays.",
+    description:
+      "Iconic Aeron-style suspended pellicle mesh across seat and back for zero pressure points and maximum cooling during tropical Bali workdays.",
     tag: "Top Tier",
     popular: false,
-    specs: ["Full Suspension Mesh", "PostureFit SL Spine Support", "Forward Tilt Angle", "Die-cast Aluminum Base"],
+    specs: [
+      "Full Suspension Mesh",
+      "PostureFit SL Spine Support",
+      "Forward Tilt Angle",
+      "Die-cast Aluminum Base",
+    ],
     dimensions: "68 x 68 x 110-122 cm",
     defaultFinish: "mineral-grey",
     availableFinishes: [
@@ -122,10 +148,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "chairs",
     weeklyPriceUSD: 19,
     weeklyPriceIDR: 300000,
-    description: "Cushioned saddle-leather ergonomics with thick double-padded headrest, synchronized reclining tilt, and chrome swivel frame.",
+    description:
+      "Cushioned saddle-leather ergonomics with thick double-padded headrest, synchronized reclining tilt, and chrome swivel frame.",
     tag: "Plush Comfort",
     popular: false,
-    specs: ["Padded Microfiber Leather", "Integrated Headrest", "135° Recline Lock", "Padded Armrests"],
+    specs: [
+      "Padded Microfiber Leather",
+      "Integrated Headrest",
+      "135° Recline Lock",
+      "Padded Armrests",
+    ],
     dimensions: "70 x 70 x 120-128 cm",
     defaultFinish: "cognac-leather",
     availableFinishes: [
@@ -140,7 +172,8 @@ export const PRODUCTS: ProductItem[] = [
     category: "chairs",
     weeklyPriceUSD: 9,
     weeklyPriceIDR: 150000,
-    description: "Counter-weighted pivot base that promotes core engagement and active micro-movements while alternating between sitting and standing.",
+    description:
+      "Counter-weighted pivot base that promotes core engagement and active micro-movements while alternating between sitting and standing.",
     tag: "Active Posture",
     popular: false,
     specs: ["Dynamic 360° Tilt", "Non-slip Rubber Base", "Gas Lift 55-80 cm", "Compact Footprint"],
@@ -155,54 +188,78 @@ export const PRODUCTS: ProductItem[] = [
   // --- MONITORS (4 options) ---
   {
     id: "monitor-studio-display",
-    name: "27\" 5K Apple Studio Display",
+    name: '27" 5K Apple Studio Display',
     brand: "Apple",
     category: "monitors",
     weeklyPriceUSD: 28,
     weeklyPriceIDR: 450000,
-    description: "5120 × 2880 5K Retina display, 600 nits, P3 wide color, 12MP Ultra-Wide camera with Center Stage, 6-speaker spatial audio and 96W USB-C charging.",
+    description:
+      "5120 × 2880 5K Retina display, 600 nits, P3 wide color, 12MP Ultra-Wide camera with Center Stage, 6-speaker spatial audio and 96W USB-C charging.",
     tag: "Creator Dream",
     popular: true,
-    specs: ["5K Retina (5120×2880)", "600 Nits Brightness", "96W Thunderbolt Power", "12MP Center Stage Camera"],
+    specs: [
+      "5K Retina (5120×2880)",
+      "600 Nits Brightness",
+      "96W Thunderbolt Power",
+      "12MP Center Stage Camera",
+    ],
     dimensions: "27 inch (62.3 x 47.8 cm)",
   },
   {
     id: "monitor-ultrawide-curved",
-    name: "34\" WQHD Curved Monitor",
+    name: '34" WQHD Curved Monitor',
     brand: "Xiaomi Mi",
     category: "monitors",
     weeklyPriceUSD: 20,
     weeklyPriceIDR: 320000,
-    description: "1500R curvature panoramic screen at 180Hz refresh rate, 3440 × 1440 resolution, 1ms response time, 100% sRGB, perfect for multi-window productivity.",
+    description:
+      "1500R curvature panoramic screen at 180Hz refresh rate, 3440 × 1440 resolution, 1ms response time, 100% sRGB, perfect for multi-window productivity.",
     tag: "Most Popular",
     popular: true,
-    specs: ["34\" 21:9 Ultra-Wide", "180Hz Fast Refresh", "1500R Immersion Curve", "WQHD (3440×1440)"],
+    specs: [
+      '34" 21:9 Ultra-Wide',
+      "180Hz Fast Refresh",
+      "1500R Immersion Curve",
+      "WQHD (3440×1440)",
+    ],
     dimensions: "34 inch curved (81 x 52 cm)",
   },
   {
     id: "monitor-4k-multimedia",
-    name: "27\" 4K USB-C Multimedia Monitor",
+    name: '27" 4K USB-C Multimedia Monitor',
     brand: "Redmi / Dell",
     category: "monitors",
     weeklyPriceUSD: 14,
     weeklyPriceIDR: 230000,
-    description: "3840 × 2160 crisp 4K IPS panel with single-cable USB-C connection delivering 65W fast charging, 95% DCI-P3 color gamut and anti-glare finish.",
+    description:
+      "3840 × 2160 crisp 4K IPS panel with single-cable USB-C connection delivering 65W fast charging, 95% DCI-P3 color gamut and anti-glare finish.",
     tag: "Best Value",
     popular: false,
-    specs: ["4K UHD (3840×2160)", "USB-C 65W PD Charging", "Anti-Glare IPS Panel", "VESA Adjustable Stand"],
+    specs: [
+      "4K UHD (3840×2160)",
+      "USB-C 65W PD Charging",
+      "Anti-Glare IPS Panel",
+      "VESA Adjustable Stand",
+    ],
     dimensions: "27 inch (61.3 x 45 cm)",
   },
   {
     id: "monitor-dual-setup",
-    name: "Dual 27\" Borderless Workstation",
+    name: 'Dual 27" Borderless Workstation',
     brand: "Monis Pro Twin",
     category: "monitors",
     weeklyPriceUSD: 25,
     weeklyPriceIDR: 395000,
-    description: "Two 27-inch IPS borderless displays mounted on a heavy-duty dual gas-spring desktop arm for immersive dual-screen workflow.",
+    description:
+      "Two 27-inch IPS borderless displays mounted on a heavy-duty dual gas-spring desktop arm for immersive dual-screen workflow.",
     tag: "Dual Battlestation",
     popular: false,
-    specs: ["2x 27\" Borderless Displays", "Dual Gas-Spring Arm", "Adjustable Angle & Height", "HDMI & DisplayPort"],
+    specs: [
+      '2x 27" Borderless Displays',
+      "Dual Gas-Spring Arm",
+      "Adjustable Angle & Height",
+      "HDMI & DisplayPort",
+    ],
     dimensions: "Dual 27 inch mounted (124 cm width)",
   },
 
@@ -214,10 +271,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "peripherals",
     weeklyPriceUSD: 8,
     weeklyPriceIDR: 130000,
-    description: "Quiet-click 8,000 DPI electromagnetic scroll mouse and spherically dished tactile backlit wireless keyboard with multi-device Easy-Switch.",
+    description:
+      "Quiet-click 8,000 DPI electromagnetic scroll mouse and spherically dished tactile backlit wireless keyboard with multi-device Easy-Switch.",
     tag: "Nomad Standard",
     popular: true,
-    specs: ["8000 DPI Darkfield sensor", "Quiet Click Switches", "Smart Backlit Illumination", "USB-C Fast Recharge"],
+    specs: [
+      "8000 DPI Darkfield sensor",
+      "Quiet Click Switches",
+      "Smart Backlit Illumination",
+      "USB-C Fast Recharge",
+    ],
   },
   {
     id: "peripherals-apple-magic",
@@ -226,10 +289,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "peripherals",
     weeklyPriceUSD: 9,
     weeklyPriceIDR: 145000,
-    description: "Wireless Magic Keyboard with Touch ID sensor and oversized Force Touch Glass Magic Trackpad in silver aluminum.",
+    description:
+      "Wireless Magic Keyboard with Touch ID sensor and oversized Force Touch Glass Magic Trackpad in silver aluminum.",
     tag: "Pure Apple Feel",
     popular: false,
-    specs: ["Touch ID Biometric Unlock", "Force Touch Haptic Trackpad", "Lightning / USB-C", "Ultra-thin Profile"],
+    specs: [
+      "Touch ID Biometric Unlock",
+      "Force Touch Haptic Trackpad",
+      "Lightning / USB-C",
+      "Ultra-thin Profile",
+    ],
   },
   {
     id: "peripherals-custom-mech",
@@ -238,10 +307,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "peripherals",
     weeklyPriceUSD: 7,
     weeklyPriceIDR: 115000,
-    description: "Lubed Gateron switches, sound-dampening foam, custom PBT dye-sub keycaps with ergonomic wireless mouse and oversized felt desk pad.",
+    description:
+      "Lubed Gateron switches, sound-dampening foam, custom PBT dye-sub keycaps with ergonomic wireless mouse and oversized felt desk pad.",
     tag: "Tactile Feel",
     popular: false,
-    specs: ["75% Compact Layout", "Lubed Linear Switches", "PBT Botanical Keycaps", "RGB Backlight"],
+    specs: [
+      "75% Compact Layout",
+      "Lubed Linear Switches",
+      "PBT Botanical Keycaps",
+      "RGB Backlight",
+    ],
   },
 
   // --- LIGHTING (3 options) ---
@@ -252,10 +327,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "lighting",
     weeklyPriceUSD: 5,
     weeklyPriceIDR: 80000,
-    description: "Classic articulated spring-balanced arm with rotating shade, weighted round base, and warm eye-care LED bulb.",
+    description:
+      "Classic articulated spring-balanced arm with rotating shade, weighted round base, and warm eye-care LED bulb.",
     tag: "As in Sketch",
     popular: true,
-    specs: ["Spring-Balanced Arm", "360° Rotatable Shade", "Warm Ambient Glow", "Solid Metal Build"],
+    specs: [
+      "Spring-Balanced Arm",
+      "360° Rotatable Shade",
+      "Warm Ambient Glow",
+      "Solid Metal Build",
+    ],
   },
   {
     id: "light-screenbar",
@@ -264,10 +345,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "lighting",
     weeklyPriceUSD: 5,
     weeklyPriceIDR: 80000,
-    description: "Clamps directly onto the top of any monitor. Asymmetric optical design lights your desk without producing screen glare or reflections.",
+    description:
+      "Clamps directly onto the top of any monitor. Asymmetric optical design lights your desk without producing screen glare or reflections.",
     tag: "Zero Screen Glare",
     popular: false,
-    specs: ["Zero Screen Glare", "Wireless Desktop Rotary Dial", "Auto-Dimming Light Sensor", "Rear Ambient Glow"],
+    specs: [
+      "Zero Screen Glare",
+      "Wireless Desktop Rotary Dial",
+      "Auto-Dimming Light Sensor",
+      "Rear Ambient Glow",
+    ],
   },
   {
     id: "light-xiaomi-1s",
@@ -276,10 +363,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "lighting",
     weeklyPriceUSD: 4,
     weeklyPriceIDR: 65000,
-    description: "Minimalist pivot folding arm, Ra90 high color rendering, 2600-5000K stepless warm-to-cool dimmer, flicker-free reading mode.",
+    description:
+      "Minimalist pivot folding arm, Ra90 high color rendering, 2600-5000K stepless warm-to-cool dimmer, flicker-free reading mode.",
     tag: "Desk Classic",
     popular: false,
-    specs: ["Ra90 Studio Color Index", "Stepless Warmth & Brightness", "Apple Home & Google Assistant", "Red Cable Signature"],
+    specs: [
+      "Ra90 Studio Color Index",
+      "Stepless Warmth & Brightness",
+      "Apple Home & Google Assistant",
+      "Red Cable Signature",
+    ],
   },
 
   // --- BALI LIFESTYLE & VILLA EXTRAS (Directly matching the concept sketch!) ---
@@ -290,7 +383,8 @@ export const PRODUCTS: ProductItem[] = [
     category: "bali-lifestyle",
     weeklyPriceUSD: 3,
     weeklyPriceIDR: 45000,
-    description: "Living tropical Monstera Deliciosa in handcrafted Balinese ceramic planter to bring lush jungle vibes to your desk.",
+    description:
+      "Living tropical Monstera Deliciosa in handcrafted Balinese ceramic planter to bring lush jungle vibes to your desk.",
     tag: "Place a Plant",
     popular: true,
     specs: ["Living Potted Plant", "Handcrafted Pot", "Air Cleansing", "Low Care Needed"],
@@ -302,7 +396,8 @@ export const PRODUCTS: ProductItem[] = [
     category: "bali-lifestyle",
     weeklyPriceUSD: 9,
     weeklyPriceIDR: 145000,
-    description: "19-bar espresso brewer for morning coding sessions. Includes 10 complimentary roast pods and ceramic mug.",
+    description:
+      "19-bar espresso brewer for morning coding sessions. Includes 10 complimentary roast pods and ceramic mug.",
     tag: "Coffee Station",
     popular: true,
     specs: ["19-Bar Pressure", "Espresso & Lungo sizes", "10 Pods Included", "Compact Footprint"],
@@ -314,7 +409,8 @@ export const PRODUCTS: ProductItem[] = [
     category: "bali-lifestyle",
     weeklyPriceUSD: 14,
     weeklyPriceIDR: 225000,
-    description: "Custom fiberglass 6'2 epoxy fish surfboard. Perfect for sunset surf sessions at Batu Bolong or Echo Beach after work.",
+    description:
+      "Custom fiberglass 6'2 epoxy fish surfboard. Perfect for sunset surf sessions at Batu Bolong or Echo Beach after work.",
     tag: "Outdoor Gear",
     popular: true,
     specs: ["6'2 Epoxy Shortboard", "FCS II Fin System", "Leash Included", "Wax Block Provided"],
@@ -326,7 +422,8 @@ export const PRODUCTS: ProductItem[] = [
     category: "bali-lifestyle",
     weeklyPriceUSD: 25,
     weeklyPriceIDR: 400000,
-    description: "Silent electric island scooter with helmet and phone mount for effortless villa-to-cafe commutes in Canggu and Seminyak.",
+    description:
+      "Silent electric island scooter with helmet and phone mount for effortless villa-to-cafe commutes in Canggu and Seminyak.",
     tag: "Island Mobility",
     popular: false,
     specs: ["65 km Range", "Dual Removable Batteries", "Helmet Included", "Phone Clamp Mounted"],
@@ -338,10 +435,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "bali-lifestyle",
     weeklyPriceUSD: 6,
     weeklyPriceIDR: 95000,
-    description: "Oversized ergonomic outdoor/indoor bean bag chair for casual laptop sessions, reading, or chilling by the villa pool.",
+    description:
+      "Oversized ergonomic outdoor/indoor bean bag chair for casual laptop sessions, reading, or chilling by the villa pool.",
     tag: "Relax Zone",
     popular: true,
-    specs: ["Weatherproof Olefin Fabric", "Ergonomic Back Support", "Lightweight to Move", "Villa Essential"],
+    specs: [
+      "Weatherproof Olefin Fabric",
+      "Ergonomic Back Support",
+      "Lightweight to Move",
+      "Villa Essential",
+    ],
   },
   {
     id: "lifestyle-laptop-stand",
@@ -350,10 +453,16 @@ export const PRODUCTS: ProductItem[] = [
     category: "bali-lifestyle",
     weeklyPriceUSD: 3,
     weeklyPriceIDR: 50000,
-    description: "CNC milled anodized aluminum riser that brings your laptop display up to eye level, improving posture and cooling airflow.",
+    description:
+      "CNC milled anodized aluminum riser that brings your laptop display up to eye level, improving posture and cooling airflow.",
     tag: "Ergo Riser",
     popular: false,
-    specs: ["Sandblasted Aluminum", "Fits 11\"-17\" Laptops", "Open Thermal Airflow", "Silicone Anti-Slip"],
+    specs: [
+      "Sandblasted Aluminum",
+      'Fits 11"-17" Laptops',
+      "Open Thermal Airflow",
+      "Silicone Anti-Slip",
+    ],
   },
 ];
 
@@ -362,7 +471,8 @@ export const PRESETS: PresetSetup[] = [
     id: "preset-nomad-coder",
     name: "The Bali Nomad Coder",
     badge: "Most Popular",
-    tagline: "The complete setup from the sketch with ultrawide display, plant, coffee, and surfboard.",
+    tagline:
+      "The complete setup from the sketch with ultrawide display, plant, coffee, and surfboard.",
     config: {
       deskId: "desk-dual-motor",
       deskFinish: "natural-bamboo",
@@ -461,10 +571,46 @@ export const PRESETS: PresetSetup[] = [
 ];
 
 export const BALI_DELIVERY_AREAS: BaliDeliveryArea[] = [
-  { id: "canggu", name: "Canggu (Batu Bolong / Berawa / Echo)", zone: "Zone 1", estimatedDelivery: "Tomorrow by 11:00 AM", feeUSD: 0 },
-  { id: "pererenan", name: "Pererenan & Cemagi", zone: "Zone 1", estimatedDelivery: "Tomorrow by 12:00 PM", feeUSD: 0 },
-  { id: "seminyak", name: "Seminyak & Kerobokan", zone: "Zone 1", estimatedDelivery: "Tomorrow by 1:00 PM", feeUSD: 0 },
-  { id: "ubud", name: "Ubud (Center / Penestanan / Sayan)", zone: "Zone 2", estimatedDelivery: "Tomorrow by 3:00 PM", feeUSD: 5 },
-  { id: "uluwatu", name: "Uluwatu & Bingin", zone: "Zone 2", estimatedDelivery: "Tomorrow by 3:30 PM", feeUSD: 5 },
-  { id: "sanur", name: "Sanur & Denpasar", zone: "Zone 2", estimatedDelivery: "Tomorrow by 2:00 PM", feeUSD: 0 },
+  {
+    id: "canggu",
+    name: "Canggu (Batu Bolong / Berawa / Echo)",
+    zone: "Zone 1",
+    estimatedDelivery: "Tomorrow by 11:00 AM",
+    feeUSD: 0,
+  },
+  {
+    id: "pererenan",
+    name: "Pererenan & Cemagi",
+    zone: "Zone 1",
+    estimatedDelivery: "Tomorrow by 12:00 PM",
+    feeUSD: 0,
+  },
+  {
+    id: "seminyak",
+    name: "Seminyak & Kerobokan",
+    zone: "Zone 1",
+    estimatedDelivery: "Tomorrow by 1:00 PM",
+    feeUSD: 0,
+  },
+  {
+    id: "ubud",
+    name: "Ubud (Center / Penestanan / Sayan)",
+    zone: "Zone 2",
+    estimatedDelivery: "Tomorrow by 3:00 PM",
+    feeUSD: 5,
+  },
+  {
+    id: "uluwatu",
+    name: "Uluwatu & Bingin",
+    zone: "Zone 2",
+    estimatedDelivery: "Tomorrow by 3:30 PM",
+    feeUSD: 5,
+  },
+  {
+    id: "sanur",
+    name: "Sanur & Denpasar",
+    zone: "Zone 2",
+    estimatedDelivery: "Tomorrow by 2:00 PM",
+    feeUSD: 0,
+  },
 ];

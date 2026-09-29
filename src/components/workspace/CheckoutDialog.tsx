@@ -1,12 +1,7 @@
 "use client";
 
-import { WorkspaceConfig, Currency } from "@/types/workspace";
-import {
-  Dialog,
-  DialogContent,
-  DialogTitle,
-  DialogDescription,
-} from "@/components/ui/dialog";
+import { Currency, WorkspaceConfig } from "@/types/workspace";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { CheckoutPanel } from "@/components/workspace/CheckoutPanel";
 
 interface CheckoutDialogProps {
@@ -16,24 +11,15 @@ interface CheckoutDialogProps {
   currency: Currency;
 }
 
-export function CheckoutDialog({
-  open,
-  onOpenChange,
-  config,
-  currency,
-}: CheckoutDialogProps) {
+export function CheckoutDialog({ open, onOpenChange, config, currency }: CheckoutDialogProps) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-w-xl p-0 overflow-hidden bg-transparent border-0 shadow-none">
+      <DialogContent className="max-w-xl overflow-hidden border-0 bg-transparent p-0 shadow-none">
         <DialogTitle className="sr-only">Checkout Workspace Setup</DialogTitle>
         <DialogDescription className="sr-only">
           Review and reserve your Bali office setup with next-day delivery.
         </DialogDescription>
-        <CheckoutPanel
-          config={config}
-          currency={currency}
-          onCancel={() => onOpenChange(false)}
-        />
+        <CheckoutPanel config={config} currency={currency} onCancel={() => onOpenChange(false)} />
       </DialogContent>
     </Dialog>
   );

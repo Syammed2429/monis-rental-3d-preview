@@ -1,8 +1,8 @@
 "use client";
 
+import { Plus } from "lucide-react";
 import { motion } from "motion/react";
 import { ProductCategory } from "@/types/workspace";
-import { Plus } from "lucide-react";
 
 interface AccessoriesRendererProps {
   peripheralsId: string | null;
@@ -28,7 +28,7 @@ export function AccessoriesRenderer({
   onSelectItem,
 }: AccessoriesRendererProps) {
   return (
-    <div className="absolute inset-0 pointer-events-none select-none">
+    <div className="pointer-events-none absolute inset-0 select-none">
       {/* 1. Large Minimalist Felt Desk Mat (Rests directly on desk surface • Draggable • z-20) */}
       {peripheralsId && (
         <motion.div
@@ -41,12 +41,16 @@ export function AccessoriesRenderer({
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
-            if (onSelectItem) { onSelectItem("peripherals", peripheralsId); } else { onSelectCategory?.("peripherals"); }
+            if (onSelectItem) {
+              onSelectItem("peripherals", peripheralsId);
+            } else {
+              onSelectCategory?.("peripherals");
+            }
           }}
-          className="absolute top-1 left-1/2 -translate-x-1/2 w-102.5 h-8.5 rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center pointer-events-auto cursor-grab active:cursor-grabbing group/mat z-20"
+          className="group/mat pointer-events-auto absolute top-1 left-1/2 z-20 flex h-8.5 w-102.5 -translate-x-1/2 cursor-grab items-center justify-center rounded-xl border border-white/10 bg-neutral-900/90 shadow-inner active:cursor-grabbing"
           title="Slide desk mat • Click to configure peripherals"
         >
-          <div className="absolute -top-6 opacity-0 group-hover/mat:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+          <div className="pointer-events-none absolute -top-6 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[8px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/mat:opacity-100">
             ⌨️ Slide Mat & Keyboard • Click to Select
           </div>
           {/* Keyboard & Mouse Area */}
@@ -55,18 +59,18 @@ export function AccessoriesRenderer({
             {peripheralsId === "peripherals-mx-combo" && (
               <div className="flex items-center gap-5">
                 {/* MX Keys Backlit Keyboard */}
-                <div className="w-44 h-5.5 rounded-md bg-stone-900 border border-white/20 shadow-md flex items-center px-1.5 justify-between">
-                  <div className="w-32 h-3 bg-neutral-950 rounded flex gap-0.5 items-center px-1">
-                    <div className="w-22 h-1.5 bg-stone-700 rounded-xs" />
-                    <div className="w-7 h-1.5 bg-stone-700 rounded-xs" />
+                <div className="flex h-5.5 w-44 items-center justify-between rounded-md border border-white/20 bg-stone-900 px-1.5 shadow-md">
+                  <div className="flex h-3 w-32 items-center gap-0.5 rounded bg-neutral-950 px-1">
+                    <div className="h-1.5 w-22 rounded-xs bg-stone-700" />
+                    <div className="h-1.5 w-7 rounded-xs bg-stone-700" />
                   </div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400/90" />
+                  <div className="h-1.5 w-1.5 rounded-full bg-emerald-400/90" />
                 </div>
 
                 {/* MX Master 3S Mouse */}
-                <div className="w-5.5 h-7 rounded-2xl bg-stone-900 border border-white/20 shadow-md flex flex-col items-center pt-1 relative">
-                  <div className="w-1.5 h-2 rounded-sm bg-neutral-700 border border-white/30" />
-                  <div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5" />
+                <div className="relative flex h-7 w-5.5 flex-col items-center rounded-2xl border border-white/20 bg-stone-900 pt-1 shadow-md">
+                  <div className="h-2 w-1.5 rounded-sm border border-white/30 bg-neutral-700" />
+                  <div className="mt-0.5 h-1 w-1 rounded-full bg-cyan-400" />
                 </div>
               </div>
             )}
@@ -74,31 +78,31 @@ export function AccessoriesRenderer({
             {peripheralsId === "peripherals-apple-magic" && (
               <div className="flex items-center gap-5">
                 {/* Apple Magic Keyboard Silver */}
-                <div className="w-40 h-5 rounded-md bg-linear-to-r from-slate-200 via-slate-100 to-slate-200 border border-white/80 shadow-md flex items-center px-1.5 justify-between">
-                  <div className="w-30 h-2.5 bg-white rounded-xs shadow-xs" />
-                  <div className="w-1.5 h-1.5 rounded-full bg-slate-300 border border-slate-400" />
+                <div className="flex h-5 w-40 items-center justify-between rounded-md border border-white/80 bg-linear-to-r from-slate-200 via-slate-100 to-slate-200 px-1.5 shadow-md">
+                  <div className="h-2.5 w-30 rounded-xs bg-white shadow-xs" />
+                  <div className="h-1.5 w-1.5 rounded-full border border-slate-400 bg-slate-300" />
                 </div>
 
                 {/* Apple Magic Trackpad Silver */}
-                <div className="w-9 h-6.5 rounded-md bg-linear-to-br from-slate-100 to-slate-200 border border-white shadow-md" />
+                <div className="h-6.5 w-9 rounded-md border border-white bg-linear-to-br from-slate-100 to-slate-200 shadow-md" />
               </div>
             )}
 
             {peripheralsId === "peripherals-custom-mech" && (
               <div className="flex items-center gap-5">
                 {/* Custom Mechanical Keyboard */}
-                <div className="w-42 h-5.5 rounded-md bg-zinc-950 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.25)] flex items-center px-1.5 justify-between relative overflow-hidden">
+                <div className="relative flex h-5.5 w-42 items-center justify-between overflow-hidden rounded-md border border-emerald-500/40 bg-zinc-950 px-1.5 shadow-[0_0_12px_rgba(16,185,129,0.25)]">
                   <div className="absolute inset-0 bg-linear-to-r from-emerald-500/10 via-cyan-500/10 to-amber-500/10" />
-                  <div className="w-32 h-3 bg-neutral-900 rounded flex gap-0.5 items-center px-1 relative z-10">
-                    <div className="w-22 h-1.5 bg-emerald-950 rounded-xs border border-emerald-500/40" />
-                    <div className="w-7 h-1.5 bg-amber-950 rounded-xs border border-amber-500/40" />
+                  <div className="relative z-10 flex h-3 w-32 items-center gap-0.5 rounded bg-neutral-900 px-1">
+                    <div className="h-1.5 w-22 rounded-xs border border-emerald-500/40 bg-emerald-950" />
+                    <div className="h-1.5 w-7 rounded-xs border border-amber-500/40 bg-amber-950" />
                   </div>
-                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse relative z-10" />
+                  <div className="relative z-10 h-1.5 w-1.5 animate-pulse rounded-full bg-cyan-400" />
                 </div>
 
                 {/* Ergonomic Gaming Mouse */}
-                <div className="w-5.5 h-7 rounded-2xl bg-zinc-950 border border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.25)] flex flex-col items-center pt-1">
-                  <div className="w-1.5 h-2 rounded-sm bg-emerald-600" />
+                <div className="flex h-7 w-5.5 flex-col items-center rounded-2xl border border-emerald-500/30 bg-zinc-950 pt-1 shadow-[0_0_8px_rgba(16,185,129,0.25)]">
+                  <div className="h-2 w-1.5 rounded-sm bg-emerald-600" />
                 </div>
               </div>
             )}
@@ -116,35 +120,37 @@ export function AccessoriesRenderer({
           style={{ touchAction: "none" }}
           whileDrag={{ scale: 1.05 }}
           onPointerDown={(e) => e.stopPropagation()}
-          className="absolute bottom-0 left-8 flex flex-col items-center z-35 pointer-events-auto cursor-grab active:cursor-grabbing group/laptop"
+          className="group/laptop pointer-events-auto absolute bottom-0 left-8 z-35 flex cursor-grab flex-col items-center active:cursor-grabbing"
           title="Drag anywhere on desk • Click to configure"
           onClick={(e) => {
             e.stopPropagation();
-            if (onSelectItem) { onSelectItem("bali-lifestyle", "lifestyle-laptop-stand"); } else { onSelectCategory?.("bali-lifestyle"); }
+            if (onSelectItem) {
+              onSelectItem("bali-lifestyle", "lifestyle-laptop-stand");
+            } else {
+              onSelectCategory?.("bali-lifestyle");
+            }
           }}
         >
-          <div className="absolute -top-6 opacity-0 group-hover/laptop:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+          <div className="pointer-events-none absolute -top-6 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[8px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/laptop:opacity-100">
             💻 Slide Laptop Stand • Click to Select
           </div>
           {/* Laptop Screen with clean modern wallpaper */}
-          <div className="w-24 h-16 rounded-md bg-neutral-900 p-1 border border-neutral-700 shadow-xl flex flex-col">
-            <div className="w-full flex-1 rounded bg-linear-to-tr from-emerald-950 via-teal-900 to-slate-900 flex flex-col justify-between p-1 select-none border border-white/5">
-              <div className="flex justify-between items-center text-[5.5px] text-neutral-300">
+          <div className="flex h-16 w-24 flex-col rounded-md border border-neutral-700 bg-neutral-900 p-1 shadow-xl">
+            <div className="flex w-full flex-1 flex-col justify-between rounded border border-white/5 bg-linear-to-tr from-emerald-950 via-teal-900 to-slate-900 p-1 select-none">
+              <div className="flex items-center justify-between text-[5.5px] text-neutral-300">
                 <span className="font-semibold text-emerald-300">Secondary</span>
                 <span>100% ⚡</span>
               </div>
-              <div className="text-[6px] text-white/90 font-medium tracking-tight text-center">
+              <div className="text-center text-[6px] font-medium tracking-tight text-white/90">
                 Villa Desk
               </div>
-              <div className="text-[5px] text-emerald-400/80 font-mono text-right">
-                Connected
-              </div>
+              <div className="text-right font-mono text-[5px] text-emerald-400/80">Connected</div>
             </div>
           </div>
           {/* Laptop Base */}
-          <div className="w-26 h-1.5 bg-linear-to-r from-slate-400 via-slate-200 to-slate-400 rounded-b shadow-sm" />
+          <div className="h-1.5 w-26 rounded-b bg-linear-to-r from-slate-400 via-slate-200 to-slate-400 shadow-sm" />
           {/* Angled CNC Aluminum Riser Stand (Grounded on wooden surface) */}
-          <div className="w-14 h-7 border-x-3 border-b-3 border-slate-400/80 rounded-b-md shadow-md -mt-0.5" />
+          <div className="-mt-0.5 h-7 w-14 rounded-b-md border-x-3 border-b-3 border-slate-400/80 shadow-md" />
         </motion.div>
       )}
 
@@ -161,19 +167,23 @@ export function AccessoriesRenderer({
           onClick={(e) => {
             e.stopPropagation();
             onToggleLamp?.();
-            if (onSelectItem) { onSelectItem("lighting", lightingId); } else { onSelectCategory?.("lighting"); }
+            if (onSelectItem) {
+              onSelectItem("lighting", lightingId);
+            } else {
+              onSelectCategory?.("lighting");
+            }
           }}
-          className="absolute bottom-0 left-22 pointer-events-auto cursor-pointer group/lamp flex flex-col items-center z-35 active:cursor-grabbing"
+          className="group/lamp pointer-events-auto absolute bottom-0 left-22 z-35 flex cursor-pointer flex-col items-center active:cursor-grabbing"
           title={`Slide along desk • Click to turn ${lampPowered ? "OFF" : "ON"}`}
         >
-          <div className="absolute -top-6 opacity-0 group-hover/lamp:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-50">
+          <div className="pointer-events-none absolute -top-6 z-50 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[8px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/lamp:opacity-100">
             💡 Slide Lamp • Click to Turn {lampPowered ? "OFF" : "ON"}
           </div>
           {/* Light Fixture Horizontal Bar */}
-          <div className="w-22 h-2 bg-slate-100 rounded-full border border-slate-300 shadow-md relative">
+          <div className="relative h-2 w-22 rounded-full border border-slate-300 bg-slate-100 shadow-md">
             {/* LED Underside */}
             <div
-              className={`w-18 mx-auto h-1 rounded-full transition-all duration-300 ${
+              className={`mx-auto h-1 w-18 rounded-full transition-all duration-300 ${
                 lampPowered
                   ? "bg-amber-100 shadow-[0_0_20px_rgba(254,243,199,0.9)]"
                   : "bg-neutral-300"
@@ -182,14 +192,14 @@ export function AccessoriesRenderer({
           </div>
 
           {/* Pivoting Stem */}
-          <div className="w-1.5 h-26 bg-linear-to-b from-slate-200 to-slate-400 relative">
-            <div className="absolute top-4 -right-1 w-2.5 h-6 rounded-full border-r-2 border-amber-500" />
+          <div className="relative h-26 w-1.5 bg-linear-to-b from-slate-200 to-slate-400">
+            <div className="absolute top-4 -right-1 h-6 w-2.5 rounded-full border-r-2 border-amber-500" />
           </div>
 
           {/* Minimalist Round Base (Rests flush on desk surface) */}
-          <div className="w-8 h-2 bg-slate-200 rounded-full border border-slate-300 shadow-md flex items-center justify-center">
+          <div className="flex h-2 w-8 items-center justify-center rounded-full border border-slate-300 bg-slate-200 shadow-md">
             <div
-              className={`w-1.5 h-1.5 rounded-full transition-colors ${
+              className={`h-1.5 w-1.5 rounded-full transition-colors ${
                 lampPowered ? "bg-amber-400" : "bg-neutral-400"
               }`}
             />
@@ -197,7 +207,7 @@ export function AccessoriesRenderer({
 
           {/* Dynamic Light Beam Cast */}
           {lampPowered && (
-            <div className="absolute top-2 -left-12 w-44 h-36 bg-[radial-gradient(ellipse_at_top,rgba(254,240,138,0.25)_0%,transparent_75%)] pointer-events-none blur-xs" />
+            <div className="pointer-events-none absolute top-2 -left-12 h-36 w-44 bg-[radial-gradient(ellipse_at_top,rgba(254,240,138,0.25)_0%,transparent_75%)] blur-xs" />
           )}
         </motion.div>
       )}
@@ -207,18 +217,22 @@ export function AccessoriesRenderer({
           onClick={(e) => {
             e.stopPropagation();
             onToggleLamp?.();
-            if (onSelectItem) { onSelectItem("lighting", "light-screenbar"); } else { onSelectCategory?.("lighting"); }
+            if (onSelectItem) {
+              onSelectItem("lighting", "light-screenbar");
+            } else {
+              onSelectCategory?.("lighting");
+            }
           }}
-          className="absolute -top-48.75 left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-35"
+          className="group pointer-events-auto absolute -top-48.75 left-1/2 z-35 flex -translate-x-1/2 cursor-pointer flex-col items-center"
           title={`Click to turn ScreenBar ${lampPowered ? "OFF" : "ON"}`}
         >
-          <div className="absolute -top-6 opacity-0 group-hover:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-50">
+          <div className="pointer-events-none absolute -top-6 z-50 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[8px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
             💡 ScreenBar • Click to Turn {lampPowered ? "OFF" : "ON"}
           </div>
           {/* ScreenBar Clamped atop Monitor Bezel */}
-          <div className="w-56 h-2 bg-neutral-900 rounded-full border border-neutral-700 shadow-lg relative flex items-center justify-center">
+          <div className="relative flex h-2 w-56 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 shadow-lg">
             <div
-              className={`w-52 h-1 rounded-full transition-all duration-300 ${
+              className={`h-1 w-52 rounded-full transition-all duration-300 ${
                 lampPowered
                   ? "bg-amber-100 shadow-[0_0_18px_rgba(254,240,138,0.9)]"
                   : "bg-neutral-800"
@@ -228,7 +242,7 @@ export function AccessoriesRenderer({
 
           {/* Downward Light Glow Cast */}
           {lampPowered && (
-            <div className="absolute top-1.5 -left-16 w-88 h-60 bg-[radial-gradient(ellipse_at_top,rgba(254,243,199,0.2)_0%,transparent_80%)] pointer-events-none blur-xs" />
+            <div className="pointer-events-none absolute top-1.5 -left-16 h-60 w-88 bg-[radial-gradient(ellipse_at_top,rgba(254,243,199,0.2)_0%,transparent_80%)] blur-xs" />
           )}
         </div>
       )}
@@ -245,16 +259,24 @@ export function AccessoriesRenderer({
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
-            if (onSelectItem) { onSelectItem("bali-lifestyle", "lifestyle-plant-monstera"); } else { onSelectCategory?.("bali-lifestyle"); }
+            if (onSelectItem) {
+              onSelectItem("bali-lifestyle", "lifestyle-plant-monstera");
+            } else {
+              onSelectCategory?.("bali-lifestyle");
+            }
           }}
-          className="absolute bottom-0 right-4 flex flex-col items-center z-35 pointer-events-auto cursor-grab active:cursor-grabbing group/plant"
+          className="group/plant pointer-events-auto absolute right-4 bottom-0 z-35 flex cursor-grab flex-col items-center active:cursor-grabbing"
           title="Drag plant along desk • Click to customize"
         >
-          <div className="absolute -top-6 opacity-0 group-hover/plant:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+          <div className="pointer-events-none absolute -top-6 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[8px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/plant:opacity-100">
             🌿 Slide Plant • Click to Select
           </div>
           {/* Lush Monstera Leaves Vector */}
-          <svg className="w-20 h-20 text-emerald-600 drop-shadow-md" viewBox="0 0 100 100" fill="none">
+          <svg
+            className="h-20 w-20 text-emerald-600 drop-shadow-md"
+            viewBox="0 0 100 100"
+            fill="none"
+          >
             <path
               d="M 50 80 Q 20 60 15 30 Q 30 15 45 40 Q 40 55 50 80 Z"
               fill="#059669"
@@ -279,22 +301,26 @@ export function AccessoriesRenderer({
           </svg>
 
           {/* Terracotta Balinese Planter (Rests flush on desk wood) */}
-          <div className="w-12 h-9 bg-linear-to-b from-amber-700 via-amber-800 to-amber-950 rounded-b-xl border-t-2 border-amber-600 shadow-xl flex items-center justify-center">
-            <div className="w-8 h-1 bg-amber-900/60 rounded-full" />
+          <div className="flex h-9 w-12 items-center justify-center rounded-b-xl border-t-2 border-amber-600 bg-linear-to-b from-amber-700 via-amber-800 to-amber-950 shadow-xl">
+            <div className="h-1 w-8 rounded-full bg-amber-900/60" />
           </div>
-          <div className="w-14 h-1.5 bg-amber-900 rounded-full shadow-md" />
+          <div className="h-1.5 w-14 rounded-full bg-amber-900 shadow-md" />
         </motion.div>
       ) : (
         /* Dotted Hotspot: + Place a Plant! */
         <button
           onClick={(e) => {
             e.stopPropagation();
-            if (onSelectItem) { onSelectItem("bali-lifestyle", "lifestyle-plant-monstera"); } else { onSelectCategory?.("bali-lifestyle"); }
+            if (onSelectItem) {
+              onSelectItem("bali-lifestyle", "lifestyle-plant-monstera");
+            } else {
+              onSelectCategory?.("bali-lifestyle");
+            }
           }}
-          className="absolute bottom-2 right-4 pointer-events-auto flex items-center gap-1 px-2 py-1 rounded-full bg-neutral-900/90 border border-dashed border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-500/10 text-[9px] text-emerald-400 transition-all shadow-md group"
+          className="group pointer-events-auto absolute right-4 bottom-2 flex items-center gap-1 rounded-full border border-dashed border-emerald-500/50 bg-neutral-900/90 px-2 py-1 text-[9px] text-emerald-400 shadow-md transition-all hover:border-emerald-400 hover:bg-emerald-500/10"
           title="Place a tropical plant on desk"
         >
-          <Plus className="w-3 h-3 group-hover:rotate-90 transition-transform" />
+          <Plus className="h-3 w-3 transition-transform group-hover:rotate-90" />
           <span>Place Plant</span>
         </button>
       )}
@@ -311,36 +337,40 @@ export function AccessoriesRenderer({
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
-            if (onSelectItem) { onSelectItem("bali-lifestyle", "lifestyle-coffee-nespresso"); } else { onSelectCategory?.("bali-lifestyle"); }
+            if (onSelectItem) {
+              onSelectItem("bali-lifestyle", "lifestyle-coffee-nespresso");
+            } else {
+              onSelectCategory?.("bali-lifestyle");
+            }
           }}
-          className="absolute bottom-0 right-16 flex items-end gap-2 z-35 pointer-events-auto cursor-grab active:cursor-grabbing group/coffee"
+          className="group/coffee pointer-events-auto absolute right-16 bottom-0 z-35 flex cursor-grab items-end gap-2 active:cursor-grabbing"
           title="Drag coffee along desk • Click to customize"
         >
-          <div className="absolute -top-6 opacity-0 group-hover/coffee:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+          <div className="pointer-events-none absolute -top-6 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[8px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/coffee:opacity-100">
             ☕ Slide Coffee • Click to Select
           </div>
           {/* Nespresso Machine */}
-          <div className="w-10 h-18 rounded-t-lg bg-neutral-900 border border-neutral-700 shadow-xl flex flex-col items-center justify-between p-1">
-            <div className="w-6 h-1.5 bg-linear-to-r from-slate-400 via-white to-slate-400 rounded-full shadow-sm" />
+          <div className="flex h-18 w-10 flex-col items-center justify-between rounded-t-lg border border-neutral-700 bg-neutral-900 p-1 shadow-xl">
+            <div className="h-1.5 w-6 rounded-full bg-linear-to-r from-slate-400 via-white to-slate-400 shadow-sm" />
             <div className="flex flex-col items-center">
-              <div className="w-1.5 h-1.5 rounded-full bg-emerald-400 mb-0.5" />
-              <div className="w-2.5 h-2 bg-neutral-950 rounded-b" />
+              <div className="mb-0.5 h-1.5 w-1.5 rounded-full bg-emerald-400" />
+              <div className="h-2 w-2.5 rounded-b bg-neutral-950" />
             </div>
-            <div className="w-8 h-2 bg-neutral-950 rounded-b border-t border-neutral-700" />
+            <div className="h-2 w-8 rounded-b border-t border-neutral-700 bg-neutral-950" />
           </div>
 
           {/* Steaming Ceramic Espresso Cup */}
-          <div className="flex flex-col items-center relative">
+          <div className="relative flex flex-col items-center">
             <motion.div
-              className="w-1 h-3 bg-white/25 rounded-full blur-[0.5px] -mb-1"
+              className="-mb-1 h-3 w-1 rounded-full bg-white/25 blur-[0.5px]"
               animate={{ y: [-2, -7, -10], opacity: [0.6, 0.3, 0] }}
               transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
             />
-            <div className="w-5 h-5 rounded-b-md bg-stone-100 border border-stone-300 shadow-md flex items-center justify-center relative">
-              <div className="w-3.5 h-3.5 rounded-full bg-amber-950/80 shadow-inner" />
-              <div className="absolute top-0.5 -right-1.5 w-1.5 h-3 rounded-r-full border-r-2 border-stone-300" />
+            <div className="relative flex h-5 w-5 items-center justify-center rounded-b-md border border-stone-300 bg-stone-100 shadow-md">
+              <div className="h-3.5 w-3.5 rounded-full bg-amber-950/80 shadow-inner" />
+              <div className="absolute top-0.5 -right-1.5 h-3 w-1.5 rounded-r-full border-r-2 border-stone-300" />
             </div>
-            <div className="w-7 h-1 bg-stone-300 rounded-full shadow-xs" />
+            <div className="h-1 w-7 rounded-full bg-stone-300 shadow-xs" />
           </div>
         </motion.div>
       ) : null}

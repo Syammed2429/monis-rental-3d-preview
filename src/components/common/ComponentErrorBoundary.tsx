@@ -37,11 +37,11 @@ export class ComponentErrorBoundary extends Component<Props, State> {
   public render() {
     if (this.state.hasError) {
       return (
-        <div className="w-full h-full min-h-[300px] flex-center flex-col p-6 rounded-2xl bg-neutral-950/80 border border-rose-500/20 text-center space-y-4">
-          <div className="w-12 h-12 rounded-xl bg-rose-500/10 border border-rose-500/20 text-rose-400 flex-center">
-            <AlertCircle className="w-6 h-6" />
+        <div className="flex-center h-full min-h-[300px] w-full flex-col space-y-4 rounded-2xl border border-rose-500/20 bg-neutral-950/80 p-6 text-center">
+          <div className="flex-center h-12 w-12 rounded-xl border border-rose-500/20 bg-rose-500/10 text-rose-400">
+            <AlertCircle className="h-6 w-6" />
           </div>
-          <div className="space-y-1 max-w-sm">
+          <div className="max-w-sm space-y-1">
             <h3 className="text-sm font-semibold text-white">
               {this.props.fallbackTitle || "Component Temporarily Unavailable"}
             </h3>
@@ -52,9 +52,9 @@ export class ComponentErrorBoundary extends Component<Props, State> {
           <Button
             size="sm"
             onClick={this.handleReset}
-            className="bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-8 px-4 rounded-lg gap-1.5"
+            className="h-8 gap-1.5 rounded-lg bg-emerald-500 px-4 text-xs font-bold text-neutral-950 hover:bg-emerald-400"
           >
-            <RefreshCw className="w-3.5 h-3.5" />
+            <RefreshCw className="h-3.5 w-3.5" />
             <span>Reload Component</span>
           </Button>
         </div>

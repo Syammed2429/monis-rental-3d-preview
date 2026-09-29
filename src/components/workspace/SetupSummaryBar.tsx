@@ -1,11 +1,11 @@
 "use client";
 
-import { WorkspaceConfig, Currency } from "@/types/workspace";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
-import { ShoppingBag, ArrowRight, RotateCcw } from "lucide-react";
+import { ArrowRight, RotateCcw, ShoppingBag } from "lucide-react";
+import { Currency, WorkspaceConfig } from "@/types/workspace";
 import { sound } from "@/lib/audio";
 import { calculateWorkspaceTotals, formatPrice } from "@/lib/pricing";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 interface SetupSummaryBarProps {
   config: WorkspaceConfig;
@@ -30,44 +30,46 @@ export function SetupSummaryBar({
   const monthlyIDR = Math.round(baseWeeklyIDR * 4.33);
 
   return (
-    <div className="fixed bottom-0 inset-x-0 sm:bottom-4 sm:inset-x-4 max-w-4xl mx-auto z-40 px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:pb-0 pointer-events-none">
-      <div className="bg-neutral-950/95 backdrop-blur-2xl border border-white/15 rounded-2xl sm:rounded-full p-2.5 sm:px-5 sm:py-2.5 shadow-2xl flex-between gap-2 sm:gap-3 pointer-events-auto">
+    <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto max-w-4xl px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:inset-x-4 sm:bottom-4 sm:pb-0">
+      <div className="pointer-events-auto flex-between gap-2 rounded-2xl border border-white/15 bg-neutral-950/95 p-2.5 shadow-2xl backdrop-blur-2xl sm:gap-3 sm:rounded-full sm:px-5 sm:py-2.5">
         {/* Left: Summary Items Badge & Config summary */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <div className="w-8 h-8 rounded-full bg-emerald-500/10 border border-emerald-500/20 text-emerald-400 flex-center shrink-0">
-            <ShoppingBag className="w-4 h-4" />
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+          <div className="flex-center h-8 w-8 shrink-0 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
+            <ShoppingBag className="h-4 w-4" />
           </div>
 
           <div className="min-w-0">
             <div className="flex items-center gap-1.5 sm:gap-2">
-              <span className="text-xs font-bold text-white tracking-wide truncate">
+              <span className="truncate text-xs font-bold tracking-wide text-white">
                 {formatPrice(baseWeeklyUSD, baseWeeklyIDR, currency)}
-                <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
+                <span className="text-[10px] font-normal text-neutral-400">/wk</span>
               </span>
               <Badge
                 variant="outline"
-                className="bg-neutral-900 border-white/10 text-[9px] sm:text-[10px] px-1.5 py-0 text-emerald-400 font-mono shrink-0"
+                className="shrink-0 border-white/10 bg-neutral-900 px-1.5 py-0 font-mono text-[9px] text-emerald-400 sm:text-[10px]"
               >
                 {items.length} items
               </Badge>
             </div>
 
-            <div className="text-[10px] sm:text-[11px] text-neutral-400 hidden sm:flex items-center gap-1.5 truncate max-w-xs">
+            <div className="hidden max-w-xs items-center gap-1.5 truncate text-[10px] text-neutral-400 sm:flex sm:text-[11px]">
               <span className="truncate">{desk?.name.split(" ")[0]} Desk</span>
               <span>•</span>
               <span className="truncate">{chair?.name.split(" ")[1] || "Chair"}</span>
               <span>•</span>
-              <span className="truncate">{monitor ? `${monitor.name.split(" ")[0]} Display` : "No Display"}</span>
+              <span className="truncate">
+                {monitor ? `${monitor.name.split(" ")[0]} Display` : "No Display"}
+              </span>
             </div>
-            <div className="text-[9px] text-neutral-400 sm:hidden font-mono">
+            <div className="font-mono text-[9px] text-neutral-400 sm:hidden">
               ~{formatPrice(monthlyUSD, monthlyIDR, currency)}/mo
             </div>
           </div>
         </div>
 
         {/* Right: Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-          <div className="hidden sm:block text-right mr-2 font-mono text-[10px] text-neutral-400">
+        <div className="flex shrink-0 items-center gap-1.5 sm:gap-2">
+          <div className="mr-2 hidden text-right font-mono text-[10px] text-neutral-400 sm:block">
             ~{formatPrice(monthlyUSD, monthlyIDR, currency)}/mo
           </div>
 
@@ -78,10 +80,10 @@ export function SetupSummaryBar({
               sound.playClick();
               onReset();
             }}
-            className="w-8 h-8 rounded-full text-neutral-400 hover:text-white hover:bg-neutral-900 border-white/10"
+            className="h-8 w-8 rounded-full border-white/10 text-neutral-400 hover:bg-neutral-900 hover:text-white"
             title="Reset setup"
           >
-            <RotateCcw className="w-3.5 h-3.5" />
+            <RotateCcw className="h-3.5 w-3.5" />
           </Button>
 
           <Button
@@ -89,10 +91,10 @@ export function SetupSummaryBar({
               sound.playSelect();
               onOpenCheckout();
             }}
-            className="bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-8 sm:h-9 px-3.5 sm:px-5 rounded-full shadow-[0_0_20px_rgba(16,185,129,0.35)] hover:scale-105 active:scale-95 transition-all gap-1 sm:gap-1.5"
+            className="h-8 gap-1 rounded-full bg-emerald-500 px-3.5 text-xs font-bold text-neutral-950 shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-all hover:scale-105 hover:bg-emerald-400 active:scale-95 sm:h-9 sm:gap-1.5 sm:px-5"
           >
             <span>Rent Setup</span>
-            <ArrowRight className="w-3.5 h-3.5 stroke-[2.5]" />
+            <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />
           </Button>
         </div>
       </div>

@@ -1,4 +1,4 @@
-import { WorkspaceConfig, Currency, ProductItem } from "@/types/workspace";
+import { Currency, ProductItem, WorkspaceConfig } from "@/types/workspace";
 import { PRODUCTS } from "@/data/products";
 
 /**
@@ -19,13 +19,13 @@ export function calculateDurationDiscount(durationWeeks: number): {
   discountBadge: string;
 } {
   if (durationWeeks >= 12) {
-    return { discountRate: 0.30, discountBadge: "30% Resident Discount" };
+    return { discountRate: 0.3, discountBadge: "30% Resident Discount" };
   }
   if (durationWeeks >= 8) {
-    return { discountRate: 0.20, discountBadge: "20% Nomad Discount" };
+    return { discountRate: 0.2, discountBadge: "20% Nomad Discount" };
   }
   if (durationWeeks >= 4) {
-    return { discountRate: 0.10, discountBadge: "10% Monthly Discount" };
+    return { discountRate: 0.1, discountBadge: "10% Monthly Discount" };
   }
   return { discountRate: 0, discountBadge: "Standard Weekly" };
 }
@@ -43,7 +43,9 @@ export function getSelectedProducts(config: WorkspaceConfig): ProductItem[] {
   const selectedCoffee = config.coffeeId ? PRODUCTS.find((p) => p.id === config.coffeeId) : null;
   const selectedOutdoor = config.outdoorId ? PRODUCTS.find((p) => p.id === config.outdoorId) : null;
   const selectedRelax = config.relaxId ? PRODUCTS.find((p) => p.id === config.relaxId) : null;
-  const selectedLaptopStand = config.laptopStand ? PRODUCTS.find((p) => p.id === "lifestyle-laptop-stand") : null;
+  const selectedLaptopStand = config.laptopStand
+    ? PRODUCTS.find((p) => p.id === "lifestyle-laptop-stand")
+    : null;
 
   return [
     selectedDesk,
@@ -127,12 +129,12 @@ export function generateWhatsAppOrderUrl(params: {
   const itemListText = params.items.map((it) => `• ${it.name}`).join("\n");
   const text = encodeURIComponent(
     `🌴 *New Monis.rent Booking #${params.bookingRef}*\n\n` +
-    `👤 *Name:* ${params.fullName}\n` +
-    `📍 *Area:* ${params.areaName}\n` +
-    `⏱ *Duration:* ${params.durationWeeks} weeks\n` +
-    `💰 *Total:* $${params.totalUSD} (Rp ${(params.totalIDR / 1000).toLocaleString()}k)\n\n` +
-    `📦 *Equipment:*\n${itemListText}\n\n` +
-    `Hi Monis Team! I just customized my Bali workspace online and would like to confirm villa delivery.`
+      `👤 *Name:* ${params.fullName}\n` +
+      `📍 *Area:* ${params.areaName}\n` +
+      `⏱ *Duration:* ${params.durationWeeks} weeks\n` +
+      `💰 *Total:* $${params.totalUSD} (Rp ${(params.totalIDR / 1000).toLocaleString()}k)\n\n` +
+      `📦 *Equipment:*\n${itemListText}\n\n` +
+      `Hi Monis Team! I just customized my Bali workspace online and would like to confirm villa delivery.`
   );
   return `https://wa.me/6281234567890?text=${text}`;
 }

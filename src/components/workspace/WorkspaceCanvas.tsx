@@ -1,35 +1,35 @@
 "use client";
 
-import { useState, useRef, useEffect } from "react";
-import { motion } from "motion/react";
-import { WorkspaceConfig, ProductCategory } from "@/types/workspace";
-import { RoomBackdrop } from "./RoomBackdrop";
-import { DeskRenderer } from "./DeskRenderer";
-import { ChairRenderer } from "./ChairRenderer";
-import { MonitorRenderer } from "./MonitorRenderer";
-import { AccessoriesRenderer } from "./AccessoriesRenderer";
-import { LifestyleRenderer } from "./LifestyleRenderer";
-import { Button } from "@/components/ui/button";
-import { Badge } from "@/components/ui/badge";
+import { useEffect, useRef, useState } from "react";
 import {
-  Sun,
-  Sunset,
-  Moon,
   ArrowUpDown,
-  Sparkles,
-  Lock,
-  Unlock,
-  ZoomIn,
-  ZoomOut,
-  ChevronUp,
   ChevronDown,
+  ChevronUp,
+  Eye,
+  Lightbulb,
+  Lock,
+  Moon,
   Orbit,
   RotateCcw,
   RotateCw,
-  Eye,
-  Lightbulb,
+  Sparkles,
+  Sun,
+  Sunset,
+  Unlock,
+  ZoomIn,
+  ZoomOut,
 } from "lucide-react";
+import { motion } from "motion/react";
+import { ProductCategory, WorkspaceConfig } from "@/types/workspace";
 import { sound } from "@/lib/audio";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { AccessoriesRenderer } from "./AccessoriesRenderer";
+import { ChairRenderer } from "./ChairRenderer";
+import { DeskRenderer } from "./DeskRenderer";
+import { LifestyleRenderer } from "./LifestyleRenderer";
+import { MonitorRenderer } from "./MonitorRenderer";
+import { RoomBackdrop } from "./RoomBackdrop";
 
 interface WorkspaceCanvasProps {
   config: WorkspaceConfig;
@@ -260,18 +260,18 @@ export function WorkspaceCanvas({
   };
 
   return (
-    <div className="relative w-full h-[390px] sm:h-[460px] lg:h-full min-h-[380px] lg:min-h-[500px] rounded-3xl overflow-hidden border border-white/10 shadow-2xl bg-neutral-950 flex flex-col justify-between select-none">
+    <div className="relative flex h-[390px] min-h-[380px] w-full flex-col justify-between overflow-hidden rounded-3xl border border-white/10 bg-neutral-950 shadow-2xl select-none sm:h-[460px] lg:h-full lg:min-h-[500px]">
       {/* 1. Dynamic Room Background */}
       <RoomBackdrop timeOfDay={config.timeOfDay} />
 
       {/* 2. Top Canvas Floating HUD Toolbar */}
-      <div className="relative z-30 px-2.5 py-2 sm:px-4 sm:py-3 flex flex-wrap items-center gap-1.5 pointer-events-auto">
+      <div className="pointer-events-auto relative z-30 flex flex-wrap items-center gap-1.5 px-2.5 py-2 sm:px-4 sm:py-3">
         {/* "Interactive 3D Studio" badge — desktop only */}
         <Badge
           variant="outline"
-          className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-white/90 font-medium px-2.5 py-1 text-[11px] gap-1.5 shadow-lg hidden sm:inline-flex"
+          className="hidden gap-1.5 border-white/15 bg-neutral-900/85 px-2.5 py-1 text-[11px] font-medium text-white/90 shadow-lg backdrop-blur-md sm:inline-flex"
         >
-          <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+          <span className="h-2 w-2 animate-pulse rounded-full bg-emerald-400" />
           <span>Interactive 3D Studio</span>
         </Badge>
 
@@ -280,32 +280,35 @@ export function WorkspaceCanvas({
           size="sm"
           variant="outline"
           onClick={handleToggleHeight}
-          className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-white hover:bg-neutral-800 text-[11px] h-7 px-2 gap-1 shadow-lg"
+          className="h-7 gap-1 border-white/15 bg-neutral-900/85 px-2 text-[11px] text-white shadow-lg backdrop-blur-md hover:bg-neutral-800"
         >
-          <ArrowUpDown className="w-3.5 h-3.5 shrink-0 text-emerald-400" />
+          <ArrowUpDown className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
           <span suppressHydrationWarning>{isStanding ? "Standing" : "Sitting"}</span>
-          <span className="font-mono text-emerald-400 font-bold hidden xs:inline" suppressHydrationWarning>
+          <span
+            className="xs:inline hidden font-mono font-bold text-emerald-400"
+            suppressHydrationWarning
+          >
             ({Math.round(currentHeight)} cm)
           </span>
         </Button>
 
         {/* Micro Height Stepper (Fine-Tuning) */}
-        <div className="flex items-center bg-neutral-900/85 backdrop-blur-md border border-white/15 rounded-md p-0.5 shadow-lg">
+        <div className="flex items-center rounded-md border border-white/15 bg-neutral-900/85 p-0.5 shadow-lg backdrop-blur-md">
           <button
             onClick={() => handleStepHeight(2)}
             disabled={currentHeight >= 118}
-            className="p-1 text-neutral-400 hover:text-emerald-400 disabled:opacity-30 transition-colors"
+            className="p-1 text-neutral-400 transition-colors hover:text-emerald-400 disabled:opacity-30"
             title="Raise desk +2cm"
           >
-            <ChevronUp className="w-3.5 h-3.5" />
+            <ChevronUp className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={() => handleStepHeight(-2)}
             disabled={currentHeight <= 70}
-            className="p-1 text-neutral-400 hover:text-emerald-400 disabled:opacity-30 transition-colors"
+            className="p-1 text-neutral-400 transition-colors hover:text-emerald-400 disabled:opacity-30"
             title="Lower desk -2cm"
           >
-            <ChevronDown className="w-3.5 h-3.5" />
+            <ChevronDown className="h-3.5 w-3.5" />
           </button>
         </div>
 
@@ -314,10 +317,10 @@ export function WorkspaceCanvas({
           size="sm"
           variant="outline"
           onClick={handleToggleLockView}
-          className={`backdrop-blur-md text-[11px] h-7 px-2 gap-1 shadow-lg transition-all ${
+          className={`h-7 gap-1 px-2 text-[11px] shadow-lg backdrop-blur-md transition-all ${
             isViewLocked
-              ? "bg-amber-500/20 border-amber-500/50 text-amber-300 hover:bg-amber-500/30 ring-1 ring-amber-400/40 font-semibold"
-              : "bg-neutral-900/85 border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800"
+              ? "border-amber-500/50 bg-amber-500/20 font-semibold text-amber-300 ring-1 ring-amber-400/40 hover:bg-amber-500/30"
+              : "border-white/15 bg-neutral-900/85 text-neutral-300 hover:bg-neutral-800 hover:text-white"
           }`}
           title={
             isViewLocked
@@ -326,9 +329,9 @@ export function WorkspaceCanvas({
           }
         >
           {isViewLocked ? (
-            <Lock className="w-3 h-3 text-amber-400 stroke-[2.5]" />
+            <Lock className="h-3 w-3 stroke-[2.5] text-amber-400" />
           ) : (
-            <Unlock className="w-3 h-3 text-neutral-400" />
+            <Unlock className="h-3 w-3 text-neutral-400" />
           )}
           <span className="hidden sm:inline">{isViewLocked ? "View Locked" : "Lock View"}</span>
         </Button>
@@ -338,10 +341,10 @@ export function WorkspaceCanvas({
           size="sm"
           variant="outline"
           onClick={handleResetLayout}
-          className="bg-neutral-900/85 backdrop-blur-md border-white/15 text-neutral-300 hover:text-white hover:bg-neutral-800 text-[11px] h-7 px-2 gap-1 shadow-lg hidden sm:inline-flex"
+          className="hidden h-7 gap-1 border-white/15 bg-neutral-900/85 px-2 text-[11px] text-neutral-300 shadow-lg backdrop-blur-md hover:bg-neutral-800 hover:text-white sm:inline-flex"
           title="Items on desk can be freely dragged. Click to reset items to original positions."
         >
-          <Sparkles className="w-3 h-3 text-emerald-400" />
+          <Sparkles className="h-3 w-3 text-emerald-400" />
           <span>Rearrange</span>
         </Button>
 
@@ -349,68 +352,72 @@ export function WorkspaceCanvas({
         <div className="flex-1" />
 
         {/* Right: Ambient Bali Time of Day & Zoom Controls */}
-        <div className="flex items-center gap-0.5 bg-neutral-900/85 backdrop-blur-md border border-white/15 p-1 rounded-full shadow-lg shrink-0">
+        <div className="flex shrink-0 items-center gap-0.5 rounded-full border border-white/15 bg-neutral-900/85 p-1 shadow-lg backdrop-blur-md">
           <button
             onClick={() => handleTimeOfDay("daylight")}
-            className={`p-1.5 rounded-full transition-all ${
+            className={`rounded-full p-1.5 transition-all ${
               config.timeOfDay === "daylight"
                 ? "bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
             title="Bali Daylight (Sunny)"
           >
-            <Sun className="w-3.5 h-3.5" />
+            <Sun className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={() => handleTimeOfDay("sunset")}
-            className={`p-1.5 rounded-full transition-all ${
+            className={`rounded-full p-1.5 transition-all ${
               config.timeOfDay === "sunset"
                 ? "bg-orange-500/20 text-orange-400 ring-1 ring-orange-500/50"
                 : "text-neutral-400 hover:text-white"
             }`}
             title="Bali Golden Sunset"
           >
-            <Sunset className="w-3.5 h-3.5" />
+            <Sunset className="h-3.5 w-3.5" />
           </button>
           <button
             onClick={() => handleTimeOfDay("studio-night")}
-            className={`p-1.5 rounded-full transition-all ${
+            className={`rounded-full p-1.5 transition-all ${
               config.timeOfDay === "studio-night"
                 ? "bg-indigo-500/20 text-indigo-300 ring-1 ring-indigo-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
             title="Studio Night Ambient"
           >
-            <Moon className="w-3.5 h-3.5" />
+            <Moon className="h-3.5 w-3.5" />
           </button>
 
           {/* Lamp toggle — only when lighting selected */}
           {config.lightingId && (
             <button
               onClick={handleToggleLamp}
-              className={`p-1.5 rounded-full transition-all ${
+              className={`rounded-full p-1.5 transition-all ${
                 config.lampPowered
-                  ? "bg-amber-400/25 text-amber-300 ring-1 ring-amber-400/50 shadow-[0_0_12px_rgba(251,191,36,0.35)]"
+                  ? "bg-amber-400/25 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.35)] ring-1 ring-amber-400/50"
                   : "text-neutral-500 hover:text-neutral-300"
               }`}
-              title={config.lampPowered ? "Lamp is ON • Click to turn off" : "Lamp is OFF • Click to turn on"}
+              title={
+                config.lampPowered
+                  ? "Lamp is ON • Click to turn off"
+                  : "Lamp is OFF • Click to turn on"
+              }
             >
-              <Lightbulb className="w-3.5 h-3.5" />
+              <Lightbulb className="h-3.5 w-3.5" />
             </button>
           )}
 
-          <div className="w-[1px] h-3.5 bg-white/10 mx-0.5" />
+          <div className="mx-0.5 h-3.5 w-[1px] bg-white/10" />
 
           {/* Zoom Toggle */}
           <button
             onClick={() => setZoomLevel((z) => (z === 1 ? 1.08 : 1))}
-            className="p-1.5 rounded-full text-neutral-400 hover:text-white transition-colors"
+            className="rounded-full p-1.5 text-neutral-400 transition-colors hover:text-white"
             title={zoomLevel === 1 ? "Zoom in setup" : "Reset zoom"}
           >
             {zoomLevel === 1 ? (
-              <ZoomIn className="w-3.5 h-3.5" />
+              <ZoomIn className="h-3.5 w-3.5" />
             ) : (
-              <ZoomOut className="w-3.5 h-3.5" />
+              <ZoomOut className="h-3.5 w-3.5" />
             )}
           </button>
         </div>
@@ -428,7 +435,7 @@ export function WorkspaceCanvas({
           perspective: 1200,
           perspectiveOrigin: "50% 55%",
         }}
-        className={`relative flex-1 w-full h-full flex items-center justify-center overflow-hidden touch-none select-none ${
+        className={`relative flex h-full w-full flex-1 touch-none items-center justify-center overflow-hidden select-none ${
           isViewLocked ? "cursor-default" : isDragging ? "cursor-grabbing" : "cursor-grab"
         }`}
       >
@@ -462,27 +469,27 @@ export function WorkspaceCanvas({
             damping: 22,
             mass: 0.8,
           }}
-          className="relative shrink-0 select-none pointer-events-auto"
+          className="pointer-events-auto relative shrink-0 select-none"
         >
           {/* Grounding 3D Studio Radial Shadow (Moves with Diorama Orbit) */}
           <div
-            className="absolute bottom-3 left-1/2 -translate-x-1/2 w-[540px] h-20 rounded-[50%] bg-black/60 blur-xl pointer-events-none"
+            className="pointer-events-none absolute bottom-3 left-1/2 h-20 w-[540px] -translate-x-1/2 rounded-[50%] bg-black/60 blur-xl"
             style={{ transform: "translateZ(-30px)" }}
           />
 
           {/* Showroom Floor Pedestal Ring (Ground Floor Underneath Desk Feet) */}
           <div
-            className="absolute bottom-2 left-1/2 -translate-x-1/2 w-[490px] h-14 rounded-[100%] pointer-events-none border border-emerald-500/25 bg-gradient-to-b from-neutral-900/80 via-black/90 to-transparent shadow-[0_0_40px_rgba(16,185,129,0.18)] flex items-center justify-between px-6"
+            className="pointer-events-none absolute bottom-2 left-1/2 flex h-14 w-[490px] -translate-x-1/2 items-center justify-between rounded-[100%] border border-emerald-500/25 bg-gradient-to-b from-neutral-900/80 via-black/90 to-transparent px-6 shadow-[0_0_40px_rgba(16,185,129,0.18)]"
             style={{ transform: "translateZ(-15px)" }}
           >
-            <span className="text-[7px] font-mono text-emerald-400/80 font-bold tracking-widest">
+            <span className="font-mono text-[7px] font-bold tracking-widest text-emerald-400/80">
               ◄ WEST FLANK
             </span>
-            <div className="flex items-center gap-1.5 px-2 py-0.5 rounded-full bg-emerald-500/10 border border-emerald-500/30 text-[7px] font-mono text-emerald-300">
-              <span className="w-1 h-1 rounded-full bg-emerald-400 animate-pulse" />
+            <div className="flex items-center gap-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 px-2 py-0.5 font-mono text-[7px] text-emerald-300">
+              <span className="h-1 w-1 animate-pulse rounded-full bg-emerald-400" />
               <span>BALI NOMAD SHOWROOM</span>
             </div>
-            <span className="text-[7px] font-mono text-emerald-400/80 font-bold tracking-widest">
+            <span className="font-mono text-[7px] font-bold tracking-widest text-emerald-400/80">
               EAST FLANK ►
             </span>
           </div>
@@ -535,8 +542,12 @@ export function WorkspaceCanvas({
                 dragElastic={0.06}
                 dragMomentum={false}
                 onPointerDown={(e) => e.stopPropagation()}
-                className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center cursor-grab active:cursor-grabbing"
-                style={{ transformStyle: "preserve-3d", transform: "translateZ(5px)", touchAction: "none" }}
+                className="group/mon pointer-events-auto absolute bottom-0 left-1/2 z-10 flex -translate-x-1/2 cursor-grab flex-col items-center active:cursor-grabbing"
+                style={{
+                  transformStyle: "preserve-3d",
+                  transform: "translateZ(5px)",
+                  touchAction: "none",
+                }}
                 whileDrag={{ scale: 1.03 }}
                 onClick={(e) => {
                   e.stopPropagation();
@@ -548,7 +559,7 @@ export function WorkspaceCanvas({
                 }}
                 title="Display • Slide along desk or click to customize"
               >
-                <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-40">
+                <div className="pointer-events-none absolute -top-7 z-40 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[9px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/mon:opacity-100">
                   🖥️ Display • Slide or Click to Customize
                 </div>
                 <MonitorRenderer
@@ -562,7 +573,7 @@ export function WorkspaceCanvas({
             {/* Desktop Accessories (Lamp, Mat, Laptop, Coffee, Plant - Foreground atop desk surface • z-30) */}
             <div
               key={`accessories-${layoutKey}`}
-              className="absolute inset-x-0 bottom-0 pointer-events-none z-30"
+              className="pointer-events-none absolute inset-x-0 bottom-0 z-30"
               style={{ transformStyle: "preserve-3d", transform: "translateZ(20px)" }}
             >
               <AccessoriesRenderer
@@ -582,31 +593,32 @@ export function WorkspaceCanvas({
       </div>
 
       {/* 4. Floating 3D Orbit Camera Controls (Positioned above bottom bar) */}
-      <div className="absolute bottom-11 sm:bottom-12 left-1/2 -translate-x-1/2 z-30 pointer-events-auto flex flex-col items-center gap-1.5 max-w-[94%]">
+      <div className="pointer-events-auto absolute bottom-11 left-1/2 z-30 flex max-w-[94%] -translate-x-1/2 flex-col items-center gap-1.5 sm:bottom-12">
         {/* Orbit Angle / Drag State Live Badge */}
-        <div className="flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-neutral-900/85 backdrop-blur-md border border-white/10 text-[10px] text-neutral-300 shadow-lg pointer-events-none transition-all">
+        <div className="pointer-events-none flex items-center gap-1.5 rounded-full border border-white/10 bg-neutral-900/85 px-2.5 py-0.5 text-[10px] text-neutral-300 shadow-lg backdrop-blur-md transition-all">
           {isViewLocked ? (
             <>
-              <Lock className="w-3 h-3 text-amber-400" />
-              <span className="text-amber-300 font-medium hidden sm:inline">
+              <Lock className="h-3 w-3 text-amber-400" />
+              <span className="hidden font-medium text-amber-300 sm:inline">
                 View locked — drag desk items freely • Click 🔓 to orbit
               </span>
-              <span className="text-amber-300 font-medium sm:hidden">
+              <span className="font-medium text-amber-300 sm:hidden">
                 Locked — drag items freely
               </span>
             </>
           ) : isDragging ? (
             <>
-              <Orbit className="w-3 h-3 text-emerald-400 animate-spin" />
-              <span className="font-mono text-emerald-300 font-bold">
+              <Orbit className="h-3 w-3 animate-spin text-emerald-400" />
+              <span className="font-mono font-bold text-emerald-300">
                 Studio Orbit: {Math.round(rotY)}° • Pitch: {Math.round(rotX)}°
               </span>
             </>
           ) : (
             <>
-              <Orbit className="w-3 h-3 text-emerald-400" />
+              <Orbit className="h-3 w-3 text-emerald-400" />
               <span className="hidden sm:inline">
-                Drag scene to orbit 3D • Tap presets below {rotY !== 0 ? `(${Math.round(rotY)}°)` : ""}
+                Drag scene to orbit 3D • Tap presets below{" "}
+                {rotY !== 0 ? `(${Math.round(rotY)}°)` : ""}
               </span>
               <span className="sm:hidden">
                 Drag scene to rotate in 3D {rotY !== 0 ? `(${Math.round(rotY)}°)` : ""}
@@ -616,53 +628,53 @@ export function WorkspaceCanvas({
         </div>
 
         {/* Camera Presets Pill */}
-        <div className="flex items-center gap-1 bg-neutral-900/90 backdrop-blur-md border border-white/15 p-1 rounded-full shadow-2xl">
+        <div className="flex items-center gap-1 rounded-full border border-white/15 bg-neutral-900/90 p-1 shadow-2xl backdrop-blur-md">
           {/* Front 0° */}
           <button
             onClick={() => handleSelectPreset("front")}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
+            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all ${
               activePreset === "front"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
             title="Front Battlestation View (0°)"
           >
-            <Eye className="w-3 h-3" />
+            <Eye className="h-3 w-3" />
             <span>Front</span>
           </button>
 
           {/* 3/4 Left -28° */}
           <button
             onClick={() => handleSelectPreset("iso-left")}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
+            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all ${
               activePreset === "iso-left"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
             title="3/4 Left Isometric View (-28°)"
           >
-            <RotateCcw className="w-3 h-3" />
+            <RotateCcw className="h-3 w-3" />
             <span>Left</span>
           </button>
 
           {/* 3/4 Right +28° */}
           <button
             onClick={() => handleSelectPreset("iso-right")}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all flex items-center gap-1 ${
+            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all ${
               activePreset === "iso-right"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
             }`}
             title="3/4 Right Isometric View (+28°)"
           >
-            <RotateCw className="w-3 h-3" />
+            <RotateCw className="h-3 w-3" />
             <span>Right</span>
           </button>
 
           {/* Top Angle */}
           <button
             onClick={() => handleSelectPreset("top")}
-            className={`px-2.5 py-1 rounded-full text-[11px] font-medium transition-all hidden sm:flex items-center gap-1 ${
+            className={`hidden items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all sm:flex ${
               activePreset === "top"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
@@ -676,17 +688,17 @@ export function WorkspaceCanvas({
           {(rotY !== 0 || rotX !== 4) && (
             <button
               onClick={() => handleSelectPreset("front")}
-              className="p-1 text-neutral-400 hover:text-emerald-400 transition-colors ml-0.5"
+              className="ml-0.5 p-1 text-neutral-400 transition-colors hover:text-emerald-400"
               title="Reset camera to Front (0°)"
             >
-              <RotateCcw className="w-3 h-3" />
+              <RotateCcw className="h-3 w-3" />
             </button>
           )}
         </div>
       </div>
 
       {/* 5. Canvas Bottom Hint Chips */}
-      <div className="relative z-30 px-3 sm:px-4 py-2 sm:py-2.5 flex items-center justify-between text-[11px] text-neutral-400 pointer-events-none border-t border-white/5 bg-neutral-950/50 backdrop-blur-xs">
+      <div className="pointer-events-none relative z-30 flex items-center justify-between border-t border-white/5 bg-neutral-950/50 px-3 py-2 text-[11px] text-neutral-400 backdrop-blur-xs sm:px-4 sm:py-2.5">
         <div className="flex items-center gap-1.5 truncate">
           <span className="hidden sm:inline">💡</span>
           <span className="truncate">
@@ -696,10 +708,12 @@ export function WorkspaceCanvas({
 
         <button
           onClick={handleToggleHeight}
-          className="pointer-events-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-neutral-900/90 border border-white/10 hover:border-emerald-500/50 text-neutral-300 hover:text-white transition-all text-[11px] shrink-0"
+          className="pointer-events-auto flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-neutral-900/90 px-2.5 py-1 text-[11px] text-neutral-300 transition-all hover:border-emerald-500/50 hover:text-white"
         >
-          <Sparkles className="w-3 h-3 text-emerald-400" />
-          <span suppressHydrationWarning>{isStanding ? "Switch to Sitting (74cm)" : "Switch to Standing (108cm)"}</span>
+          <Sparkles className="h-3 w-3 text-emerald-400" />
+          <span suppressHydrationWarning>
+            {isStanding ? "Switch to Sitting (74cm)" : "Switch to Standing (108cm)"}
+          </span>
         </button>
       </div>
     </div>

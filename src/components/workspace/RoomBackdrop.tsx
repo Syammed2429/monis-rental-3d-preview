@@ -39,15 +39,15 @@ export function RoomBackdrop({ timeOfDay }: RoomBackdropProps) {
   }[timeOfDay];
 
   return (
-    <div className="absolute inset-0 overflow-hidden pointer-events-none select-none transition-colors duration-700">
+    <div className="pointer-events-none absolute inset-0 overflow-hidden transition-colors duration-700 select-none">
       {/* Wall Backdrop */}
       <div className={`absolute inset-0 bg-gradient-to-b ${ambientSettings.wallBg}`} />
 
       {/* Modern Villa Architectural Grid / Wall Slat Accents */}
-      <div className="absolute inset-0 opacity-[0.03] bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:4rem_4rem]" />
+      <div className="absolute inset-0 bg-[linear-gradient(to_right,#ffffff_1px,transparent_1px),linear-gradient(to_bottom,#ffffff_1px,transparent_1px)] bg-[size:4rem_4rem] opacity-[0.03]" />
 
       {/* Large Scenic Bali Villa Window */}
-      <div className="absolute top-6 left-1/2 -translate-x-1/2 w-[92%] max-w-4xl h-[62%] rounded-3xl overflow-hidden border border-white/10 shadow-2xl backdrop-blur-xs">
+      <div className="absolute top-6 left-1/2 h-[62%] w-[92%] max-w-4xl -translate-x-1/2 overflow-hidden rounded-3xl border border-white/10 shadow-2xl backdrop-blur-xs">
         {/* Sky View */}
         <div
           className={`absolute inset-0 bg-gradient-to-b ${ambientSettings.skyGradient} transition-all duration-1000`}
@@ -55,18 +55,18 @@ export function RoomBackdrop({ timeOfDay }: RoomBackdropProps) {
 
         {/* Sun / Moon Orb */}
         <div
-          className={`absolute transition-all duration-1000 rounded-full blur-xl ${ambientSettings.sunGlow} ${
+          className={`absolute rounded-full blur-xl transition-all duration-1000 ${ambientSettings.sunGlow} ${
             timeOfDay === "sunset"
-              ? "bottom-12 right-1/4 w-40 h-40 bg-orange-500/40"
+              ? "right-1/4 bottom-12 h-40 w-40 bg-orange-500/40"
               : timeOfDay === "daylight"
-              ? "top-8 right-1/3 w-32 h-32 bg-amber-200/30"
-              : "top-10 right-1/3 w-20 h-20 bg-indigo-200/20"
+                ? "top-8 right-1/3 h-32 w-32 bg-amber-200/30"
+                : "top-10 right-1/3 h-20 w-20 bg-indigo-200/20"
           }`}
         />
 
         {/* Tropical Bali Palm Trees Vector Silhouette */}
         <svg
-          className="absolute bottom-0 inset-x-0 w-full h-44 text-emerald-900/60 transition-colors duration-1000"
+          className="absolute inset-x-0 bottom-0 h-44 w-full text-emerald-900/60 transition-colors duration-1000"
           viewBox="0 0 800 200"
           preserveAspectRatio="none"
           fill="none"
@@ -91,12 +91,15 @@ export function RoomBackdrop({ timeOfDay }: RoomBackdropProps) {
         </svg>
 
         {/* Window Pane Mullions / Minimalist Villa Frame */}
-        <div className="absolute inset-0 grid grid-cols-3 pointer-events-none">
+        <div className="pointer-events-none absolute inset-0 grid grid-cols-3">
           <div className="border-r border-white/10" />
           <div className="border-r border-white/10" />
           <div className="border-r border-white/0" />
         </div>
-        <div className="absolute inset-0 border-t border-b border-white/10" style={{ top: "45%", height: "2px" }} />
+        <div
+          className="absolute inset-0 border-t border-b border-white/10"
+          style={{ top: "45%", height: "2px" }}
+        />
 
         {/* Inward Light Ray Cast */}
         <div
@@ -106,20 +109,20 @@ export function RoomBackdrop({ timeOfDay }: RoomBackdropProps) {
 
       {/* Bali Teak Hardwood Flooring */}
       <div
-        className={`absolute bottom-0 inset-x-0 h-[38%] bg-gradient-to-t ${ambientSettings.floorColor} border-t border-white/5 transition-colors duration-700`}
+        className={`absolute inset-x-0 bottom-0 h-[38%] bg-gradient-to-t ${ambientSettings.floorColor} border-t border-white/5 transition-colors duration-700`}
       >
         {/* Floor Wood Grain / Floorboards Perspective */}
-        <div className="absolute inset-0 opacity-15 bg-[repeating-linear-gradient(90deg,transparent,transparent_60px,rgba(255,255,255,0.06)_61px)]" />
+        <div className="absolute inset-0 bg-[repeating-linear-gradient(90deg,transparent,transparent_60px,rgba(255,255,255,0.06)_61px)] opacity-15" />
 
         {/* Soft Ambient Shadow on Floor */}
-        <div className="absolute bottom-12 left-1/2 -translate-x-1/2 w-[85%] max-w-3xl h-24 bg-black/60 rounded-full blur-2xl" />
+        <div className="absolute bottom-12 left-1/2 h-24 w-[85%] max-w-3xl -translate-x-1/2 rounded-full bg-black/60 blur-2xl" />
 
         {/* Minimalist Villa Woven Carpet Under Workspace */}
-        <div className="absolute bottom-6 left-1/2 -translate-x-1/2 w-[76%] max-w-2xl h-36 rounded-[2rem] bg-gradient-to-r from-neutral-800/40 via-stone-800/30 to-neutral-800/40 border border-white/5 shadow-inner" />
+        <div className="absolute bottom-6 left-1/2 h-36 w-[76%] max-w-2xl -translate-x-1/2 rounded-[2rem] border border-white/5 bg-gradient-to-r from-neutral-800/40 via-stone-800/30 to-neutral-800/40 shadow-inner" />
       </div>
 
       {/* Subtle Villa Vignette */}
-      <div className="absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)] pointer-events-none" />
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(ellipse_at_center,transparent_40%,rgba(0,0,0,0.6)_100%)]" />
     </div>
   );
 }

@@ -1,15 +1,10 @@
 "use client";
 
 import { create } from "zustand";
-import { persist, createJSONStorage, StateStorage } from "zustand/middleware";
-import {
-  WorkspaceConfig,
-  Currency,
-  ProductCategory,
-  PresetSetup,
-} from "@/types/workspace";
-import { PRESETS } from "@/data/products";
+import { StateStorage, createJSONStorage, persist } from "zustand/middleware";
+import { Currency, PresetSetup, ProductCategory, WorkspaceConfig } from "@/types/workspace";
 import { parseConfigFromUrl, serializeConfigToUrl } from "@/lib/config-url";
+import { PRESETS } from "@/data/products";
 
 export const DEFAULT_CONFIG: WorkspaceConfig = {
   deskId: "desk-dual-motor",
@@ -126,7 +121,10 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
             if (itemId === "lifestyle-coffee-nespresso") {
               return { ...prev, coffeeId: prev.coffeeId ? prev.coffeeId : itemId };
             }
-            if (itemId === "lifestyle-outdoor-surfboard" || itemId === "lifestyle-outdoor-scooter") {
+            if (
+              itemId === "lifestyle-outdoor-surfboard" ||
+              itemId === "lifestyle-outdoor-scooter"
+            ) {
               return { ...prev, outdoorId: itemId };
             }
             if (itemId === "lifestyle-relax-beanbag") {

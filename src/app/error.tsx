@@ -2,9 +2,9 @@
 
 import { useEffect } from "react";
 import Link from "next/link";
-import { RefreshCw, Home, ShieldAlert } from "lucide-react";
-import { Button } from "@/components/ui/button";
+import { Home, RefreshCw, ShieldAlert } from "lucide-react";
 import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
 
 export default function ErrorBoundary({
   error,
@@ -29,61 +29,62 @@ export default function ErrorBoundary({
   };
 
   return (
-    <div className="min-h-screen bg-[#0c0e14] text-neutral-100 flex-center flex-col p-4 text-center selection:bg-emerald-500 selection:text-neutral-950">
-      <div className="absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.06)_0%,transparent_70%)] pointer-events-none" />
+    <div className="flex-center min-h-screen flex-col bg-[#0c0e14] p-4 text-center text-neutral-100 selection:bg-emerald-500 selection:text-neutral-950">
+      <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(circle_at_center,rgba(239,68,68,0.06)_0%,transparent_70%)]" />
 
-      <div className="relative z-10 max-w-md w-full p-6 sm:p-8 rounded-3xl bg-neutral-900/70 border border-white/10 backdrop-blur-2xl shadow-2xl space-y-6">
+      <div className="relative z-10 w-full max-w-md space-y-6 rounded-3xl border border-white/10 bg-neutral-900/70 p-6 shadow-2xl backdrop-blur-2xl sm:p-8">
         {/* Error icon badge */}
-        <div className="w-16 h-16 rounded-2xl bg-gradient-to-tr from-rose-500/20 to-amber-500/20 border border-rose-500/30 text-rose-400 flex-center mx-auto shadow-lg shadow-rose-500/10">
-          <ShieldAlert className="w-8 h-8" />
+        <div className="mx-auto flex-center h-16 w-16 rounded-2xl border border-rose-500/30 bg-gradient-to-tr from-rose-500/20 to-amber-500/20 text-rose-400 shadow-lg shadow-rose-500/10">
+          <ShieldAlert className="h-8 w-8" />
         </div>
 
         <div className="space-y-2">
           <div className="flex-center gap-2">
             <Badge
               variant="outline"
-              className="bg-rose-500/10 text-rose-400 border-rose-500/30 text-[10px] font-mono px-2 py-0.5"
+              className="border-rose-500/30 bg-rose-500/10 px-2 py-0.5 font-mono text-[10px] text-rose-400"
             >
               Application Error {error.digest ? `• #${error.digest.slice(0, 8)}` : ""}
             </Badge>
           </div>
-          <h1 className="text-xl sm:text-2xl font-bold text-white tracking-tight">
+          <h1 className="text-xl font-bold tracking-tight text-white sm:text-2xl">
             Unexpected Workspace Error
           </h1>
-          <p className="text-xs sm:text-sm text-neutral-400 leading-relaxed">
-            An unexpected error occurred while rendering the interactive designer. Your configuration can be restored safely.
+          <p className="text-xs leading-relaxed text-neutral-400 sm:text-sm">
+            An unexpected error occurred while rendering the interactive designer. Your
+            configuration can be restored safely.
           </p>
 
           {error.message && (
-            <div className="p-2.5 rounded-xl bg-neutral-950/80 border border-rose-500/20 text-rose-300 font-mono text-[11px] text-left truncate mt-3">
+            <div className="mt-3 truncate rounded-xl border border-rose-500/20 bg-neutral-950/80 p-2.5 text-left font-mono text-[11px] text-rose-300">
               <code>{error.message}</code>
             </div>
           )}
         </div>
 
         {/* Action buttons */}
-        <div className="pt-2 space-y-2.5">
+        <div className="space-y-2.5 pt-2">
           <Button
             onClick={() => reset()}
-            className="w-full bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-10 rounded-xl shadow-lg shadow-emerald-500/25 gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
+            className="h-10 w-full gap-2 rounded-xl bg-emerald-500 text-xs font-bold text-neutral-950 shadow-lg shadow-emerald-500/25 transition-all hover:scale-[1.01] hover:bg-emerald-400 active:scale-[0.99]"
           >
-            <RefreshCw className="w-4 h-4" />
+            <RefreshCw className="h-4 w-4" />
             <span>Try Again</span>
           </Button>
 
           <Button
             variant="outline"
             onClick={handleResetStorage}
-            className="w-full border-white/10 hover:border-white/20 text-neutral-300 hover:text-white text-xs h-9 rounded-xl"
+            className="h-9 w-full rounded-xl border-white/10 text-xs text-neutral-300 hover:border-white/20 hover:text-white"
           >
             Reset Setup to Default
           </Button>
 
           <Link
             href="/"
-            className="w-full text-neutral-400 hover:text-white text-xs h-9 rounded-xl flex-center gap-1.5 hover:bg-white/5 transition-colors"
+            className="flex-center h-9 w-full gap-1.5 rounded-xl text-xs text-neutral-400 transition-colors hover:bg-white/5 hover:text-white"
           >
-            <Home className="w-3.5 h-3.5" />
+            <Home className="h-3.5 w-3.5" />
             <span>Reload Workspace Designer</span>
           </Link>
         </div>

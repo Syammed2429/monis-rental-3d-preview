@@ -1,10 +1,10 @@
 "use client";
 
+import { Sparkles } from "lucide-react";
 import { PresetSetup, WorkspaceConfig } from "@/types/workspace";
+import { sound } from "@/lib/audio";
 import { PRESETS } from "@/data/products";
 import { Badge } from "@/components/ui/badge";
-import { Sparkles } from "lucide-react";
-import { sound } from "@/lib/audio";
 
 interface PresetSelectorProps {
   onSelectPreset: (preset: PresetSetup) => void;
@@ -13,9 +13,9 @@ interface PresetSelectorProps {
 
 export function PresetSelector({ onSelectPreset, activeConfig }: PresetSelectorProps) {
   return (
-    <div className="w-full flex items-center gap-2 overflow-x-auto py-1 px-1 custom-scrollbar">
-      <div className="flex items-center gap-1.5 text-xs text-neutral-400 font-medium shrink-0 mr-1">
-        <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+    <div className="custom-scrollbar flex w-full items-center gap-2 overflow-x-auto px-1 py-1">
+      <div className="mr-1 flex shrink-0 items-center gap-1.5 text-xs font-medium text-neutral-400">
+        <Sparkles className="h-3.5 w-3.5 text-amber-400" />
         <span className="hidden sm:inline">Presets:</span>
       </div>
 
@@ -33,16 +33,16 @@ export function PresetSelector({ onSelectPreset, activeConfig }: PresetSelectorP
               sound.playSelect();
               onSelectPreset(preset);
             }}
-            className={`shrink-0 flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs transition-all ${
+            className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-xs transition-all ${
               isMatched
-                ? "bg-emerald-500/15 border-emerald-500/50 text-emerald-300 ring-1 ring-emerald-500/30"
-                : "bg-neutral-900/60 border-white/10 text-neutral-300 hover:text-white hover:border-white/20 hover:bg-neutral-900"
+                ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30"
+                : "border-white/10 bg-neutral-900/60 text-neutral-300 hover:border-white/20 hover:bg-neutral-900 hover:text-white"
             }`}
           >
             <span className="font-semibold">{preset.name}</span>
             <Badge
               variant="outline"
-              className="text-[9px] px-1.5 py-0 h-4 border-white/10 text-neutral-400"
+              className="h-4 border-white/10 px-1.5 py-0 text-[9px] text-neutral-400"
             >
               {preset.badge}
             </Badge>
