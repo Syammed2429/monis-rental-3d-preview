@@ -45,10 +45,14 @@ export default function Home() {
   const handleOpenCheckout = () => {
     setCheckoutOpen(true);
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
-      const section = document.getElementById("configurator-section");
-      if (section) {
-        section.scrollIntoView({ behavior: "smooth", block: "start" });
-      }
+      setTimeout(() => {
+        const section = document.getElementById("configurator-section");
+        if (section) {
+          const yOffset = -70;
+          const y = section.getBoundingClientRect().top + window.pageYOffset + yOffset;
+          window.scrollTo({ top: y, behavior: "smooth" });
+        }
+      }, 50);
     }
   };
 
@@ -310,12 +314,14 @@ export default function Home() {
       </main>
 
       {/* Floating Bottom Setup Summary Dock */}
-      <SetupSummaryBar
-        config={config}
-        currency={currency}
-        onOpenCheckout={handleOpenCheckout}
-        onReset={handleReset}
-      />
+      {!checkoutOpen && (
+        <SetupSummaryBar
+          config={config}
+          currency={currency}
+          onOpenCheckout={handleOpenCheckout}
+          onReset={handleReset}
+        />
+      )}
     </div>
   );
 }
