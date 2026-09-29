@@ -41,7 +41,7 @@ export function AccessoriesRenderer({
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
-            onSelectItem ? onSelectItem("peripherals", peripheralsId) : onSelectCategory?.("peripherals");
+            if (onSelectItem) { onSelectItem("peripherals", peripheralsId); } else { onSelectCategory?.("peripherals"); }
           }}
           className="absolute top-1 left-1/2 -translate-x-1/2 w-102.5 h-8.5 rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center pointer-events-auto cursor-grab active:cursor-grabbing group/mat z-20"
           title="Slide desk mat • Click to configure peripherals"
@@ -120,7 +120,7 @@ export function AccessoriesRenderer({
           title="Drag anywhere on desk • Click to configure"
           onClick={(e) => {
             e.stopPropagation();
-            onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-laptop-stand") : onSelectCategory?.("bali-lifestyle");
+            if (onSelectItem) { onSelectItem("bali-lifestyle", "lifestyle-laptop-stand"); } else { onSelectCategory?.("bali-lifestyle"); }
           }}
         >
           <div className="absolute -top-6 opacity-0 group-hover/laptop:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
@@ -161,7 +161,7 @@ export function AccessoriesRenderer({
           onClick={(e) => {
             e.stopPropagation();
             onToggleLamp?.();
-            onSelectItem ? onSelectItem("lighting", lightingId) : onSelectCategory?.("lighting");
+            if (onSelectItem) { onSelectItem("lighting", lightingId); } else { onSelectCategory?.("lighting"); }
           }}
           className="absolute bottom-0 left-22 pointer-events-auto cursor-pointer group/lamp flex flex-col items-center z-35 active:cursor-grabbing"
           title={`Slide along desk • Click to turn ${lampPowered ? "OFF" : "ON"}`}
@@ -207,7 +207,7 @@ export function AccessoriesRenderer({
           onClick={(e) => {
             e.stopPropagation();
             onToggleLamp?.();
-            onSelectItem ? onSelectItem("lighting", "light-screenbar") : onSelectCategory?.("lighting");
+            if (onSelectItem) { onSelectItem("lighting", "light-screenbar"); } else { onSelectCategory?.("lighting"); }
           }}
           className="absolute -top-48.75 left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-35"
           title={`Click to turn ScreenBar ${lampPowered ? "OFF" : "ON"}`}
@@ -245,7 +245,7 @@ export function AccessoriesRenderer({
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
-            onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-plant-monstera") : onSelectCategory?.("bali-lifestyle");
+            if (onSelectItem) { onSelectItem("bali-lifestyle", "lifestyle-plant-monstera"); } else { onSelectCategory?.("bali-lifestyle"); }
           }}
           className="absolute bottom-0 right-4 flex flex-col items-center z-35 pointer-events-auto cursor-grab active:cursor-grabbing group/plant"
           title="Drag plant along desk • Click to customize"
@@ -289,7 +289,7 @@ export function AccessoriesRenderer({
         <button
           onClick={(e) => {
             e.stopPropagation();
-            onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-plant-monstera") : onSelectCategory?.("bali-lifestyle");
+            if (onSelectItem) { onSelectItem("bali-lifestyle", "lifestyle-plant-monstera"); } else { onSelectCategory?.("bali-lifestyle"); }
           }}
           className="absolute bottom-2 right-4 pointer-events-auto flex items-center gap-1 px-2 py-1 rounded-full bg-neutral-900/90 border border-dashed border-emerald-500/50 hover:border-emerald-400 hover:bg-emerald-500/10 text-[9px] text-emerald-400 transition-all shadow-md group"
           title="Place a tropical plant on desk"
@@ -311,7 +311,7 @@ export function AccessoriesRenderer({
           onPointerDown={(e) => e.stopPropagation()}
           onClick={(e) => {
             e.stopPropagation();
-            onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-coffee-nespresso") : onSelectCategory?.("bali-lifestyle");
+            if (onSelectItem) { onSelectItem("bali-lifestyle", "lifestyle-coffee-nespresso"); } else { onSelectCategory?.("bali-lifestyle"); }
           }}
           className="absolute bottom-0 right-16 flex items-end gap-2 z-35 pointer-events-auto cursor-grab active:cursor-grabbing group/coffee"
           title="Drag coffee along desk • Click to customize"
