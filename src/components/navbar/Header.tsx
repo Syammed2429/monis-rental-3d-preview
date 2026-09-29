@@ -9,6 +9,7 @@ import { Badge } from "@/components/ui/badge";
 import {
   DropdownMenu,
   DropdownMenuContent,
+  DropdownMenuGroup,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
@@ -100,35 +101,37 @@ export function Header({
               <ChevronDown className="w-3 h-3 text-neutral-400" />
             </DropdownMenuTrigger>
             <DropdownMenuContent className="w-72 bg-neutral-950 border-neutral-800 text-white p-1 rounded-2xl shadow-2xl">
-              <DropdownMenuLabel className="text-[10px] font-mono uppercase text-neutral-400 px-3 py-1.5">
-                Popular Bali Villa Setups
-              </DropdownMenuLabel>
-              <DropdownMenuSeparator className="bg-neutral-800" />
-              {PRESETS.map((preset) => (
-                <DropdownMenuItem
-                  key={preset.id}
-                  onClick={() => {
-                    sound.playSelect();
-                    onApplyPreset(preset);
-                  }}
-                  className="p-2.5 rounded-xl hover:bg-neutral-900 cursor-pointer flex flex-col items-start gap-1"
-                >
-                  <div className="w-full flex items-center justify-between">
-                    <span className="text-xs font-semibold text-white">
-                      {preset.name}
+              <DropdownMenuGroup>
+                <DropdownMenuLabel className="text-[10px] font-mono uppercase text-neutral-400 px-3 py-1.5">
+                  Popular Bali Villa Setups
+                </DropdownMenuLabel>
+                <DropdownMenuSeparator className="bg-neutral-800" />
+                {PRESETS.map((preset) => (
+                  <DropdownMenuItem
+                    key={preset.id}
+                    onClick={() => {
+                      sound.playSelect();
+                      onApplyPreset(preset);
+                    }}
+                    className="p-2.5 rounded-xl hover:bg-neutral-900 cursor-pointer flex flex-col items-start gap-1"
+                  >
+                    <div className="w-full flex items-center justify-between">
+                      <span className="text-xs font-semibold text-white">
+                        {preset.name}
+                      </span>
+                      <Badge
+                        variant="secondary"
+                        className="text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-1.5 py-0"
+                      >
+                        {preset.badge}
+                      </Badge>
+                    </div>
+                    <span className="text-[10px] text-neutral-400 line-clamp-1">
+                      {preset.tagline}
                     </span>
-                    <Badge
-                      variant="secondary"
-                      className="text-[9px] bg-emerald-500/10 text-emerald-300 border border-emerald-500/20 px-1.5 py-0"
-                    >
-                      {preset.badge}
-                    </Badge>
-                  </div>
-                  <span className="text-[10px] text-neutral-400 line-clamp-1">
-                    {preset.tagline}
-                  </span>
-                </DropdownMenuItem>
-              ))}
+                  </DropdownMenuItem>
+                ))}
+              </DropdownMenuGroup>
             </DropdownMenuContent>
           </DropdownMenu>
         </div>
