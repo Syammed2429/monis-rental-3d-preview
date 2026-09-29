@@ -17,6 +17,8 @@ import {
 import { Sparkles, Volume2, VolumeX, Globe, ChevronDown, Share2, Check } from "lucide-react";
 import { sound } from "@/lib/audio";
 
+import { serializeConfigToUrl } from "@/lib/config-url";
+
 interface HeaderProps {
   currentConfig: WorkspaceConfig;
   onApplyPreset: (preset: PresetSetup) => void;
@@ -26,7 +28,7 @@ interface HeaderProps {
 }
 
 export function Header({
-  currentConfig: _currentConfig,
+  currentConfig,
   onApplyPreset,
   currency,
   onCurrencyToggle,
@@ -45,7 +47,9 @@ export function Header({
   const handleShare = () => {
     sound.playSelect();
     if (typeof window !== "undefined") {
-      navigator.clipboard.writeText(window.location.href);
+      const shareParams = serializeConfigToUrl(currentConfig);
+      const shareUrl = `${window.location.origin}${window.location.pathname}${shareParams.startsWith("?") ? shareParams : ""}`;
+      navigator.clipboard.writeText(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2200);
     }

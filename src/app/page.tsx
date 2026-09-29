@@ -1,8 +1,7 @@
 "use client";
 
-import { useState, useEffect } from "react";
-import { WorkspaceConfig, Currency, ProductCategory, PresetSetup } from "@/types/workspace";
-import { PRESETS } from "@/data/products";
+import { useEffect } from "react";
+import { ProductCategory, PresetSetup } from "@/types/workspace";
 import { Header } from "@/components/navbar/Header";
 import { WorkspaceCanvas } from "@/components/workspace/WorkspaceCanvas";
 import { ConfiguratorSidebar } from "@/components/workspace/ConfiguratorSidebar";
@@ -11,37 +10,29 @@ import { PresetSelector } from "@/components/workspace/PresetSelector";
 import { CheckoutPanel } from "@/components/workspace/CheckoutPanel";
 import { Badge } from "@/components/ui/badge";
 import { Truck, ShieldCheck, RefreshCw, Zap } from "lucide-react";
-
-import { serializeConfigToUrl, parseConfigFromUrl } from "@/lib/config-url";
-
-const STORAGE_KEY = "monis_bali_workspace_setup";
-
-const DEFAULT_CONFIG: WorkspaceConfig = {
-  deskId: "desk-dual-motor",
-  deskFinish: "natural-bamboo",
-  deskHeightState: "sitting",
-  deskHeightCm: 74,
-  chairId: "chair-ergonomic-mesh",
-  chairColor: "stealth-black",
-  monitorId: "monitor-ultrawide-curved",
-  monitorDisplayMode: "bali-gradient",
-  peripheralsId: "peripherals-mx-combo",
-  lightingId: "light-smart-lamp",
-  lampPowered: true,
-  laptopStand: true,
-  plantId: "lifestyle-plant-monstera",
-  coffeeId: "lifestyle-coffee-nespresso",
-  outdoorId: "lifestyle-outdoor-surfboard",
-  relaxId: null,
-  timeOfDay: "sunset",
-};
+import { useWorkspaceStore } from "@/store/workspaceStore";
 
 export default function Home() {
-  const [config, setConfig] = useState<WorkspaceConfig>(DEFAULT_CONFIG);
-  const [currency, setCurrency] = useState<Currency>("USD");
-  const [activeCategory, setActiveCategory] = useState<ProductCategory>("desks");
-  const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
-  const [checkoutOpen, setCheckoutOpen] = useState<boolean>(false);
+  const config = useWorkspaceStore((state) => state.config);
+  const currency = useWorkspaceStore((state) => state.currency);
+  const activeCategory = useWorkspaceStore((state) => state.activeCategory);
+  const selectedItemId = useWorkspaceStore((state) => state.selectedItemId);
+  const checkoutOpen = useWorkspaceStore((state) => state.checkoutOpen);
+
+  const updateConfig = useWorkspaceStore((state) => state.updateConfig);
+  const selectItem = useWorkspaceStore((state) => state.selectItem);
+  const setActiveCategory = useWorkspaceStore((state) => state.setActiveCategory);
+  const setCheckoutOpen = useWorkspaceStore((state) => state.setCheckoutOpen);
+  const applyPreset = useWorkspaceStore((state) => state.applyPreset);
+  const resetConfig = useWorkspaceStore((state) => state.resetConfig);
+  const toggleCurrency = useWorkspaceStore((state) => state.toggleCurrency);
+  const initFromUrlIfPresent = useWorkspaceStore((state) => state.initFromUrlIfPresent);
+
+  // Initialize once from URL if user arrived via a shared link, then cleans the address bar
+  useEffect(() => {
+    initFromUrlIfPresent();
+  }, [initFromUrlIfPresent]);
+
   const handleOpenCheckout = () => {
     setCheckoutOpen(true);
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
@@ -57,52 +48,7 @@ export default function Home() {
   };
 
   const handleSelectItem = (category: ProductCategory, itemId?: string) => {
-    setCheckoutOpen(false);
-    setActiveCategory(category);
-    if (itemId) {
-      setSelectedItemId(itemId);
-      // Auto-select the item in config so color/finish swatches appear immediately
-      // without needing to click a separate "Select" button
-      setConfig((prev) => {
-        if (category === "desks" && itemId.startsWith("desk-")) {
-          return { ...prev, deskId: itemId };
-        }
-        if (category === "chairs" && itemId.startsWith("chair-")) {
-          return { ...prev, chairId: itemId };
-        }
-        if (category === "monitors" && itemId.startsWith("monitor-")) {
-          return { ...prev, monitorId: itemId };
-        }
-        if (category === "peripherals" && itemId.startsWith("peripherals-")) {
-          return { ...prev, peripheralsId: itemId };
-        }
-        if (category === "lighting" && itemId.startsWith("light-")) {
-          return {
-            ...prev,
-            lightingId: itemId,
-            lampPowered: prev.lightingId === itemId ? prev.lampPowered : true,
-          };
-        }
-        // Lifestyle items: activate if not already
-        if (itemId === "lifestyle-plant-monstera") {
-          return { ...prev, plantId: prev.plantId ? prev.plantId : itemId };
-        }
-        if (itemId === "lifestyle-coffee-nespresso") {
-          return { ...prev, coffeeId: prev.coffeeId ? prev.coffeeId : itemId };
-        }
-        if (itemId === "lifestyle-outdoor-surfboard" || itemId === "lifestyle-outdoor-scooter") {
-          return { ...prev, outdoorId: itemId };
-        }
-        if (itemId === "lifestyle-relax-beanbag") {
-          return { ...prev, relaxId: prev.relaxId ? prev.relaxId : itemId };
-        }
-        if (itemId === "lifestyle-laptop-stand") {
-          return { ...prev, laptopStand: true };
-        }
-        return prev;
-      });
-    }
-    // On mobile / tablet viewports, smoothly scroll the configurator into view so user sees the active tab & card
+    selectItem(category, itemId);
     if (typeof window !== "undefined" && window.innerWidth < 1024) {
       const section = document.getElementById("configurator-section");
       if (section) {
@@ -111,77 +57,12 @@ export default function Home() {
     }
   };
 
-  // Restore client configuration on mount safely after hydration
-  useEffect(() => {
-    try {
-      const urlParams = new URLSearchParams(window.location.search);
-      const presetParam = urlParams.get("preset");
-      if (presetParam) {
-        const found = PRESETS.find((p) => p.id === presetParam);
-        if (found) {
-          queueMicrotask(() => setConfig({ ...DEFAULT_CONFIG, ...found.config }));
-          return;
-        }
-      }
-
-      if (window.location.search && window.location.search.length > 1) {
-        const parsed = parseConfigFromUrl(window.location.search);
-        if (Object.keys(parsed).length > 0) {
-          queueMicrotask(() => setConfig((prev) => ({ ...prev, ...parsed })));
-          return;
-        }
-      }
-
-      const saved = localStorage.getItem(STORAGE_KEY);
-      if (saved) {
-        const parsedJson = JSON.parse(saved);
-        queueMicrotask(() => setConfig((prev) => ({ ...prev, ...parsedJson })));
-      }
-    } catch {
-      // ignore
-    }
-  }, []);
-
-  // Sync state update to localStorage and URL search params safely outside render cycle
-  const handleUpdateConfig = (updater: (prev: WorkspaceConfig) => WorkspaceConfig) => {
-    setConfig((prev) => {
-      const next = updater(prev);
-      if (typeof window !== "undefined") {
-        queueMicrotask(() => {
-          try {
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-            const newUrl = serializeConfigToUrl(next);
-            window.history.replaceState(null, "", newUrl);
-          } catch {
-            // ignore
-          }
-        });
-      }
-      return next;
-    });
-  };
-
   const handleApplyPreset = (preset: PresetSetup) => {
-    handleUpdateConfig((prev) => ({
-      ...prev,
-      ...preset.config,
-    }));
+    applyPreset(preset);
   };
 
   const handleReset = () => {
-    if (typeof window !== "undefined") {
-      try {
-        localStorage.removeItem(STORAGE_KEY);
-        window.history.replaceState(null, "", window.location.pathname);
-      } catch {
-        // ignore
-      }
-    }
-    setConfig(DEFAULT_CONFIG);
-  };
-
-  const handleCurrencyToggle = () => {
-    setCurrency((c) => (c === "USD" ? "IDR" : "USD"));
+    resetConfig();
   };
 
   return (
@@ -191,7 +72,7 @@ export default function Home() {
         currentConfig={config}
         onApplyPreset={handleApplyPreset}
         currency={currency}
-        onCurrencyToggle={handleCurrencyToggle}
+        onCurrencyToggle={toggleCurrency}
         onOpenCheckout={handleOpenCheckout}
       />
 
@@ -232,7 +113,7 @@ export default function Home() {
           <div className="lg:col-span-7 xl:col-span-8 h-[430px] sm:h-[460px] lg:h-full min-h-0">
             <WorkspaceCanvas
               config={config}
-              onChangeConfig={handleUpdateConfig}
+              onChangeConfig={updateConfig}
               onSelectItem={handleSelectItem}
               onSelectCategory={(cat) => handleSelectItem(cat)}
             />
@@ -252,7 +133,7 @@ export default function Home() {
             ) : (
               <ConfiguratorSidebar
                 config={config}
-                onChangeConfig={handleUpdateConfig}
+                onChangeConfig={updateConfig}
                 currency={currency}
                 activeCategory={activeCategory}
                 onCategoryChange={setActiveCategory}
