@@ -94,60 +94,6 @@ export function DeskRenderer({
       className="pointer-events-none absolute inset-x-0 bottom-6 flex flex-col items-center select-none"
       style={{ transformStyle: "preserve-3d" }}
     >
-      {/* 1. Layer 1: Upper Hydraulic Actuator Columns (z-10, rises with elevation, slides INSIDE lower sleeve) */}
-      <motion.div
-        className="pointer-events-none absolute bottom-34.5 z-10 w-115 max-w-115"
-        style={{ transformStyle: "preserve-3d", transform: "translateZ(0px)" }}
-        animate={{ y: elevationY }}
-        transition={{ type: "spring", stiffness: 140, damping: 22 }}
-      >
-        <div className="absolute inset-x-0 top-14">
-          {/* Left Upper Hydraulic Actuator Assembly (Centerline: left 80px) */}
-          <div className="absolute top-0 left-20 flex -translate-x-1/2 flex-col items-center">
-            {/* Upper Mounting Flange / Motor Housing Bracket */}
-            <div
-              className={`h-2.5 w-11 rounded-b-xs ${currentFinish.frameColor} flex items-center justify-between border-x border-b border-white/10 px-1 shadow-md`}
-            >
-              <div className="h-1 w-1 rounded-full bg-white/20" />
-              <div className="h-0.5 w-5 rounded-full bg-white/10" />
-              <div className="h-1 w-1 rounded-full bg-white/20" />
-            </div>
-
-            {/* Telescoping Hydraulic Piston Rod */}
-            <div
-              className={`h-32 w-9 ${currentFinish.innerPiston} relative shadow-md transition-colors duration-500`}
-            >
-              {/* Center specular cylinder highlight */}
-              <div className="absolute inset-y-0 left-1/2 w-2.5 -translate-x-1/2 bg-white/10 blur-[0.5px]" />
-              {/* Vertical machining guide stripe */}
-              <div className="absolute inset-y-0 left-1 w-0.5 bg-white/15" />
-              <div className="absolute inset-y-0 right-1 w-0.5 bg-black/30" />
-            </div>
-          </div>
-
-          {/* Right Upper Hydraulic Actuator Assembly (Centerline: right 80px) */}
-          <div className="absolute top-0 right-20 flex translate-x-1/2 flex-col items-center">
-            {/* Upper Mounting Flange / Motor Housing Bracket */}
-            <div
-              className={`h-2.5 w-11 rounded-b-xs ${currentFinish.frameColor} flex items-center justify-between border-x border-b border-white/10 px-1 shadow-md`}
-            >
-              <div className="h-1 w-1 rounded-full bg-white/20" />
-              <div className="h-0.5 w-5 rounded-full bg-white/10" />
-              <div className="h-1 w-1 rounded-full bg-white/20" />
-            </div>
-
-            {/* Telescoping Hydraulic Piston Rod */}
-            <div
-              className={`h-32 w-9 ${currentFinish.innerPiston} relative shadow-md transition-colors duration-500`}
-            >
-              <div className="absolute inset-y-0 left-1/2 w-2.5 -translate-x-1/2 bg-white/10 blur-[0.5px]" />
-              <div className="absolute inset-y-0 left-1 w-0.5 bg-white/15" />
-              <div className="absolute inset-y-0 right-1 w-0.5 bg-black/30" />
-            </div>
-          </div>
-        </div>
-      </motion.div>
-
       {/* 2. Layer 2: Stationary Lower Base Columns & Heavy-Duty T-Feet (z-20, in FRONT of upper piston) */}
       <div
         className="pointer-events-none absolute bottom-0 z-20 h-34.5 w-115 max-w-115"
@@ -269,9 +215,10 @@ export function DeskRenderer({
             className={`mx-auto h-3 w-[84%] rounded-b-md ${currentFinish.frameColor} shadow-inner`}
           />
 
-          {/* Motorized Height Controller Display (Mounted to front underside of desk, z-40, always in FRONT) */}
+          {/* Motorized Height Controller Display (Mounted to front underside of desk, translateZ(16px), always in FRONT) */}
           <div
             className="pointer-events-auto absolute right-8 -bottom-6 z-40 flex items-center gap-1.5 rounded-md border border-white/15 bg-neutral-900 px-2.5 py-1 shadow-2xl transition-all select-none hover:border-emerald-500/60"
+            style={{ transform: "translateZ(16px)" }}
             title="Motorized Sit-Stand Memory Controller"
           >
             {/* Digital LED Screen - Click toggles Sitting/Standing preset */}
@@ -312,6 +259,56 @@ export function DeskRenderer({
               >
                 ▼
               </button>
+            </div>
+          </div>
+        </div>
+
+        {/* Upper Hydraulic Actuator Columns (Anchored under desk frame, translateZ(-4px) so piston slides INSIDE lower sleeve) */}
+        <div
+          className="pointer-events-none absolute inset-x-0 top-14 z-10"
+          style={{ transform: "translateZ(-4px)" }}
+        >
+          {/* Left Upper Hydraulic Actuator Assembly (Centerline: left 80px) */}
+          <div className="absolute top-0 left-20 flex -translate-x-1/2 flex-col items-center">
+            {/* Upper Mounting Flange / Motor Housing Bracket */}
+            <div
+              className={`h-2.5 w-11 rounded-b-xs ${currentFinish.frameColor} flex items-center justify-between border-x border-b border-white/10 px-1 shadow-md`}
+            >
+              <div className="h-1 w-1 rounded-full bg-white/20" />
+              <div className="h-0.5 w-5 rounded-full bg-white/10" />
+              <div className="h-1 w-1 rounded-full bg-white/20" />
+            </div>
+
+            {/* Telescoping Hydraulic Piston Rod */}
+            <div
+              className={`h-32 w-9 ${currentFinish.innerPiston} relative shadow-md transition-colors duration-500`}
+            >
+              {/* Center specular cylinder highlight */}
+              <div className="absolute inset-y-0 left-1/2 w-2.5 -translate-x-1/2 bg-white/10 blur-[0.5px]" />
+              {/* Vertical machining guide stripe */}
+              <div className="absolute inset-y-0 left-1 w-0.5 bg-white/15" />
+              <div className="absolute inset-y-0 right-1 w-0.5 bg-black/30" />
+            </div>
+          </div>
+
+          {/* Right Upper Hydraulic Actuator Assembly (Centerline: right 80px) */}
+          <div className="absolute top-0 right-20 flex translate-x-1/2 flex-col items-center">
+            {/* Upper Mounting Flange / Motor Housing Bracket */}
+            <div
+              className={`h-2.5 w-11 rounded-b-xs ${currentFinish.frameColor} flex items-center justify-between border-x border-b border-white/10 px-1 shadow-md`}
+            >
+              <div className="h-1 w-1 rounded-full bg-white/20" />
+              <div className="h-0.5 w-5 rounded-full bg-white/10" />
+              <div className="h-1 w-1 rounded-full bg-white/20" />
+            </div>
+
+            {/* Telescoping Hydraulic Piston Rod */}
+            <div
+              className={`h-32 w-9 ${currentFinish.innerPiston} relative shadow-md transition-colors duration-500`}
+            >
+              <div className="absolute inset-y-0 left-1/2 w-2.5 -translate-x-1/2 bg-white/10 blur-[0.5px]" />
+              <div className="absolute inset-y-0 left-1 w-0.5 bg-white/15" />
+              <div className="absolute inset-y-0 right-1 w-0.5 bg-black/30" />
             </div>
           </div>
         </div>
