@@ -280,7 +280,12 @@ export function WorkspaceCanvas({
           size="sm"
           variant="outline"
           onClick={handleToggleHeight}
-          className="h-7 gap-1 border-white/15 bg-neutral-900/85 px-2 text-[11px] text-white shadow-lg backdrop-blur-md hover:bg-neutral-800"
+          aria-label={
+            isStanding
+              ? `Currently standing at ${Math.round(currentHeight)} centimeters. Click to lower desk to sitting.`
+              : `Currently sitting at ${Math.round(currentHeight)} centimeters. Click to raise desk to standing.`
+          }
+          className="h-7 gap-1 border-white/15 bg-neutral-900/85 px-2 text-[11px] text-white shadow-lg backdrop-blur-md hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-emerald-400"
         >
           <ArrowUpDown className="h-3.5 w-3.5 shrink-0 text-emerald-400" />
           <span suppressHydrationWarning>{isStanding ? "Standing" : "Sitting"}</span>
@@ -295,17 +300,21 @@ export function WorkspaceCanvas({
         {/* Micro Height Stepper (Fine-Tuning) */}
         <div className="flex items-center rounded-md border border-white/15 bg-neutral-900/85 p-0.5 shadow-lg backdrop-blur-md">
           <button
+            type="button"
             onClick={() => handleStepHeight(2)}
             disabled={currentHeight >= 118}
-            className="p-1 text-neutral-400 transition-colors hover:text-emerald-400 disabled:opacity-30"
+            aria-label="Raise desk height by 2 centimeters"
+            className="p-1 text-neutral-400 transition-colors hover:text-emerald-400 focus-visible:ring-1 focus-visible:ring-emerald-400 disabled:opacity-30"
             title="Raise desk +2cm"
           >
             <ChevronUp className="h-3.5 w-3.5" />
           </button>
           <button
+            type="button"
             onClick={() => handleStepHeight(-2)}
             disabled={currentHeight <= 70}
-            className="p-1 text-neutral-400 transition-colors hover:text-emerald-400 disabled:opacity-30"
+            aria-label="Lower desk height by 2 centimeters"
+            className="p-1 text-neutral-400 transition-colors hover:text-emerald-400 focus-visible:ring-1 focus-visible:ring-emerald-400 disabled:opacity-30"
             title="Lower desk -2cm"
           >
             <ChevronDown className="h-3.5 w-3.5" />
@@ -317,7 +326,13 @@ export function WorkspaceCanvas({
           size="sm"
           variant="outline"
           onClick={handleToggleLockView}
-          className={`h-7 gap-1 px-2 text-[11px] shadow-lg backdrop-blur-md transition-all ${
+          aria-label={
+            isViewLocked
+              ? "3D view locked. Click to unlock camera orbit."
+              : "Lock 3D view to move desk items freely."
+          }
+          aria-pressed={isViewLocked}
+          className={`h-7 gap-1 px-2 text-[11px] shadow-lg backdrop-blur-md transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 ${
             isViewLocked
               ? "border-amber-500/50 bg-amber-500/20 font-semibold text-amber-300 ring-1 ring-amber-400/40 hover:bg-amber-500/30"
               : "border-white/15 bg-neutral-900/85 text-neutral-300 hover:bg-neutral-800 hover:text-white"
@@ -354,8 +369,11 @@ export function WorkspaceCanvas({
         {/* Right: Ambient Bali Time of Day & Zoom Controls */}
         <div className="flex shrink-0 items-center gap-0.5 rounded-full border border-white/15 bg-neutral-900/85 p-1 shadow-lg backdrop-blur-md">
           <button
+            type="button"
             onClick={() => handleTimeOfDay("daylight")}
-            className={`rounded-full p-1.5 transition-all ${
+            aria-label="Set room ambiance to Bali Daylight"
+            aria-pressed={config.timeOfDay === "daylight"}
+            className={`rounded-full p-1.5 transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 ${
               config.timeOfDay === "daylight"
                 ? "bg-amber-500/20 text-amber-300 ring-1 ring-amber-400/50"
                 : "text-neutral-400 hover:text-white"
@@ -365,8 +383,11 @@ export function WorkspaceCanvas({
             <Sun className="h-3.5 w-3.5" />
           </button>
           <button
+            type="button"
             onClick={() => handleTimeOfDay("sunset")}
-            className={`rounded-full p-1.5 transition-all ${
+            aria-label="Set room ambiance to Bali Golden Sunset"
+            aria-pressed={config.timeOfDay === "sunset"}
+            className={`rounded-full p-1.5 transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 ${
               config.timeOfDay === "sunset"
                 ? "bg-orange-500/20 text-orange-400 ring-1 ring-orange-500/50"
                 : "text-neutral-400 hover:text-white"
@@ -376,8 +397,11 @@ export function WorkspaceCanvas({
             <Sunset className="h-3.5 w-3.5" />
           </button>
           <button
+            type="button"
             onClick={() => handleTimeOfDay("studio-night")}
-            className={`rounded-full p-1.5 transition-all ${
+            aria-label="Set room ambiance to Studio Night"
+            aria-pressed={config.timeOfDay === "studio-night"}
+            className={`rounded-full p-1.5 transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 ${
               config.timeOfDay === "studio-night"
                 ? "bg-indigo-500/20 text-indigo-300 ring-1 ring-indigo-400/50"
                 : "text-neutral-400 hover:text-white"
@@ -390,8 +414,11 @@ export function WorkspaceCanvas({
           {/* Lamp toggle — only when lighting selected */}
           {config.lightingId && (
             <button
+              type="button"
               onClick={handleToggleLamp}
-              className={`rounded-full p-1.5 transition-all ${
+              aria-label={config.lampPowered ? "Turn desk lamp off" : "Turn desk lamp on"}
+              aria-pressed={config.lampPowered}
+              className={`rounded-full p-1.5 transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 ${
                 config.lampPowered
                   ? "bg-amber-400/25 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.35)] ring-1 ring-amber-400/50"
                   : "text-neutral-500 hover:text-neutral-300"
@@ -410,8 +437,10 @@ export function WorkspaceCanvas({
 
           {/* Zoom Toggle */}
           <button
+            type="button"
             onClick={() => setZoomLevel((z) => (z === 1 ? 1.08 : 1))}
-            className="rounded-full p-1.5 text-neutral-400 transition-colors hover:text-white"
+            aria-label={zoomLevel === 1 ? "Zoom in on workspace" : "Reset workspace zoom"}
+            className="rounded-full p-1.5 text-neutral-400 transition-colors hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400"
             title={zoomLevel === 1 ? "Zoom in setup" : "Reset zoom"}
           >
             {zoomLevel === 1 ? (
@@ -631,8 +660,11 @@ export function WorkspaceCanvas({
         <div className="flex items-center gap-1 rounded-full border border-white/15 bg-neutral-900/90 p-1 shadow-2xl backdrop-blur-md">
           {/* Front 0° */}
           <button
+            type="button"
             onClick={() => handleSelectPreset("front")}
-            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all ${
+            aria-label="Orbit 3D camera to front battlestation view (0 degrees)"
+            aria-pressed={activePreset === "front"}
+            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 ${
               activePreset === "front"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
@@ -645,8 +677,11 @@ export function WorkspaceCanvas({
 
           {/* 3/4 Left -28° */}
           <button
+            type="button"
             onClick={() => handleSelectPreset("iso-left")}
-            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all ${
+            aria-label="Orbit 3D camera to 3/4 left isometric view (minus 28 degrees)"
+            aria-pressed={activePreset === "iso-left"}
+            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 ${
               activePreset === "iso-left"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
@@ -659,8 +694,11 @@ export function WorkspaceCanvas({
 
           {/* 3/4 Right +28° */}
           <button
+            type="button"
             onClick={() => handleSelectPreset("iso-right")}
-            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all ${
+            aria-label="Orbit 3D camera to 3/4 right isometric view (plus 28 degrees)"
+            aria-pressed={activePreset === "iso-right"}
+            className={`flex items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 ${
               activePreset === "iso-right"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
@@ -673,8 +711,11 @@ export function WorkspaceCanvas({
 
           {/* Top Angle */}
           <button
+            type="button"
             onClick={() => handleSelectPreset("top")}
-            className={`hidden items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all sm:flex ${
+            aria-label="Orbit 3D camera to elevated top overview angle"
+            aria-pressed={activePreset === "top"}
+            className={`hidden items-center gap-1 rounded-full px-2.5 py-1 text-[11px] font-medium transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 sm:flex ${
               activePreset === "top"
                 ? "bg-emerald-500/25 text-emerald-300 ring-1 ring-emerald-400/50"
                 : "text-neutral-400 hover:text-white"
@@ -687,8 +728,10 @@ export function WorkspaceCanvas({
           {/* Quick Snap Reset */}
           {(rotY !== 0 || rotX !== 4) && (
             <button
+              type="button"
               onClick={() => handleSelectPreset("front")}
-              className="ml-0.5 p-1 text-neutral-400 transition-colors hover:text-emerald-400"
+              aria-label="Reset 3D camera to front orientation"
+              className="ml-0.5 rounded p-1 text-neutral-400 transition-colors hover:text-emerald-400 focus-visible:ring-1 focus-visible:ring-emerald-400"
               title="Reset camera to Front (0°)"
             >
               <RotateCcw className="h-3 w-3" />
@@ -707,8 +750,14 @@ export function WorkspaceCanvas({
         </div>
 
         <button
+          type="button"
           onClick={handleToggleHeight}
-          className="pointer-events-auto flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-neutral-900/90 px-2.5 py-1 text-[11px] text-neutral-300 transition-all hover:border-emerald-500/50 hover:text-white"
+          aria-label={
+            isStanding
+              ? "Switch to sitting position at 74 centimeters"
+              : "Switch to standing position at 108 centimeters"
+          }
+          className="pointer-events-auto flex shrink-0 items-center gap-1.5 rounded-full border border-white/10 bg-neutral-900/90 px-2.5 py-1 text-[11px] text-neutral-300 transition-all hover:border-emerald-500/50 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400"
         >
           <Sparkles className="h-3 w-3 text-emerald-400" />
           <span suppressHydrationWarning>

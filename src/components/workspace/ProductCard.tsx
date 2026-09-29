@@ -114,9 +114,19 @@ export function ProductCard({
         {/* Action Button */}
         <Button
           size="sm"
+          type="button"
           variant={isSelected ? "default" : "outline"}
-          onClick={onSelect}
-          className={`h-9 w-full text-xs transition-all ${
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelect();
+          }}
+          aria-pressed={isSelected}
+          aria-label={
+            isSelected
+              ? `${item.name} is currently selected on desk`
+              : `Select ${item.name} for workspace`
+          }
+          className={`h-9 w-full text-xs transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 ${
             isSelected
               ? "bg-emerald-500 font-semibold text-neutral-950 hover:bg-emerald-400"
               : "border-white/10 text-neutral-300 hover:border-emerald-500/40 hover:text-white"

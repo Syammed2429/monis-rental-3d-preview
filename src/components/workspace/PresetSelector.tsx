@@ -29,11 +29,14 @@ export function PresetSelector({ onSelectPreset, activeConfig }: PresetSelectorP
         return (
           <button
             key={preset.id}
+            type="button"
             onClick={() => {
               sound.playSelect();
               onSelectPreset(preset);
             }}
-            className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-xs transition-all ${
+            aria-pressed={isMatched}
+            aria-label={`Apply preset: ${preset.name} (${preset.badge})`}
+            className={`flex shrink-0 items-center gap-2 rounded-full border px-3 py-1.5 text-xs transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none ${
               isMatched
                 ? "border-emerald-500/50 bg-emerald-500/15 text-emerald-300 ring-1 ring-emerald-500/30"
                 : "border-white/10 bg-neutral-900/60 text-neutral-300 hover:border-white/20 hover:bg-neutral-900 hover:text-white"

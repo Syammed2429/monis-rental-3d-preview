@@ -33,7 +33,7 @@ export function SetupSummaryBar({
     <div className="pointer-events-none fixed inset-x-0 bottom-0 z-40 mx-auto max-w-4xl px-3 pb-[max(0.75rem,env(safe-area-inset-bottom))] sm:inset-x-4 sm:bottom-4 sm:pb-0">
       <div className="pointer-events-auto flex-between gap-2 rounded-2xl border border-white/15 bg-neutral-950/95 p-2.5 shadow-2xl backdrop-blur-2xl sm:gap-3 sm:rounded-full sm:px-5 sm:py-2.5">
         {/* Left: Summary Items Badge & Config summary */}
-        <div className="flex min-w-0 items-center gap-2 sm:gap-3">
+        <div className="flex min-w-0 items-center gap-2 sm:gap-3" role="status" aria-live="polite">
           <div className="flex-center h-8 w-8 shrink-0 rounded-full border border-emerald-500/20 bg-emerald-500/10 text-emerald-400">
             <ShoppingBag className="h-4 w-4" />
           </div>
@@ -80,7 +80,8 @@ export function SetupSummaryBar({
               sound.playClick();
               onReset();
             }}
-            className="h-8 w-8 rounded-full border-white/10 text-neutral-400 hover:bg-neutral-900 hover:text-white"
+            aria-label="Reset workspace configuration to default setup"
+            className="h-8 w-8 rounded-full border-white/10 text-neutral-400 hover:bg-neutral-900 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400"
             title="Reset setup"
           >
             <RotateCcw className="h-3.5 w-3.5" />
@@ -91,7 +92,8 @@ export function SetupSummaryBar({
               sound.playSelect();
               onOpenCheckout();
             }}
-            className="h-8 gap-1 rounded-full bg-emerald-500 px-3.5 text-xs font-bold text-neutral-950 shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-all hover:scale-105 hover:bg-emerald-400 active:scale-95 sm:h-9 sm:gap-1.5 sm:px-5"
+            aria-label="Proceed to checkout and rent workspace setup"
+            className="h-8 gap-1 rounded-full bg-emerald-500 px-3.5 text-xs font-bold text-neutral-950 shadow-[0_0_20px_rgba(16,185,129,0.35)] transition-all hover:scale-105 hover:bg-emerald-400 focus-visible:ring-2 focus-visible:ring-emerald-400 active:scale-95 sm:h-9 sm:gap-1.5 sm:px-5"
           >
             <span>Rent Setup</span>
             <ArrowRight className="h-3.5 w-3.5 stroke-[2.5]" />

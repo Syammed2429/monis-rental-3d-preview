@@ -68,6 +68,14 @@ export default function Home() {
 
   return (
     <div className="flex min-h-screen flex-col bg-[#0c0e14] pb-36 font-sans text-neutral-100 selection:bg-emerald-500 selection:text-neutral-950">
+      {/* WCAG 2.1 Bypass Blocks: Skip to Configurator link */}
+      <a
+        href="#configurator-section"
+        className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-50 focus:rounded-xl focus:bg-emerald-500 focus:px-4 focus:py-2.5 focus:font-sans focus:text-xs focus:font-bold focus:text-neutral-950 focus:shadow-2xl focus:ring-2 focus:ring-emerald-400 focus:ring-offset-2 focus:ring-offset-neutral-950 focus:outline-none"
+      >
+        Skip to product configurator
+      </a>
+
       {/* Top Navbar */}
       <Header
         currentConfig={config}

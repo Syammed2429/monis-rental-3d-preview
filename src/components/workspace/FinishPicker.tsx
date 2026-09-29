@@ -40,22 +40,27 @@ export function FinishPicker<T extends string = string>({
                 sound.playClick();
                 onChange(opt.id);
               }}
-              className={`flex-center h-6 w-6 rounded-full transition-all ${
-                isSelected
-                  ? "scale-110 ring-2 ring-emerald-400 ring-offset-2 ring-offset-neutral-900"
-                  : "opacity-80 ring-1 ring-white/10 hover:scale-105 hover:opacity-100"
-              }`}
-              style={{ backgroundColor: opt.hex || opt.color }}
+              aria-pressed={isSelected}
+              aria-label={`Select ${opt.name} finish`}
               title={opt.name}
-              aria-label={`Select ${opt.name}`}
+              className={`flex-center h-8 w-8 rounded-full transition-all focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950 focus-visible:outline-none`}
             >
-              {isSelected && (
-                <Check
-                  className={`h-3.5 w-3.5 stroke-[3] ${
-                    opt.id === "minimal-white" ? "text-neutral-900" : "text-emerald-300"
-                  }`}
-                />
-              )}
+              <div
+                className={`flex-center h-6 w-6 rounded-full transition-all ${
+                  isSelected
+                    ? "scale-110 ring-2 ring-emerald-400 ring-offset-2 ring-offset-neutral-900"
+                    : "opacity-80 ring-1 ring-white/20 hover:scale-105 hover:opacity-100"
+                }`}
+                style={{ backgroundColor: opt.hex || opt.color }}
+              >
+                {isSelected && (
+                  <Check
+                    className={`h-3.5 w-3.5 stroke-[3] ${
+                      opt.id === "minimal-white" ? "text-neutral-900" : "text-emerald-300"
+                    }`}
+                  />
+                )}
+              </div>
             </button>
           );
         })}

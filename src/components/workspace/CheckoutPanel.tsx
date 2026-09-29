@@ -167,11 +167,13 @@ Designed on monis.rent`;
           </Badge>
           {!orderConfirmed && (
             <button
+              type="button"
               onClick={() => {
                 sound.playClick();
                 onCancel();
               }}
-              className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-neutral-400 transition-colors hover:bg-white/5 hover:text-white"
+              aria-label="Return to workspace designer"
+              className="flex items-center gap-1 rounded-lg px-2 py-1 text-xs text-neutral-400 transition-colors hover:bg-white/5 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:outline-none"
             >
               <ChevronLeft className="h-3.5 w-3.5" />
               <span>Designer</span>
@@ -352,6 +354,7 @@ Designed on monis.rent`;
                     min={1}
                     max={24}
                     step={1}
+                    aria-label="Rental duration in weeks"
                     onValueChange={(val) => {
                       sound.playClick();
                       field.onChange(Array.isArray(val) ? val[0] : val);
@@ -461,6 +464,8 @@ Designed on monis.rent`;
                   <Input
                     id="whatsapp-number"
                     {...register("whatsapp")}
+                    type="tel"
+                    inputMode="tel"
                     autoComplete="tel"
                     aria-invalid={errors.whatsapp ? "true" : "false"}
                     aria-describedby={errors.whatsapp ? "whatsapp-error" : undefined}

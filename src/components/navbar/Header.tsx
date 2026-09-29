@@ -92,7 +92,10 @@ export function Header({
         {/* Center: Presets Quick Switcher */}
         <div className="hidden items-center gap-2 md:flex">
           <DropdownMenu>
-            <DropdownMenuTrigger className="inline-flex h-8 cursor-pointer items-center justify-center gap-2 rounded-full border border-white/15 bg-neutral-900/90 px-3.5 text-xs font-medium text-white shadow-md transition-colors outline-none hover:bg-neutral-800">
+            <DropdownMenuTrigger
+              aria-label="Select curated nomadic workspace preset"
+              className="inline-flex h-8 cursor-pointer items-center justify-center gap-2 rounded-full border border-white/15 bg-neutral-900/90 px-3.5 text-xs font-medium text-white shadow-md transition-colors outline-none hover:bg-neutral-800 focus-visible:ring-2 focus-visible:ring-emerald-400 focus-visible:ring-offset-2 focus-visible:ring-offset-neutral-950"
+            >
               <Sparkles className="h-3.5 w-3.5 text-amber-400" />
               <span>Curated Nomadic Presets</span>
               <ChevronDown className="h-3 w-3 text-neutral-400" />
@@ -110,7 +113,7 @@ export function Header({
                       sound.playSelect();
                       onApplyPreset(preset);
                     }}
-                    className="flex cursor-pointer flex-col items-start gap-1 rounded-xl p-2.5 hover:bg-neutral-900"
+                    className="flex cursor-pointer flex-col items-start gap-1 rounded-xl p-2.5 hover:bg-neutral-900 focus:bg-neutral-900"
                   >
                     <div className="flex-between w-full">
                       <span className="text-xs font-semibold text-white">{preset.name}</span>
@@ -138,8 +141,10 @@ export function Header({
             variant="ghost"
             size="icon"
             onClick={handleToggleMute}
-            className="h-8 w-8 rounded-full text-neutral-400 hover:bg-neutral-900 hover:text-white"
+            className="h-8 w-8 rounded-full text-neutral-400 hover:bg-neutral-900 hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400"
             title={isMuted ? "Unmute audio clicks" : "Mute audio"}
+            aria-label={isMuted ? "Unmute audio sound effects" : "Mute audio sound effects"}
+            aria-pressed={!isMuted}
           >
             {isMuted ? (
               <VolumeX className="h-4 w-4" />
@@ -156,8 +161,9 @@ export function Header({
               sound.playClick();
               onCurrencyToggle();
             }}
-            className="flex h-8 items-center gap-1.5 rounded-full border-white/15 bg-neutral-900 px-2.5 font-mono text-xs text-neutral-200 shadow-sm hover:text-white"
+            className="flex h-8 items-center gap-1.5 rounded-full border-white/15 bg-neutral-900 px-2.5 font-mono text-xs text-neutral-200 shadow-sm hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400"
             title="Toggle between USD and Indonesian Rupiah (IDR)"
+            aria-label={`Current currency is ${currency}. Click to toggle between USD and IDR.`}
           >
             <Globe className="h-3.5 w-3.5 text-neutral-400" />
             <span className="font-bold">{currency}</span>
@@ -168,8 +174,13 @@ export function Header({
             variant="outline"
             size="sm"
             onClick={handleShare}
-            className="flex h-8 items-center gap-1.5 rounded-full border-white/15 bg-neutral-900 px-2.5 text-xs text-neutral-200 shadow-sm hover:text-white"
+            className="flex h-8 items-center gap-1.5 rounded-full border-white/15 bg-neutral-900 px-2.5 text-xs text-neutral-200 shadow-sm hover:text-white focus-visible:ring-2 focus-visible:ring-emerald-400"
             title="Copy shareable link to this workspace setup"
+            aria-label={
+              copied
+                ? "Share link copied to clipboard"
+                : "Copy shareable link to this workspace setup"
+            }
           >
             {copied ? (
               <Check className="h-3.5 w-3.5 stroke-3 text-emerald-400" />
@@ -185,7 +196,8 @@ export function Header({
           <Button
             size="sm"
             onClick={onOpenCheckout}
-            className="h-8 rounded-full bg-emerald-500 px-3.5 text-xs font-bold text-neutral-950 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all hover:scale-105 hover:bg-emerald-400 active:scale-95"
+            aria-label="Proceed to rent this workspace setup"
+            className="h-8 rounded-full bg-emerald-500 px-3.5 text-xs font-bold text-neutral-950 shadow-[0_0_15px_rgba(16,185,129,0.3)] transition-all hover:scale-105 hover:bg-emerald-400 focus-visible:ring-2 focus-visible:ring-emerald-400 active:scale-95"
           >
             <span>Rent Setup</span>
           </Button>
