@@ -8,7 +8,7 @@ import { WorkspaceCanvas } from "@/components/workspace/WorkspaceCanvas";
 import { ConfiguratorSidebar } from "@/components/workspace/ConfiguratorSidebar";
 import { SetupSummaryBar } from "@/components/workspace/SetupSummaryBar";
 import { PresetSelector } from "@/components/workspace/PresetSelector";
-import { CheckoutDialog } from "@/components/workspace/CheckoutDialog";
+import { CheckoutPanel } from "@/components/workspace/CheckoutPanel";
 import { Badge } from "@/components/ui/badge";
 import { Truck, ShieldCheck, RefreshCw, Zap } from "lucide-react";
 
@@ -42,8 +42,18 @@ export default function Home() {
   const [activeCategory, setActiveCategory] = useState<ProductCategory>("desks");
   const [selectedItemId, setSelectedItemId] = useState<string | null>(null);
   const [checkoutOpen, setCheckoutOpen] = useState<boolean>(false);
+  const handleOpenCheckout = () => {
+    setCheckoutOpen(true);
+    if (typeof window !== "undefined" && window.innerWidth < 1024) {
+      const section = document.getElementById("configurator-section");
+      if (section) {
+        section.scrollIntoView({ behavior: "smooth", block: "start" });
+      }
+    }
+  };
 
   const handleSelectItem = (category: ProductCategory, itemId?: string) => {
+    setCheckoutOpen(false);
     setActiveCategory(category);
     if (itemId) {
       setSelectedItemId(itemId);
@@ -174,7 +184,7 @@ export default function Home() {
         onApplyPreset={handleApplyPreset}
         currency={currency}
         onCurrencyToggle={handleCurrencyToggle}
-        onOpenCheckout={() => setCheckoutOpen(true)}
+        onOpenCheckout={handleOpenCheckout}
       />
 
       {/* Main Container */}
@@ -220,19 +230,27 @@ export default function Home() {
             />
           </div>
 
-          {/* Right Sidebar: Product Catalog & Customization Tabs (5 cols on lg, 4 on xl) */}
+          {/* Right Sidebar: Product Catalog & Customization Tabs OR Inline Checkout Panel */}
           <div
             id="configurator-section"
             className="lg:col-span-5 xl:col-span-4 h-[580px] lg:h-full min-h-0"
           >
-            <ConfiguratorSidebar
-              config={config}
-              onChangeConfig={handleUpdateConfig}
-              currency={currency}
-              activeCategory={activeCategory}
-              onCategoryChange={setActiveCategory}
-              selectedItemId={selectedItemId}
-            />
+            {checkoutOpen ? (
+              <CheckoutPanel
+                config={config}
+                currency={currency}
+                onCancel={() => setCheckoutOpen(false)}
+              />
+            ) : (
+              <ConfiguratorSidebar
+                config={config}
+                onChangeConfig={handleUpdateConfig}
+                currency={currency}
+                activeCategory={activeCategory}
+                onCategoryChange={setActiveCategory}
+                selectedItemId={selectedItemId}
+              />
+            )}
           </div>
         </div>
 
@@ -295,16 +313,8 @@ export default function Home() {
       <SetupSummaryBar
         config={config}
         currency={currency}
-        onOpenCheckout={() => setCheckoutOpen(true)}
+        onOpenCheckout={handleOpenCheckout}
         onReset={handleReset}
-      />
-
-      {/* Checkout / Summary Dialog Modal */}
-      <CheckoutDialog
-        open={checkoutOpen}
-        onOpenChange={setCheckoutOpen}
-        config={config}
-        currency={currency}
       />
     </div>
   );
