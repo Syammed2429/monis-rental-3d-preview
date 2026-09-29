@@ -120,7 +120,7 @@ export function AccessoriesRenderer({
           style={{ touchAction: "none" }}
           whileDrag={{ scale: 1.05 }}
           onPointerDown={(e) => e.stopPropagation()}
-          className="group/laptop pointer-events-auto absolute bottom-0 left-8 z-35 flex cursor-grab flex-col items-center active:cursor-grabbing"
+          className="group/laptop pointer-events-auto absolute bottom-0 left-16 z-35 flex cursor-grab flex-col items-center active:cursor-grabbing"
           title="Drag anywhere on desk • Click to configure"
           onClick={(e) => {
             e.stopPropagation();
@@ -154,11 +154,13 @@ export function AccessoriesRenderer({
         </motion.div>
       )}
 
-      {/* 3. Desk Lighting (Anglepoise Lamp / ScreenBar) */}
-      {lightingId === "light-smart-lamp" && (
+      {/* 3. Desk Lighting (Xiaomi 1S / Anglepoise Lamp / ScreenBar) */}
+
+      {/* 3A. Xiaomi Smart LED Desk Lamp 1S */}
+      {lightingId === "light-xiaomi-1s" && (
         <motion.div
           drag
-          dragConstraints={{ left: -70, right: 260, top: -12, bottom: 12 }}
+          dragConstraints={{ left: -10, right: 320, top: -10, bottom: 10 }}
           dragElastic={0.06}
           dragMomentum={false}
           style={{ touchAction: "none" }}
@@ -168,50 +170,119 @@ export function AccessoriesRenderer({
             e.stopPropagation();
             onToggleLamp?.();
             if (onSelectItem) {
-              onSelectItem("lighting", lightingId);
+              onSelectItem("lighting", "light-xiaomi-1s");
             } else {
               onSelectCategory?.("lighting");
             }
           }}
-          className="group/lamp pointer-events-auto absolute bottom-0 left-22 z-35 flex cursor-pointer flex-col items-center active:cursor-grabbing"
-          title={`Slide along desk • Click to turn ${lampPowered ? "OFF" : "ON"}`}
+          className="group/lamp pointer-events-auto absolute bottom-0 left-3 z-40 flex cursor-pointer flex-col items-center active:cursor-grabbing"
+          title={`Xiaomi Smart Lamp 1S • Click to turn ${lampPowered ? "OFF" : "ON"}`}
         >
           <div className="pointer-events-none absolute -top-6 z-50 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[8px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/lamp:opacity-100">
-            💡 Slide Lamp • Click to Turn {lampPowered ? "OFF" : "ON"}
-          </div>
-          {/* Light Fixture Horizontal Bar */}
-          <div className="relative h-2 w-22 rounded-full border border-slate-300 bg-slate-100 shadow-md">
-            {/* LED Underside */}
-            <div
-              className={`mx-auto h-1 w-18 rounded-full transition-all duration-300 ${
-                lampPowered
-                  ? "bg-amber-100 shadow-[0_0_20px_rgba(254,243,199,0.9)]"
-                  : "bg-neutral-300"
-              }`}
-            />
+            💡 Xiaomi 1S Lamp • Click to Turn {lampPowered ? "OFF" : "ON"}
           </div>
 
-          {/* Pivoting Stem */}
-          <div className="relative h-26 w-1.5 bg-linear-to-b from-slate-200 to-slate-400">
-            <div className="absolute top-4 -right-1 h-6 w-2.5 rounded-full border-r-2 border-amber-500" />
+          {/* Minimalist Folding Arm (Pure White with LED Underside) */}
+          <div className="relative flex flex-col items-center">
+            {/* Horizontal Lamp Bar (Slightly angled forwards) */}
+            <div className="relative h-2 w-24 rounded-full border border-neutral-300 bg-white shadow-md">
+              {/* LED Diffuser Strip */}
+              <div
+                className={`mx-auto h-1 w-21 rounded-full transition-all duration-300 ${
+                  lampPowered
+                    ? "bg-amber-100 shadow-[0_0_24px_rgba(254,240,138,1)]"
+                    : "bg-neutral-300"
+                }`}
+              />
+            </div>
+
+            {/* Signature Red Loop Wire at Joint */}
+            <div className="absolute top-1.5 -right-1 h-3.5 w-2 rounded-r-full border-t-2 border-r-2 border-rose-500" />
+
+            {/* Ultra-Slim Vertical Stem */}
+            <div className="relative h-28 w-2 rounded-full border-x border-neutral-200 bg-gradient-to-b from-white via-neutral-100 to-neutral-200 shadow-sm" />
+
+            {/* Minimalist Circular Base with Center Rotary Knob */}
+            <div className="relative flex h-2.5 w-10 items-center justify-center rounded-full border border-neutral-300 bg-white shadow-md">
+              {/* Center Click Knob */}
+              <div
+                className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                  lampPowered ? "bg-amber-400 ring-2 ring-amber-300/50" : "bg-neutral-400"
+                }`}
+              />
+            </div>
           </div>
 
-          {/* Minimalist Round Base (Rests flush on desk surface) */}
-          <div className="flex h-2 w-8 items-center justify-center rounded-full border border-slate-300 bg-slate-200 shadow-md">
-            <div
-              className={`h-1.5 w-1.5 rounded-full transition-colors ${
-                lampPowered ? "bg-amber-400" : "bg-neutral-400"
-              }`}
-            />
-          </div>
-
-          {/* Dynamic Light Beam Cast */}
+          {/* Dynamic Warm Ambient Light Cone */}
           {lampPowered && (
-            <div className="pointer-events-none absolute top-2 -left-12 h-36 w-44 bg-[radial-gradient(ellipse_at_top,rgba(254,240,138,0.25)_0%,transparent_75%)] blur-xs" />
+            <div className="pointer-events-none absolute -top-2 -left-12 h-44 w-56 bg-[radial-gradient(ellipse_at_top,rgba(254,243,199,0.35)_0%,rgba(253,230,138,0.18)_45%,transparent_75%)] blur-xs" />
           )}
         </motion.div>
       )}
 
+      {/* 3B. Anglepoise Architectural Desk Lamp */}
+      {lightingId === "light-smart-lamp" && (
+        <motion.div
+          drag
+          dragConstraints={{ left: -10, right: 320, top: -10, bottom: 10 }}
+          dragElastic={0.06}
+          dragMomentum={false}
+          style={{ touchAction: "none" }}
+          whileDrag={{ scale: 1.05 }}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onToggleLamp?.();
+            if (onSelectItem) {
+              onSelectItem("lighting", "light-smart-lamp");
+            } else {
+              onSelectCategory?.("lighting");
+            }
+          }}
+          className="group/lamp pointer-events-auto absolute bottom-0 left-3 z-40 flex cursor-pointer flex-col items-center active:cursor-grabbing"
+          title={`Anglepoise Desk Lamp • Click to turn ${lampPowered ? "OFF" : "ON"}`}
+        >
+          <div className="pointer-events-none absolute -top-6 z-50 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[8px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover/lamp:opacity-100">
+            💡 Anglepoise Lamp • Click to Turn {lampPowered ? "OFF" : "ON"}
+          </div>
+
+          {/* Angled Cone Shade & Stem */}
+          <div className="relative flex flex-col items-center">
+            {/* Cone Shade */}
+            <div className="relative h-4 w-12 rounded-t-sm rounded-b-xl border border-amber-900/40 bg-gradient-to-r from-amber-700 via-amber-600 to-amber-700 shadow-md">
+              <div
+                className={`mx-auto mt-2 h-1.5 w-6 rounded-full transition-all duration-300 ${
+                  lampPowered
+                    ? "bg-amber-100 shadow-[0_0_24px_rgba(254,240,138,1)]"
+                    : "bg-neutral-800"
+                }`}
+              />
+            </div>
+
+            {/* Articulated Double Spring Arm */}
+            <div className="relative flex h-26 w-2.5 items-center justify-center">
+              <div className="h-full w-0.5 bg-gradient-to-b from-neutral-600 via-neutral-500 to-neutral-700" />
+              <div className="absolute top-6 left-0 h-8 w-2 rotate-12 border-r border-amber-500/80" />
+            </div>
+
+            {/* Heavy Cast Iron Base */}
+            <div className="flex h-2.5 w-9 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 shadow-lg">
+              <div
+                className={`h-1.5 w-1.5 rounded-full transition-colors ${
+                  lampPowered ? "bg-amber-400 ring-2 ring-amber-300/50" : "bg-neutral-600"
+                }`}
+              />
+            </div>
+          </div>
+
+          {/* Dynamic Light Beam Cast */}
+          {lampPowered && (
+            <div className="pointer-events-none absolute -top-2 -left-14 h-48 w-60 bg-[radial-gradient(ellipse_at_top,rgba(254,240,138,0.35)_0%,rgba(251,191,36,0.15)_50%,transparent_75%)] blur-xs" />
+          )}
+        </motion.div>
+      )}
+
+      {/* 3C. ScreenBar Halo Monitor Light Bar */}
       {lightingId === "light-screenbar" && (
         <div
           onClick={(e) => {
@@ -223,18 +294,18 @@ export function AccessoriesRenderer({
               onSelectCategory?.("lighting");
             }
           }}
-          className="group pointer-events-auto absolute -top-48.75 left-1/2 z-35 flex -translate-x-1/2 cursor-pointer flex-col items-center"
-          title={`Click to turn ScreenBar ${lampPowered ? "OFF" : "ON"}`}
+          className="group pointer-events-auto absolute -top-49 left-1/2 z-40 flex -translate-x-1/2 cursor-pointer flex-col items-center"
+          title={`ScreenBar Halo • Click to turn ${lampPowered ? "OFF" : "ON"}`}
         >
           <div className="pointer-events-none absolute -top-6 z-50 rounded-full border border-white/20 bg-neutral-900/90 px-2 py-0.5 text-[8px] whitespace-nowrap text-white opacity-0 shadow-lg transition-opacity group-hover:opacity-100">
             💡 ScreenBar • Click to Turn {lampPowered ? "OFF" : "ON"}
           </div>
           {/* ScreenBar Clamped atop Monitor Bezel */}
-          <div className="relative flex h-2 w-56 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 shadow-lg">
+          <div className="relative flex h-2.5 w-56 items-center justify-center rounded-full border border-neutral-700 bg-neutral-900 shadow-xl">
             <div
-              className={`h-1 w-52 rounded-full transition-all duration-300 ${
+              className={`h-1.5 w-52 rounded-full transition-all duration-300 ${
                 lampPowered
-                  ? "bg-amber-100 shadow-[0_0_18px_rgba(254,240,138,0.9)]"
+                  ? "bg-amber-100 shadow-[0_0_24px_rgba(254,240,138,1)]"
                   : "bg-neutral-800"
               }`}
             />
@@ -242,7 +313,7 @@ export function AccessoriesRenderer({
 
           {/* Downward Light Glow Cast */}
           {lampPowered && (
-            <div className="pointer-events-none absolute top-1.5 -left-16 h-60 w-88 bg-[radial-gradient(ellipse_at_top,rgba(254,243,199,0.2)_0%,transparent_80%)] blur-xs" />
+            <div className="pointer-events-none absolute top-2 -left-20 h-64 w-96 bg-[radial-gradient(ellipse_at_top,rgba(254,243,199,0.3)_0%,rgba(253,230,138,0.15)_45%,transparent_80%)] blur-xs" />
           )}
         </div>
       )}
