@@ -11,6 +11,7 @@ import { CheckoutPanel } from "@/components/workspace/CheckoutPanel";
 import { Badge } from "@/components/ui/badge";
 import { Truck, ShieldCheck, RefreshCw, Zap } from "lucide-react";
 import { useWorkspaceStore } from "@/store/workspaceStore";
+import { ComponentErrorBoundary } from "@/components/common/ComponentErrorBoundary";
 
 export default function Home() {
   const config = useWorkspaceStore((state) => state.config);
@@ -111,12 +112,14 @@ export default function Home() {
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-5 h-auto lg:h-[580px]">
           {/* Left Canvas: Live 2D/3D Vector Workspace (7 cols on lg, 8 on xl) */}
           <div className="lg:col-span-7 xl:col-span-8 h-[430px] sm:h-[460px] lg:h-full min-h-0">
-            <WorkspaceCanvas
-              config={config}
-              onChangeConfig={updateConfig}
-              onSelectItem={handleSelectItem}
-              onSelectCategory={(cat) => handleSelectItem(cat)}
-            />
+            <ComponentErrorBoundary fallbackTitle="3D Workspace Stage Error">
+              <WorkspaceCanvas
+                config={config}
+                onChangeConfig={updateConfig}
+                onSelectItem={handleSelectItem}
+                onSelectCategory={(cat) => handleSelectItem(cat)}
+              />
+            </ComponentErrorBoundary>
           </div>
 
           {/* Right Sidebar: Product Catalog & Customization Tabs OR Inline Checkout Panel */}
@@ -124,22 +127,24 @@ export default function Home() {
             id="configurator-section"
             className="lg:col-span-5 xl:col-span-4 h-[580px] lg:h-full min-h-0"
           >
-            {checkoutOpen ? (
-              <CheckoutPanel
-                config={config}
-                currency={currency}
-                onCancel={() => setCheckoutOpen(false)}
-              />
-            ) : (
-              <ConfiguratorSidebar
-                config={config}
-                onChangeConfig={updateConfig}
-                currency={currency}
-                activeCategory={activeCategory}
-                onCategoryChange={setActiveCategory}
-                selectedItemId={selectedItemId}
-              />
-            )}
+            <ComponentErrorBoundary fallbackTitle="Configuration Sidebar Error">
+              {checkoutOpen ? (
+                <CheckoutPanel
+                  config={config}
+                  currency={currency}
+                  onCancel={() => setCheckoutOpen(false)}
+                />
+              ) : (
+                <ConfiguratorSidebar
+                  config={config}
+                  onChangeConfig={updateConfig}
+                  currency={currency}
+                  activeCategory={activeCategory}
+                  onCategoryChange={setActiveCategory}
+                  selectedItemId={selectedItemId}
+                />
+              )}
+            </ComponentErrorBoundary>
           </div>
         </div>
 
