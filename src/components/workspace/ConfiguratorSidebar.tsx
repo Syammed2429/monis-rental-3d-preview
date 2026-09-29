@@ -7,6 +7,7 @@ import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
+import { ScrollArea } from "@/components/ui/scroll-area";
 import { Check, Plus, SlidersHorizontal } from "lucide-react";
 import { sound } from "@/lib/audio";
 
@@ -90,32 +91,35 @@ export function ConfiguratorSidebar({
     }));
   };
 
-  // Helper to select monitor
+  // Helper to select monitor (toggles if already selected)
   const handleSelectMonitor = (product: ProductItem) => {
     sound.playSelect();
     onChangeConfig((prev) => ({
       ...prev,
-      monitorId: product.id,
+      monitorId: prev.monitorId === product.id ? null : product.id,
     }));
   };
 
-  // Helper to select peripherals
+  // Helper to select peripherals (toggles if already selected)
   const handleSelectPeripherals = (product: ProductItem) => {
     sound.playSelect();
     onChangeConfig((prev) => ({
       ...prev,
-      peripheralsId: product.id,
+      peripheralsId: prev.peripheralsId === product.id ? null : product.id,
     }));
   };
 
-  // Helper to select lighting
+  // Helper to select lighting (toggles if already selected)
   const handleSelectLighting = (product: ProductItem) => {
     sound.playSelect();
-    onChangeConfig((prev) => ({
-      ...prev,
-      lightingId: product.id,
-      lampPowered: true,
-    }));
+    onChangeConfig((prev) => {
+      const isSelected = prev.lightingId === product.id;
+      return {
+        ...prev,
+        lightingId: isSelected ? null : product.id,
+        lampPowered: isSelected ? false : true,
+      };
+    });
   };
 
   // Lifestyle toggle helpers
@@ -186,7 +190,7 @@ export function ConfiguratorSidebar({
           </div>
 
           {/* Horizontally Scrollable Touch-Friendly Tab Bar */}
-          <div className="overflow-x-auto pb-1 -mx-1 px-1 custom-scrollbar">
+          <div className="overflow-x-auto pb-1 -mx-1 px-1 scrollbar-none [&::-webkit-scrollbar]:hidden">
             <TabsList className="w-full flex sm:grid sm:grid-cols-6 min-w-[480px] sm:min-w-0 h-auto p-1 bg-neutral-950 border border-white/10 rounded-xl gap-1">
               <TabsTrigger
                 value="desks"
@@ -254,8 +258,9 @@ export function ConfiguratorSidebar({
           })()}
 </div>
 
-        {/* Scrollable Products List Container */}
-        <div className="flex-1 min-h-0 overflow-y-auto p-3 sm:p-4 space-y-3.5 pr-2 sm:pr-3 custom-scrollbar">
+        {/* Scrollable Products List Container using Shadcn ScrollArea */}
+        <ScrollArea className="flex-1 min-h-0 w-full">
+          <div className="p-3 sm:p-4 space-y-3.5 pr-3">
           {/* --- TAB: DESKS --- */}
           <TabsContent value="desks" className="space-y-3 m-0 focus-visible:outline-none">
             <div className="text-xs text-neutral-400">
@@ -606,7 +611,7 @@ export function ConfiguratorSidebar({
                     >
                       {isSelected ? (
                         <span className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Mounted on Desk
+                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Mounted on Desk (Click to Remove)
                         </span>
                       ) : (
                         <span className="flex items-center gap-1.5">
@@ -707,7 +712,7 @@ export function ConfiguratorSidebar({
                     >
                       {isSelected ? (
                         <span className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Active Peripherals
+                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Equipped on Setup (Click to Remove)
                         </span>
                       ) : (
                         <span className="flex items-center gap-1.5">
@@ -808,7 +813,7 @@ export function ConfiguratorSidebar({
                     >
                       {isSelected ? (
                         <span className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Lighting Active
+                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Equipped on Desk (Click to Remove)
                         </span>
                       ) : (
                         <span className="flex items-center gap-1.5">
@@ -923,7 +928,8 @@ export function ConfiguratorSidebar({
               );
             })}
           </TabsContent>
-        </div>
+          </div>
+        </ScrollArea>
       </Tabs>
     </div>
   );

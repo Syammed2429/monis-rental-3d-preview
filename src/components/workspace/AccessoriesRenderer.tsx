@@ -5,8 +5,8 @@ import { ProductCategory } from "@/types/workspace";
 import { Plus } from "lucide-react";
 
 interface AccessoriesRendererProps {
-  peripheralsId: string;
-  lightingId: string;
+  peripheralsId: string | null;
+  lightingId: string | null;
   lampPowered: boolean;
   onToggleLamp?: () => void;
   laptopStand: boolean;
@@ -29,82 +29,84 @@ export function AccessoriesRenderer({
 }: AccessoriesRendererProps) {
   return (
     <div className="absolute inset-0 pointer-events-none select-none">
-      {/* 1. Large Minimalist Felt Desk Mat (Rests directly on desk surface • Draggable) */}
-      <motion.div
-        drag="x"
-        dragConstraints={{ left: -70, right: 70 }}
-        dragElastic={0.06}
-        dragMomentum={false}
-        style={{ touchAction: "none" }}
-        whileDrag={{ scale: 1.02 }}
-        onPointerDown={(e) => e.stopPropagation()}
-        onClick={(e) => {
-          e.stopPropagation();
-          onSelectItem ? onSelectItem("peripherals", peripheralsId) : onSelectCategory?.("peripherals");
-        }}
-        className="absolute top-1 left-1/2 -translate-x-1/2 w-[410px] h-[34px] rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center pointer-events-auto cursor-grab active:cursor-grabbing group/mat"
-        title="Slide desk mat • Click to configure peripherals"
-      >
-        <div className="absolute -top-6 opacity-0 group-hover/mat:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
-          ⌨️ Slide Mat & Keyboard • Click to Select
-        </div>
-        {/* Keyboard & Mouse Area */}
-        <div className="flex items-center gap-6">
-          {/* Keyboards */}
-          {peripheralsId === "peripherals-mx-combo" && (
-            <div className="flex items-center gap-5">
-              {/* MX Keys Backlit Keyboard */}
-              <div className="w-44 h-5.5 rounded-md bg-stone-900 border border-white/20 shadow-md flex items-center px-1.5 justify-between">
-                <div className="w-32 h-3 bg-neutral-950 rounded flex gap-0.5 items-center px-1">
-                  <div className="w-22 h-1.5 bg-stone-700 rounded-xs" />
-                  <div className="w-7 h-1.5 bg-stone-700 rounded-xs" />
+      {/* 1. Large Minimalist Felt Desk Mat (Rests directly on desk surface • Draggable • z-20) */}
+      {peripheralsId && (
+        <motion.div
+          drag="x"
+          dragConstraints={{ left: -70, right: 70 }}
+          dragElastic={0.06}
+          dragMomentum={false}
+          style={{ touchAction: "none" }}
+          whileDrag={{ scale: 1.02 }}
+          onPointerDown={(e) => e.stopPropagation()}
+          onClick={(e) => {
+            e.stopPropagation();
+            onSelectItem ? onSelectItem("peripherals", peripheralsId) : onSelectCategory?.("peripherals");
+          }}
+          className="absolute top-1 left-1/2 -translate-x-1/2 w-[410px] h-[34px] rounded-xl bg-neutral-900/90 border border-white/10 shadow-inner flex items-center justify-center pointer-events-auto cursor-grab active:cursor-grabbing group/mat z-20"
+          title="Slide desk mat • Click to configure peripherals"
+        >
+          <div className="absolute -top-6 opacity-0 group-hover/mat:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
+            ⌨️ Slide Mat & Keyboard • Click to Select
+          </div>
+          {/* Keyboard & Mouse Area */}
+          <div className="flex items-center gap-6">
+            {/* Keyboards */}
+            {peripheralsId === "peripherals-mx-combo" && (
+              <div className="flex items-center gap-5">
+                {/* MX Keys Backlit Keyboard */}
+                <div className="w-44 h-5.5 rounded-md bg-stone-900 border border-white/20 shadow-md flex items-center px-1.5 justify-between">
+                  <div className="w-32 h-3 bg-neutral-950 rounded flex gap-0.5 items-center px-1">
+                    <div className="w-22 h-1.5 bg-stone-700 rounded-xs" />
+                    <div className="w-7 h-1.5 bg-stone-700 rounded-xs" />
+                  </div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-emerald-400/90" />
                 </div>
-                <div className="w-1.5 h-1.5 rounded-full bg-emerald-400/90" />
-              </div>
 
-              {/* MX Master 3S Mouse */}
-              <div className="w-5.5 h-7 rounded-2xl bg-stone-900 border border-white/20 shadow-md flex flex-col items-center pt-1 relative">
-                <div className="w-1.5 h-2 rounded-sm bg-neutral-700 border border-white/30" />
-                <div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5" />
-              </div>
-            </div>
-          )}
-
-          {peripheralsId === "peripherals-apple-magic" && (
-            <div className="flex items-center gap-5">
-              {/* Apple Magic Keyboard Silver */}
-              <div className="w-40 h-5 rounded-md bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 border border-white/80 shadow-md flex items-center px-1.5 justify-between">
-                <div className="w-30 h-2.5 bg-white rounded-xs shadow-xs" />
-                <div className="w-1.5 h-1.5 rounded-full bg-slate-300 border border-slate-400" />
-              </div>
-
-              {/* Apple Magic Trackpad Silver */}
-              <div className="w-9 h-6.5 rounded-md bg-gradient-to-br from-slate-100 to-slate-200 border border-white shadow-md" />
-            </div>
-          )}
-
-          {peripheralsId === "peripherals-custom-mech" && (
-            <div className="flex items-center gap-5">
-              {/* Custom Mechanical Keyboard */}
-              <div className="w-42 h-5.5 rounded-md bg-zinc-950 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.25)] flex items-center px-1.5 justify-between relative overflow-hidden">
-                <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-amber-500/10" />
-                <div className="w-32 h-3 bg-neutral-900 rounded flex gap-0.5 items-center px-1 relative z-10">
-                  <div className="w-22 h-1.5 bg-emerald-950 rounded-xs border border-emerald-500/40" />
-                  <div className="w-7 h-1.5 bg-amber-950 rounded-xs border border-amber-500/40" />
+                {/* MX Master 3S Mouse */}
+                <div className="w-5.5 h-7 rounded-2xl bg-stone-900 border border-white/20 shadow-md flex flex-col items-center pt-1 relative">
+                  <div className="w-1.5 h-2 rounded-sm bg-neutral-700 border border-white/30" />
+                  <div className="w-1 h-1 rounded-full bg-cyan-400 mt-0.5" />
                 </div>
-                <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse relative z-10" />
               </div>
+            )}
 
-              {/* Ergonomic Gaming Mouse */}
-              <div className="w-5.5 h-7 rounded-2xl bg-zinc-950 border border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.25)] flex flex-col items-center pt-1">
-                <div className="w-1.5 h-2 rounded-sm bg-emerald-600" />
+            {peripheralsId === "peripherals-apple-magic" && (
+              <div className="flex items-center gap-5">
+                {/* Apple Magic Keyboard Silver */}
+                <div className="w-40 h-5 rounded-md bg-gradient-to-r from-slate-200 via-slate-100 to-slate-200 border border-white/80 shadow-md flex items-center px-1.5 justify-between">
+                  <div className="w-30 h-2.5 bg-white rounded-xs shadow-xs" />
+                  <div className="w-1.5 h-1.5 rounded-full bg-slate-300 border border-slate-400" />
+                </div>
+
+                {/* Apple Magic Trackpad Silver */}
+                <div className="w-9 h-6.5 rounded-md bg-gradient-to-br from-slate-100 to-slate-200 border border-white shadow-md" />
               </div>
-            </div>
-          )}
-        </div>
-      </motion.div>
+            )}
 
-      {/* 2. Aluminum Laptop Stand (Rests flush on desk surface • Draggable across desk) */}
+            {peripheralsId === "peripherals-custom-mech" && (
+              <div className="flex items-center gap-5">
+                {/* Custom Mechanical Keyboard */}
+                <div className="w-42 h-5.5 rounded-md bg-zinc-950 border border-emerald-500/40 shadow-[0_0_12px_rgba(16,185,129,0.25)] flex items-center px-1.5 justify-between relative overflow-hidden">
+                  <div className="absolute inset-0 bg-gradient-to-r from-emerald-500/10 via-cyan-500/10 to-amber-500/10" />
+                  <div className="w-32 h-3 bg-neutral-900 rounded flex gap-0.5 items-center px-1 relative z-10">
+                    <div className="w-22 h-1.5 bg-emerald-950 rounded-xs border border-emerald-500/40" />
+                    <div className="w-7 h-1.5 bg-amber-950 rounded-xs border border-amber-500/40" />
+                  </div>
+                  <div className="w-1.5 h-1.5 rounded-full bg-cyan-400 animate-pulse relative z-10" />
+                </div>
+
+                {/* Ergonomic Gaming Mouse */}
+                <div className="w-5.5 h-7 rounded-2xl bg-zinc-950 border border-emerald-500/30 shadow-[0_0_8px_rgba(16,185,129,0.25)] flex flex-col items-center pt-1">
+                  <div className="w-1.5 h-2 rounded-sm bg-emerald-600" />
+                </div>
+              </div>
+            )}
+          </div>
+        </motion.div>
+      )}
+
+      {/* 2. Aluminum Laptop Stand (Rests flush on desk surface • Draggable across desk • z-35 foreground) */}
       {laptopStand && (
         <motion.div
           drag
@@ -114,7 +116,7 @@ export function AccessoriesRenderer({
           style={{ touchAction: "none" }}
           whileDrag={{ scale: 1.05 }}
           onPointerDown={(e) => e.stopPropagation()}
-          className="absolute bottom-0 left-8 flex flex-col items-center z-15 pointer-events-auto cursor-grab active:cursor-grabbing group/laptop"
+          className="absolute bottom-0 left-8 flex flex-col items-center z-35 pointer-events-auto cursor-grab active:cursor-grabbing group/laptop"
           title="Drag anywhere on desk • Click to configure"
           onClick={(e) => {
             e.stopPropagation();
@@ -161,7 +163,7 @@ export function AccessoriesRenderer({
             onToggleLamp?.();
             onSelectItem ? onSelectItem("lighting", lightingId) : onSelectCategory?.("lighting");
           }}
-          className="absolute bottom-0 left-22 pointer-events-auto cursor-pointer group/lamp flex flex-col items-center z-20 cursor-grab active:cursor-grabbing"
+          className="absolute bottom-0 left-22 pointer-events-auto cursor-pointer group/lamp flex flex-col items-center z-35 cursor-grab active:cursor-grabbing"
           title={`Slide along desk • Click to toggle & select (${lampPowered ? "ON" : "OFF"})`}
         >
           <div className="absolute -top-6 opacity-0 group-hover/lamp:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
@@ -207,7 +209,7 @@ export function AccessoriesRenderer({
             onToggleLamp?.();
             onSelectItem ? onSelectItem("lighting", "light-screenbar") : onSelectCategory?.("lighting");
           }}
-          className="absolute -top-[195px] left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-20"
+          className="absolute -top-[195px] left-1/2 -translate-x-1/2 pointer-events-auto cursor-pointer group flex flex-col items-center z-35"
           title={`Click to toggle ScreenBar & select (${lampPowered ? "ON" : "OFF"})`}
         >
           {/* ScreenBar Clamped atop Monitor Bezel */}
@@ -242,7 +244,7 @@ export function AccessoriesRenderer({
             e.stopPropagation();
             onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-plant-monstera") : onSelectCategory?.("bali-lifestyle");
           }}
-          className="absolute bottom-0 right-4 flex flex-col items-center z-15 pointer-events-auto cursor-grab active:cursor-grabbing group/plant"
+          className="absolute bottom-0 right-4 flex flex-col items-center z-35 pointer-events-auto cursor-grab active:cursor-grabbing group/plant"
           title="Drag plant along desk • Click to customize"
         >
           <div className="absolute -top-6 opacity-0 group-hover/plant:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">
@@ -308,7 +310,7 @@ export function AccessoriesRenderer({
             e.stopPropagation();
             onSelectItem ? onSelectItem("bali-lifestyle", "lifestyle-coffee-nespresso") : onSelectCategory?.("bali-lifestyle");
           }}
-          className="absolute bottom-0 right-16 flex items-end gap-2 z-15 pointer-events-auto cursor-grab active:cursor-grabbing group/coffee"
+          className="absolute bottom-0 right-16 flex items-end gap-2 z-35 pointer-events-auto cursor-grab active:cursor-grabbing group/coffee"
           title="Drag coffee along desk • Click to customize"
         >
           <div className="absolute -top-6 opacity-0 group-hover/coffee:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[8px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap">

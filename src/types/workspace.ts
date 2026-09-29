@@ -34,10 +34,10 @@ export interface WorkspaceConfig {
   deskHeightCm: number; // 70 to 118 cm
   chairId: string;
   chairColor: ChairColor;
-  monitorId: string;
+  monitorId: string | null;
   monitorDisplayMode: "bali-gradient" | "sunset-surf" | "minimal-clock";
-  peripheralsId: string;
-  lightingId: string;
+  peripheralsId: string | null;
+  lightingId: string | null;
   lampPowered: boolean;
   laptopStand: boolean;
   plantId: string | null;

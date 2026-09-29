@@ -544,42 +544,44 @@ export function WorkspaceCanvas({
               }
             }}
           >
-            {/* Monitor Mounted Directly Atop Desk Surface (Rests on bottom-0 • Horizontally Draggable along desk • z-30) */}
-            <motion.div
-              key={`monitor-${layoutKey}`}
-              drag="x"
-              dragConstraints={{ left: -140, right: 140 }}
-              dragElastic={0.06}
-              dragMomentum={false}
-              onPointerDown={(e) => e.stopPropagation()}
-              className="absolute bottom-0 left-1/2 -translate-x-1/2 z-30 pointer-events-auto group/mon flex flex-col items-center cursor-grab active:cursor-grabbing"
-              style={{ transformStyle: "preserve-3d", transform: "translateZ(10px)", touchAction: "none" }}
-              whileDrag={{ scale: 1.03 }}
-              onClick={(e) => {
-                e.stopPropagation();
-                if (onSelectItem) {
-                  onSelectItem("monitors", config.monitorId);
-                } else {
-                  onSelectCategory?.("monitors");
-                }
-              }}
-              title="Display • Slide along desk or click to customize"
-            >
-              <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-40">
-                🖥️ Display • Slide or Click to Customize
-              </div>
-              <MonitorRenderer
-                monitorId={config.monitorId}
-                displayMode={config.monitorDisplayMode}
-                onToggleDisplayMode={handleToggleScreen}
-              />
-            </motion.div>
+            {/* Monitor Mounted Directly Atop Desk Surface (Rests on bottom-0 • Horizontally Draggable along desk • z-10 behind foreground accessories) */}
+            {config.monitorId && (
+              <motion.div
+                key={`monitor-${layoutKey}`}
+                drag="x"
+                dragConstraints={{ left: -140, right: 140 }}
+                dragElastic={0.06}
+                dragMomentum={false}
+                onPointerDown={(e) => e.stopPropagation()}
+                className="absolute bottom-0 left-1/2 -translate-x-1/2 z-10 pointer-events-auto group/mon flex flex-col items-center cursor-grab active:cursor-grabbing"
+                style={{ transformStyle: "preserve-3d", transform: "translateZ(5px)", touchAction: "none" }}
+                whileDrag={{ scale: 1.03 }}
+                onClick={(e) => {
+                  e.stopPropagation();
+                  if (onSelectItem) {
+                    onSelectItem("monitors", config.monitorId!);
+                  } else {
+                    onSelectCategory?.("monitors");
+                  }
+                }}
+                title="Display • Slide along desk or click to customize"
+              >
+                <div className="absolute -top-7 opacity-0 group-hover/mon:opacity-100 transition-opacity bg-neutral-900/90 text-white text-[9px] px-2 py-0.5 rounded-full border border-white/20 shadow-lg pointer-events-none whitespace-nowrap z-40">
+                  🖥️ Display • Slide or Click to Customize
+                </div>
+                <MonitorRenderer
+                  monitorId={config.monitorId}
+                  displayMode={config.monitorDisplayMode}
+                  onToggleDisplayMode={handleToggleScreen}
+                />
+              </motion.div>
+            )}
 
-            {/* Desktop Accessories (Lamp, Mat, Laptop, Coffee, Plant - All Resting on Desk Surface) */}
+            {/* Desktop Accessories (Lamp, Mat, Laptop, Coffee, Plant - Foreground atop desk surface • z-30) */}
             <div
               key={`accessories-${layoutKey}`}
-              className="absolute inset-x-0 bottom-0 pointer-events-auto"
-              style={{ transformStyle: "preserve-3d", transform: "translateZ(15px)" }}
+              className="absolute inset-x-0 bottom-0 pointer-events-none z-30"
+              style={{ transformStyle: "preserve-3d", transform: "translateZ(20px)" }}
             >
               <AccessoriesRenderer
                 peripheralsId={config.peripheralsId}

@@ -83,7 +83,7 @@ export function SetupSummaryBar({
               <span>•</span>
               <span className="truncate">{chair?.name.split(" ")[1] || "Chair"}</span>
               <span>•</span>
-              <span className="truncate">{monitor?.name.split(" ")[0]} Display</span>
+              <span className="truncate">{monitor ? `${monitor.name.split(" ")[0]} Display` : "No Display"}</span>
             </div>
             <div className="text-[9px] text-neutral-400 sm:hidden font-mono">
               ~{formatPrice(Math.round(totalWeeklyUSD * 4.33), Math.round(totalWeeklyIDR * 4.33))}/mo
