@@ -58,7 +58,7 @@ export function Header({
 
   return (
     <header className="w-full bg-neutral-950/80 backdrop-blur-xl border-b border-white/10 sticky top-0 z-40 transition-colors">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-4">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 h-16 flex-between gap-4">
         {/* Brand & Client Identity */}
         <div className="flex items-center gap-3">
           <Link
@@ -67,7 +67,7 @@ export function Header({
             title="monis.rent - Remote Work Made Efficient in Bali"
           >
             {/* Monis Brand Logo Mark */}
-            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex items-center justify-center shadow-[0_0_16px_rgba(16,185,129,0.35)] group-hover:scale-105 transition-transform">
+            <div className="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-500 to-teal-400 flex-center shadow-[0_0_16px_rgba(16,185,129,0.35)] group-hover:scale-105 transition-transform">
               <span className="font-mono font-black text-neutral-950 text-lg leading-none">
                 m
               </span>
@@ -115,7 +115,7 @@ export function Header({
                     }}
                     className="p-2.5 rounded-xl hover:bg-neutral-900 cursor-pointer flex flex-col items-start gap-1"
                   >
-                    <div className="w-full flex items-center justify-between">
+                    <div className="w-full flex-between">
                       <span className="text-xs font-semibold text-white">
                         {preset.name}
                       </span>

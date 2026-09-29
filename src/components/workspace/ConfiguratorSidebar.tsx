@@ -1,15 +1,22 @@
 "use client";
 
 import { useEffect } from "react";
-import { ProductItem, ProductCategory, WorkspaceConfig, Currency, DeskFinish, ChairColor } from "@/types/workspace";
+import {
+  ProductItem,
+  ProductCategory,
+  WorkspaceConfig,
+  Currency,
+  DeskFinish,
+  ChairColor,
+} from "@/types/workspace";
 import { PRODUCTS } from "@/data/products";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@/components/ui/card";
-import { Badge } from "@/components/ui/badge";
-import { Button } from "@/components/ui/button";
 import { ScrollArea } from "@/components/ui/scroll-area";
-import { Check, Plus, SlidersHorizontal, Lightbulb } from "lucide-react";
+import { Button } from "@/components/ui/button";
+import { Lightbulb, SlidersHorizontal } from "lucide-react";
 import { sound } from "@/lib/audio";
+import { ProductCard } from "@/components/workspace/ProductCard";
+import { FinishPicker } from "@/components/workspace/FinishPicker";
 
 interface ConfiguratorSidebarProps {
   config: WorkspaceConfig;
@@ -19,6 +26,15 @@ interface ConfiguratorSidebarProps {
   onCategoryChange?: (category: ProductCategory) => void;
   selectedItemId?: string | null;
 }
+
+const CATEGORY_TABS: { id: ProductCategory; label: string }[] = [
+  { id: "desks", label: "Desks" },
+  { id: "chairs", label: "Chairs" },
+  { id: "monitors", label: "Monitors" },
+  { id: "peripherals", label: "Keyboards" },
+  { id: "lighting", label: "Lighting" },
+  { id: "bali-lifestyle", label: "Villa Extras" },
+];
 
 export function ConfiguratorSidebar({
   config,
@@ -42,18 +58,10 @@ export function ConfiguratorSidebar({
 
   const handleTabChange = (val: string) => {
     sound.playClick();
-    const newCategory = val as ProductCategory;
-    onCategoryChange?.(newCategory);
+    onCategoryChange?.(val as ProductCategory);
   };
 
-  const formatPrice = (usd: number, idr: number) => {
-    if (currency === "IDR") {
-      return `Rp ${(idr / 1000).toLocaleString()}k`;
-    }
-    return `$${usd}`;
-  };
-
-  // Helper to select a desk
+  // Selection handlers
   const handleSelectDesk = (product: ProductItem) => {
     sound.playSelect();
     onChangeConfig((prev) => ({
@@ -63,16 +71,11 @@ export function ConfiguratorSidebar({
     }));
   };
 
-  // Helper to change desk finish
   const handleChangeDeskFinish = (finishId: DeskFinish) => {
     sound.playClick();
-    onChangeConfig((prev) => ({
-      ...prev,
-      deskFinish: finishId,
-    }));
+    onChangeConfig((prev) => ({ ...prev, deskFinish: finishId }));
   };
 
-  // Helper to select a chair
   const handleSelectChair = (product: ProductItem) => {
     sound.playSelect();
     onChangeConfig((prev) => ({
@@ -82,16 +85,11 @@ export function ConfiguratorSidebar({
     }));
   };
 
-  // Helper to change chair color
   const handleChangeChairColor = (colorId: ChairColor) => {
     sound.playClick();
-    onChangeConfig((prev) => ({
-      ...prev,
-      chairColor: colorId,
-    }));
+    onChangeConfig((prev) => ({ ...prev, chairColor: colorId }));
   };
 
-  // Helper to select monitor (toggles if already selected)
   const handleSelectMonitor = (product: ProductItem) => {
     sound.playSelect();
     onChangeConfig((prev) => ({
@@ -100,7 +98,6 @@ export function ConfiguratorSidebar({
     }));
   };
 
-  // Helper to select peripherals (toggles if already selected)
   const handleSelectPeripherals = (product: ProductItem) => {
     sound.playSelect();
     onChangeConfig((prev) => ({
@@ -109,7 +106,6 @@ export function ConfiguratorSidebar({
     }));
   };
 
-  // Helper to select lighting (toggles if already selected)
   const handleSelectLighting = (product: ProductItem) => {
     sound.playSelect();
     onChangeConfig((prev) => {
@@ -117,690 +113,224 @@ export function ConfiguratorSidebar({
       return {
         ...prev,
         lightingId: isSelected ? null : product.id,
-        lampPowered: isSelected ? false : true,
+        lampPowered: !isSelected,
       };
     });
   };
 
-  // Lifestyle toggle helpers
   const handleToggleLifestyle = (productId: string) => {
     sound.playSelect();
     if (productId === "lifestyle-plant-monstera") {
-      onChangeConfig((prev) => ({
-        ...prev,
-        plantId: prev.plantId ? null : "lifestyle-plant-monstera",
-      }));
+      onChangeConfig((prev) => ({ ...prev, plantId: prev.plantId ? null : productId }));
     } else if (productId === "lifestyle-coffee-nespresso") {
-      onChangeConfig((prev) => ({
-        ...prev,
-        coffeeId: prev.coffeeId ? null : "lifestyle-coffee-nespresso",
-      }));
-    } else if (productId === "lifestyle-outdoor-surfboard") {
-      onChangeConfig((prev) => ({
-        ...prev,
-        outdoorId: prev.outdoorId === "lifestyle-outdoor-surfboard" ? null : "lifestyle-outdoor-surfboard",
-      }));
-    } else if (productId === "lifestyle-outdoor-scooter") {
-      onChangeConfig((prev) => ({
-        ...prev,
-        outdoorId: prev.outdoorId === "lifestyle-outdoor-scooter" ? null : "lifestyle-outdoor-scooter",
-      }));
+      onChangeConfig((prev) => ({ ...prev, coffeeId: prev.coffeeId ? null : productId }));
+    } else if (productId === "lifestyle-outdoor-surfboard" || productId === "lifestyle-outdoor-scooter") {
+      onChangeConfig((prev) => ({ ...prev, outdoorId: prev.outdoorId === productId ? null : productId }));
     } else if (productId === "lifestyle-relax-beanbag") {
-      onChangeConfig((prev) => ({
-        ...prev,
-        relaxId: prev.relaxId ? null : "lifestyle-relax-beanbag",
-      }));
+      onChangeConfig((prev) => ({ ...prev, relaxId: prev.relaxId ? null : productId }));
     } else if (productId === "lifestyle-laptop-stand") {
-      onChangeConfig((prev) => ({
-        ...prev,
-        laptopStand: !prev.laptopStand,
-      }));
+      onChangeConfig((prev) => ({ ...prev, laptopStand: !prev.laptopStand }));
     }
   };
 
   const isLifestyleActive = (productId: string) => {
-    if (productId === "lifestyle-plant-monstera") return config.plantId !== null;
-    if (productId === "lifestyle-coffee-nespresso") return config.coffeeId !== null;
+    if (productId === "lifestyle-plant-monstera") return Boolean(config.plantId);
+    if (productId === "lifestyle-coffee-nespresso") return Boolean(config.coffeeId);
     if (productId === "lifestyle-outdoor-surfboard") return config.outdoorId === "lifestyle-outdoor-surfboard";
     if (productId === "lifestyle-outdoor-scooter") return config.outdoorId === "lifestyle-outdoor-scooter";
-    if (productId === "lifestyle-relax-beanbag") return config.relaxId !== null;
-    if (productId === "lifestyle-laptop-stand") return config.laptopStand;
+    if (productId === "lifestyle-relax-beanbag") return Boolean(config.relaxId);
+    if (productId === "lifestyle-laptop-stand") return Boolean(config.laptopStand);
     return false;
   };
 
   return (
-    <div className="w-full h-full flex flex-col bg-neutral-900/70 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
-      {/* Category Tabs Header */}
+    <div className="flex flex-col h-full bg-neutral-900/60 backdrop-blur-xl border border-white/10 rounded-2xl overflow-hidden shadow-2xl">
+      {/* Top Header */}
+      <div className="p-3 sm:p-4 border-b border-white/10 flex-between shrink-0 bg-neutral-950/40">
+        <div className="flex items-center gap-2">
+          <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
+          <h2 className="text-sm font-semibold text-white tracking-tight">Customize Equipment</h2>
+        </div>
+        <span className="text-[11px] text-emerald-400 font-mono flex items-center gap-1">
+          Next-day Bali delivery
+        </span>
+      </div>
+
+      {/* Tab Navigation */}
       <Tabs
         value={activeCategory}
         onValueChange={handleTabChange}
-        className="w-full h-full flex flex-col min-h-0"
+        className="flex-1 flex flex-col min-h-0"
       >
-        <div className="p-3 sm:p-4 border-b border-white/10 bg-neutral-950/50">
-          <div className="flex items-center justify-between mb-2.5">
-            <div className="flex items-center gap-2">
-              <SlidersHorizontal className="w-4 h-4 text-emerald-400" />
-              <h2 className="text-sm font-semibold tracking-wide text-white">
-                Customize Equipment
-              </h2>
-            </div>
-            <span className="text-[11px] text-emerald-400 font-mono hidden sm:inline">
-              Next-day Bali delivery
-            </span>
-          </div>
-
-          {/* Horizontally Scrollable Touch-Friendly Tab Bar using shadcn ScrollArea */}
-          <ScrollArea orientation="horizontal" className="w-full pb-1">
-            <TabsList className="inline-flex w-max min-w-full items-center p-1 bg-neutral-950/90 border border-white/10 rounded-xl gap-1 h-auto">
-              <TabsTrigger
-                value="desks"
-                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
-              >
-                Desks
-              </TabsTrigger>
-              <TabsTrigger
-                value="chairs"
-                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
-              >
-                Chairs
-              </TabsTrigger>
-              <TabsTrigger
-                value="monitors"
-                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
-              >
-                Monitors
-              </TabsTrigger>
-              <TabsTrigger
-                value="peripherals"
-                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
-              >
-                Keyboards
-              </TabsTrigger>
-              <TabsTrigger
-                value="lighting"
-                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
-              >
-                Lighting
-              </TabsTrigger>
-              <TabsTrigger
-                value="bali-lifestyle"
-                className="px-3 py-1.5 text-xs rounded-lg font-medium whitespace-nowrap transition-all text-neutral-400 hover:text-white data-[state=active]:bg-emerald-500 data-[state=active]:text-neutral-950 data-[state=active]:font-bold data-[state=active]:shadow-sm"
-              >
-                Bali Extras
-              </TabsTrigger>
+        <div className="p-2.5 pb-1 border-b border-white/5 bg-neutral-950/20 shrink-0">
+          <ScrollArea className="w-full pb-1">
+            <TabsList className="flex items-center gap-1 bg-neutral-950/80 p-1 rounded-xl border border-white/10 w-max min-w-full">
+              {CATEGORY_TABS.map((tab) => (
+                <TabsTrigger
+                  key={tab.id}
+                  value={tab.id}
+                  className="text-xs px-3 py-1.5 rounded-lg data-[state=active]:bg-neutral-800 data-[state=active]:text-emerald-400 data-[state=active]:shadow-sm transition-all"
+                >
+                  {tab.label}
+                </TabsTrigger>
+              ))}
             </TabsList>
           </ScrollArea>
 
-          {/* Dot Indicators — tap any dot to jump to that tab */}
-          {(() => {
-            const tabs: ProductCategory[] = ["desks", "chairs", "monitors", "peripherals", "lighting", "bali-lifestyle"];
-            const labels = ["Desk", "Chair", "Monitor", "Keys", "Lamp", "Bali"];
-            return (
-              <div className="flex items-center justify-center gap-2 pt-1.5">
-                {tabs.map((tab, i) => (
-                  <button
-                    key={tab}
-                    onClick={() => handleTabChange(tab)}
-                    title={labels[i]}
-                    className="flex flex-col items-center gap-0.5 group"
-                  >
-                    <span
-                      className={`block rounded-full transition-all duration-200 ${
-                        activeCategory === tab
-                          ? "w-5 h-1.5 bg-emerald-400"
-                          : "w-1.5 h-1.5 bg-neutral-600 group-hover:bg-neutral-400"
-                      }`}
-                    />
-                  </button>
-                ))}
-              </div>
-            );
-          })()}
-</div>
+          {/* Dots Indicator */}
+          <div className="flex-center gap-1.5 py-1">
+            {CATEGORY_TABS.map((tab) => (
+              <button
+                key={tab.id}
+                type="button"
+                onClick={() => handleTabChange(tab.id)}
+                className="p-1 focus:outline-none"
+                aria-label={`Jump to ${tab.label}`}
+              >
+                <div
+                  className={`rounded-full transition-all duration-300 ${
+                    activeCategory === tab.id ? "w-5 h-1.5 bg-emerald-400" : "w-1.5 h-1.5 bg-neutral-600 hover:bg-neutral-400"
+                  }`}
+                />
+              </button>
+            ))}
+          </div>
+        </div>
 
-        {/* Scrollable Products List Container using Shadcn ScrollArea */}
+        {/* Scrollable Products List Container */}
         <ScrollArea className="flex-1 min-h-0 w-full">
           <div className="p-3 sm:p-4 space-y-3.5 pr-3">
-          {/* --- TAB: DESKS --- */}
-          <TabsContent value="desks" className="space-y-3 m-0 focus-visible:outline-none">
-            <div className="text-xs text-neutral-400">
-              Select your sit-stand workstation foundation. All motorized desks include anti-collision sensors.
-            </div>
-
-            {PRODUCTS.filter((p) => p.category === "desks").map((desk) => {
-              const isSelected = config.deskId === desk.id;
-              const isFocused = selectedItemId === desk.id;
-
-              return (
-                <Card
-                  key={desk.id}
-                  id={`product-card-${desk.id}`}
-                  className={`transition-all duration-300 border cursor-pointer ${
-                    isFocused
-                      ? "bg-neutral-950/90 border-emerald-400 ring-2 ring-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)] scale-[1.01]"
-                      : isSelected
-                      ? "bg-neutral-950/80 border-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
-                      : "bg-neutral-950/40 border-white/10 hover:border-white/20 hover:bg-neutral-950/60"
-                  }`}
-                  onClick={() => handleSelectDesk(desk)}
-                >
-                  <CardHeader className="p-3.5 pb-2">
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
-                            {desk.brand}
-                          </span>
-                          {desk.tag && (
-                            <Badge
-                              variant="secondary"
-                              className="text-[10px] px-1.5 py-0 h-4 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
-                            >
-                              {desk.tag}
-                            </Badge>
-                          )}
-                          {isFocused && (
-                            <Badge className="text-[9px] px-1.5 py-0 h-4 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
-                              Active in 3D
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-sm font-semibold text-white mt-1">
-                          {desk.name}
-                        </CardTitle>
-                      </div>
-
-                      <div className="text-right shrink-0">
-                        <div className="text-sm font-bold text-white font-mono">
-                          {formatPrice(desk.weeklyPriceUSD, desk.weeklyPriceIDR)}
-                          <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
-                        </div>
-                      </div>
-                    </div>
-                    <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
-                      {desk.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="p-3.5 pt-1 space-y-3">
-                    <div className="flex flex-wrap gap-1.5">
-                      {desk.specs.map((spec, i) => (
-                        <span
-                          key={i}
-                          className="text-[10px] bg-neutral-900 text-neutral-300 px-2 py-0.5 rounded-md border border-white/5"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Finish Selector (if selected or focused from 3D) */}
+            {/* DESKS */}
+            <TabsContent value="desks" className="space-y-3 m-0 focus-visible:outline-none">
+              <div className="text-xs text-neutral-400">
+                Select your sit-stand workstation foundation. All motorized desks include anti-collision sensors.
+              </div>
+              {PRODUCTS.filter((p) => p.category === "desks").map((desk) => {
+                const isSelected = config.deskId === desk.id;
+                const isFocused = selectedItemId === desk.id;
+                return (
+                  <ProductCard
+                    key={desk.id}
+                    item={desk}
+                    isSelected={isSelected}
+                    isFocused={isFocused}
+                    currency={currency}
+                    onSelect={() => handleSelectDesk(desk)}
+                    selectedLabel="Selected on Desk"
+                    unselectedLabel={`Select ${desk.name.split(" ")[0]}`}
+                  >
                     {(isSelected || isFocused) && desk.availableFinishes && (
-                      <div className="pt-2 border-t border-white/10 flex items-center justify-between">
-                        <span className="text-xs text-neutral-400">Finish:</span>
-                        <div className="flex items-center gap-2.5">
-                          {desk.availableFinishes.map((f) => (
-                            <button
-                              key={f.id}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleChangeDeskFinish(f.id as DeskFinish);
-                              }}
-                              className={`w-7 h-7 rounded-full border-2 transition-all flex items-center justify-center ${
-                                config.deskFinish === f.id
-                                  ? "border-emerald-400 scale-110 shadow-md ring-2 ring-emerald-500/30"
-                                  : "border-transparent opacity-75 hover:opacity-100"
-                              }`}
-                              style={{ backgroundColor: f.hex }}
-                              title={f.name}
-                            >
-                              {config.deskFinish === f.id && (
-                                <Check className="w-3.5 h-3.5 text-neutral-950 stroke-[3]" />
-                              )}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                      <FinishPicker
+                        label="Finish:"
+                        options={desk.availableFinishes}
+                        selectedId={config.deskFinish}
+                        onChange={(fId) => handleChangeDeskFinish(fId as DeskFinish)}
+                      />
                     )}
+                  </ProductCard>
+                );
+              })}
+            </TabsContent>
 
-                    <Button
-                      size="sm"
-                      variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-9 ${
-                        isSelected
-                          ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
-                          : "border-white/15 text-white hover:bg-white/10"
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSelectDesk(desk);
-                      }}
-                    >
-                      {isSelected ? (
-                        <span className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Selected on Desk
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1.5">
-                          <Plus className="w-3.5 h-3.5" /> Select This Desk
-                        </span>
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </TabsContent>
-
-          {/* --- TAB: CHAIRS --- */}
-          <TabsContent value="chairs" className="space-y-3 m-0 focus-visible:outline-none">
-            <div className="text-xs text-neutral-400">
-              Ergonomic posture support designed to stay cool in tropical Bali climates.
-            </div>
-
-            {PRODUCTS.filter((p) => p.category === "chairs").map((chair) => {
-              const isSelected = config.chairId === chair.id;
-              const isFocused = selectedItemId === chair.id;
-
-              return (
-                <Card
-                  key={chair.id}
-                  id={`product-card-${chair.id}`}
-                  className={`transition-all duration-300 border cursor-pointer ${
-                    isFocused
-                      ? "bg-neutral-950/90 border-emerald-400 ring-2 ring-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)] scale-[1.01]"
-                      : isSelected
-                      ? "bg-neutral-950/80 border-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
-                      : "bg-neutral-950/40 border-white/10 hover:border-white/20 hover:bg-neutral-950/60"
-                  }`}
-                  onClick={() => handleSelectChair(chair)}
-                >
-                  <CardHeader className="p-3.5 pb-2">
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
-                            {chair.brand}
-                          </span>
-                          {chair.tag && (
-                            <Badge
-                              variant="secondary"
-                              className="text-[10px] px-1.5 py-0 h-4 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
-                            >
-                              {chair.tag}
-                            </Badge>
-                          )}
-                          {isFocused && (
-                            <Badge className="text-[9px] px-1.5 py-0 h-4 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
-                              Active in 3D
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-sm font-semibold text-white mt-1">
-                          {chair.name}
-                        </CardTitle>
-                      </div>
-
-                      <div className="text-right shrink-0">
-                        <div className="text-sm font-bold text-white font-mono">
-                          {formatPrice(chair.weeklyPriceUSD, chair.weeklyPriceIDR)}
-                          <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
-                        </div>
-                      </div>
-                    </div>
-                    <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
-                      {chair.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="p-3.5 pt-1 space-y-3">
-                    <div className="flex flex-wrap gap-1.5">
-                      {chair.specs.map((spec, i) => (
-                        <span
-                          key={i}
-                          className="text-[10px] bg-neutral-900 text-neutral-300 px-2 py-0.5 rounded-md border border-white/5"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Color Swatches (if selected or focused from 3D) */}
+            {/* CHAIRS */}
+            <TabsContent value="chairs" className="space-y-3 m-0 focus-visible:outline-none">
+              <div className="text-xs text-neutral-400">
+                Ergonomic seating engineered for long engineering and creative sessions in humid Bali climates.
+              </div>
+              {PRODUCTS.filter((p) => p.category === "chairs").map((chair) => {
+                const isSelected = config.chairId === chair.id;
+                const isFocused = selectedItemId === chair.id;
+                return (
+                  <ProductCard
+                    key={chair.id}
+                    item={chair}
+                    isSelected={isSelected}
+                    isFocused={isFocused}
+                    currency={currency}
+                    onSelect={() => handleSelectChair(chair)}
+                    selectedLabel="Selected Ergonomic Chair"
+                    unselectedLabel="Select This Chair"
+                  >
                     {(isSelected || isFocused) && chair.availableFinishes && (
-                      <div className="pt-2 border-t border-white/10 flex items-center justify-between">
-                        <span className="text-xs text-neutral-400">Color:</span>
-                        <div className="flex items-center gap-2.5">
-                          {chair.availableFinishes.map((c) => (
-                            <button
-                              key={c.id}
-                              onClick={(e) => {
-                                e.stopPropagation();
-                                handleChangeChairColor(c.id as ChairColor);
-                              }}
-                              className={`w-7 h-7 rounded-full border-2 transition-all flex items-center justify-center ${
-                                config.chairColor === c.id
-                                  ? "border-emerald-400 scale-110 shadow-md ring-2 ring-emerald-500/30"
-                                  : "border-transparent opacity-75 hover:opacity-100"
-                              }`}
-                              style={{ backgroundColor: c.hex }}
-                              title={c.name}
-                            >
-                              {config.chairColor === c.id && (
-                                <Check className="w-3.5 h-3.5 text-white stroke-[3]" />
-                              )}
-                            </button>
-                          ))}
-                        </div>
-                      </div>
+                      <FinishPicker
+                        label="Color:"
+                        options={chair.availableFinishes}
+                        selectedId={config.chairColor}
+                        onChange={(cId) => handleChangeChairColor(cId as ChairColor)}
+                      />
                     )}
+                  </ProductCard>
+                );
+              })}
+            </TabsContent>
 
-                    <Button
-                      size="sm"
-                      variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-9 ${
-                        isSelected
-                          ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
-                          : "border-white/15 text-white hover:bg-white/10"
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSelectChair(chair);
-                      }}
-                    >
-                      {isSelected ? (
-                        <span className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Selected Chair
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1.5">
-                          <Plus className="w-3.5 h-3.5" /> Select This Chair
-                        </span>
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </TabsContent>
+            {/* MONITORS */}
+            <TabsContent value="monitors" className="space-y-3 m-0 focus-visible:outline-none">
+              <div className="text-xs text-neutral-400">
+                High-refresh rate, USB-C 90W single-cable power delivery displays. Includes heavy-duty gas spring arm.
+              </div>
+              {PRODUCTS.filter((p) => p.category === "monitors").map((monitor) => {
+                const isSelected = config.monitorId === monitor.id;
+                const isFocused = selectedItemId === monitor.id;
+                return (
+                  <ProductCard
+                    key={monitor.id}
+                    item={monitor}
+                    isSelected={isSelected}
+                    isFocused={isFocused}
+                    currency={currency}
+                    onSelect={() => handleSelectMonitor(monitor)}
+                    selectedLabel="Mounted on Desk Arm"
+                    unselectedLabel="Mount Display"
+                  />
+                );
+              })}
+            </TabsContent>
 
-          {/* --- TAB: MONITORS --- */}
-          <TabsContent value="monitors" className="space-y-3 m-0 focus-visible:outline-none">
-            <div className="text-xs text-neutral-400">
-              High refresh rate, 4K USB-C, or 5K Apple displays. Includes HDMI & USB-C cables.
-            </div>
+            {/* KEYBOARDS & PERIPHERALS */}
+            <TabsContent value="peripherals" className="space-y-3 m-0 focus-visible:outline-none">
+              <div className="text-xs text-neutral-400">
+                Tactile typing experience & ergonomic mice to keep your wrists pain-free during all-day coding.
+              </div>
+              {PRODUCTS.filter((p) => p.category === "peripherals").map((item) => {
+                const isSelected = config.peripheralsId === item.id;
+                const isFocused = selectedItemId === item.id;
+                return (
+                  <ProductCard
+                    key={item.id}
+                    item={item}
+                    isSelected={isSelected}
+                    isFocused={isFocused}
+                    currency={currency}
+                    onSelect={() => handleSelectPeripherals(item)}
+                    selectedLabel="Equipped on Desk Mat"
+                    unselectedLabel="Equip Peripheral"
+                  />
+                );
+              })}
+            </TabsContent>
 
-            {PRODUCTS.filter((p) => p.category === "monitors").map((monitor) => {
-              const isSelected = config.monitorId === monitor.id;
-              const isFocused = selectedItemId === monitor.id;
-
-              return (
-                <Card
-                  key={monitor.id}
-                  id={`product-card-${monitor.id}`}
-                  className={`transition-all duration-300 border cursor-pointer ${
-                    isFocused
-                      ? "bg-neutral-950/90 border-emerald-400 ring-2 ring-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)] scale-[1.01]"
-                      : isSelected
-                      ? "bg-neutral-950/80 border-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
-                      : "bg-neutral-950/40 border-white/10 hover:border-white/20 hover:bg-neutral-950/60"
-                  }`}
-                  onClick={() => handleSelectMonitor(monitor)}
-                >
-                  <CardHeader className="p-3.5 pb-2">
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
-                            {monitor.brand}
-                          </span>
-                          {monitor.tag && (
-                            <Badge
-                              variant="secondary"
-                              className="text-[10px] px-1.5 py-0 h-4 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
-                            >
-                              {monitor.tag}
-                            </Badge>
-                          )}
-                          {isFocused && (
-                            <Badge className="text-[9px] px-1.5 py-0 h-4 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
-                              Active in 3D
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-sm font-semibold text-white mt-1">
-                          {monitor.name}
-                        </CardTitle>
-                      </div>
-
-                      <div className="text-right shrink-0">
-                        <div className="text-sm font-bold text-white font-mono">
-                          {formatPrice(monitor.weeklyPriceUSD, monitor.weeklyPriceIDR)}
-                          <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
-                        </div>
-                      </div>
-                    </div>
-                    <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
-                      {monitor.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="p-3.5 pt-1 space-y-3">
-                    <div className="flex flex-wrap gap-1.5">
-                      {monitor.specs.map((spec, i) => (
-                        <span
-                          key={i}
-                          className="text-[10px] bg-neutral-900 text-neutral-300 px-2 py-0.5 rounded-md border border-white/5"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-
-                    <Button
-                      size="sm"
-                      variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-9 ${
-                        isSelected
-                          ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
-                          : "border-white/15 text-white hover:bg-white/10"
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSelectMonitor(monitor);
-                      }}
-                    >
-                      {isSelected ? (
-                        <span className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Mounted on Desk (Click to Remove)
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1.5">
-                          <Plus className="w-3.5 h-3.5" /> Mount This Display
-                        </span>
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </TabsContent>
-
-          {/* --- TAB: PERIPHERALS --- */}
-          <TabsContent value="peripherals" className="space-y-3 m-0 focus-visible:outline-none">
-            <div className="text-xs text-neutral-400">
-              Wireless ergonomic keyboards, precision mice, and oversized felt desk pads.
-            </div>
-
-            {PRODUCTS.filter((p) => p.category === "peripherals").map((item) => {
-              const isSelected = config.peripheralsId === item.id;
-              const isFocused = selectedItemId === item.id;
-
-              return (
-                <Card
-                  key={item.id}
-                  id={`product-card-${item.id}`}
-                  className={`transition-all duration-300 border cursor-pointer ${
-                    isFocused
-                      ? "bg-neutral-950/90 border-emerald-400 ring-2 ring-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)] scale-[1.01]"
-                      : isSelected
-                      ? "bg-neutral-950/80 border-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
-                      : "bg-neutral-950/40 border-white/10 hover:border-white/20 hover:bg-neutral-950/60"
-                  }`}
-                  onClick={() => handleSelectPeripherals(item)}
-                >
-                  <CardHeader className="p-3.5 pb-2">
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
-                            {item.brand}
-                          </span>
-                          {item.tag && (
-                            <Badge
-                              variant="secondary"
-                              className="text-[10px] px-1.5 py-0 h-4 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
-                            >
-                              {item.tag}
-                            </Badge>
-                          )}
-                          {isFocused && (
-                            <Badge className="text-[9px] px-1.5 py-0 h-4 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
-                              Active in 3D
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-sm font-semibold text-white mt-1">
-                          {item.name}
-                        </CardTitle>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <div className="text-sm font-bold text-white font-mono">
-                          {formatPrice(item.weeklyPriceUSD, item.weeklyPriceIDR)}
-                          <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
-                        </div>
-                      </div>
-                    </div>
-                    <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
-                      {item.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="p-3.5 pt-1 space-y-3">
-                    <div className="flex flex-wrap gap-1.5">
-                      {item.specs.map((spec, i) => (
-                        <span
-                          key={i}
-                          className="text-[10px] bg-neutral-900 text-neutral-300 px-2 py-0.5 rounded-md border border-white/5"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-
-                    <Button
-                      size="sm"
-                      variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-9 ${
-                        isSelected
-                          ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
-                          : "border-white/15 text-white hover:bg-white/10"
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSelectPeripherals(item);
-                      }}
-                    >
-                      {isSelected ? (
-                        <span className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Equipped on Setup (Click to Remove)
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1.5">
-                          <Plus className="w-3.5 h-3.5" /> Equip Combo
-                        </span>
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </TabsContent>
-
-          {/* --- TAB: LIGHTING --- */}
-          <TabsContent value="lighting" className="space-y-3 m-0 focus-visible:outline-none">
-            <div className="text-xs text-neutral-400">
-              Smart flicker-free illumination with ambient dimming and zero screen reflection.
-            </div>
-
-            {PRODUCTS.filter((p) => p.category === "lighting").map((light) => {
-              const isSelected = config.lightingId === light.id;
-              const isFocused = selectedItemId === light.id;
-
-              return (
-                <Card
-                  key={light.id}
-                  id={`product-card-${light.id}`}
-                  className={`transition-all duration-300 border cursor-pointer ${
-                    isFocused
-                      ? "bg-neutral-950/90 border-emerald-400 ring-2 ring-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)] scale-[1.01]"
-                      : isSelected
-                      ? "bg-neutral-950/80 border-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
-                      : "bg-neutral-950/40 border-white/10 hover:border-white/20 hover:bg-neutral-950/60"
-                  }`}
-                  onClick={() => handleSelectLighting(light)}
-                >
-                  <CardHeader className="p-3.5 pb-2">
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
-                            {light.brand}
-                          </span>
-                          {light.tag && (
-                            <Badge
-                              variant="secondary"
-                              className="text-[10px] px-1.5 py-0 h-4 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
-                            >
-                              {light.tag}
-                            </Badge>
-                          )}
-                          {isFocused && (
-                            <Badge className="text-[9px] px-1.5 py-0 h-4 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
-                              Active in 3D
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-sm font-semibold text-white mt-1">
-                          {light.name}
-                        </CardTitle>
-                      </div>
-                      <div className="text-right shrink-0">
-                        <div className="text-sm font-bold text-white font-mono">
-                          {formatPrice(light.weeklyPriceUSD, light.weeklyPriceIDR)}
-                          <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
-                        </div>
-                      </div>
-                    </div>
-                    <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
-                      {light.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="p-3.5 pt-1 space-y-3">
-                    <div className="flex flex-wrap gap-1.5">
-                      {light.specs.map((spec, i) => (
-                        <span
-                          key={i}
-                          className="text-[10px] bg-neutral-900 text-neutral-300 px-2 py-0.5 rounded-md border border-white/5"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-
-                    {/* Interactive Lamp Power Toggle Switch */}
+            {/* LIGHTING */}
+            <TabsContent value="lighting" className="space-y-3 m-0 focus-visible:outline-none">
+              <div className="text-xs text-neutral-400">
+                Asymmetric optical screenbars and ambient lamps to reduce eye strain during tropical evening coding.
+              </div>
+              {PRODUCTS.filter((p) => p.category === "lighting").map((light) => {
+                const isSelected = config.lightingId === light.id;
+                const isFocused = selectedItemId === light.id;
+                return (
+                  <ProductCard
+                    key={light.id}
+                    item={light}
+                    isSelected={isSelected}
+                    isFocused={isFocused}
+                    currency={currency}
+                    onSelect={() => handleSelectLighting(light)}
+                    selectedLabel="Equipped on Desk (Click to Remove)"
+                    unselectedLabel="Equip Lighting"
+                  >
                     {isSelected && (
-                      <div className="pt-2 border-t border-white/10 flex items-center justify-between">
+                      <div className="pt-2 border-t border-white/10 flex-between">
                         <span className="text-xs text-neutral-300 flex items-center gap-1.5 font-medium">
                           <Lightbulb
                             className={`w-3.5 h-3.5 transition-colors ${
@@ -836,137 +366,34 @@ export function ConfiguratorSidebar({
                         </Button>
                       </div>
                     )}
+                  </ProductCard>
+                );
+              })}
+            </TabsContent>
 
-                    <Button
-                      size="sm"
-                      variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-9 ${
-                        isSelected
-                          ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
-                          : "border-white/15 text-white hover:bg-white/10"
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleSelectLighting(light);
-                      }}
-                    >
-                      {isSelected ? (
-                        <span className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Equipped on Desk (Click to Remove)
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1.5">
-                          <Plus className="w-3.5 h-3.5" /> Equip Lighting
-                        </span>
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </TabsContent>
-
-          {/* --- TAB: BALI LIFESTYLE & VILLA EXTRAS (Sketch Aligned) --- */}
-          <TabsContent value="bali-lifestyle" className="space-y-3 m-0 focus-visible:outline-none">
-            <div className="text-xs text-neutral-400">
-              The iconic Bali lifestyle extensions from the concept sketch: Surfboard, Scooter, Bean Bag, Coffee Station, and Monstera Plant.
-            </div>
-
-            {PRODUCTS.filter((p) => p.category === "bali-lifestyle").map((item) => {
-              const isSelected = isLifestyleActive(item.id);
-              const isFocused = selectedItemId === item.id;
-
-              return (
-                <Card
-                  key={item.id}
-                  id={`product-card-${item.id}`}
-                  className={`transition-all duration-300 border cursor-pointer ${
-                    isFocused
-                      ? "bg-neutral-950/90 border-emerald-400 ring-2 ring-emerald-400 shadow-[0_0_25px_rgba(16,185,129,0.35)] scale-[1.01]"
-                      : isSelected
-                      ? "bg-neutral-950/80 border-emerald-500/80 shadow-[0_0_20px_rgba(16,185,129,0.15)] ring-1 ring-emerald-500/40"
-                      : "bg-neutral-950/40 border-white/10 hover:border-white/20 hover:bg-neutral-950/60"
-                  }`}
-                  onClick={() => handleToggleLifestyle(item.id)}
-                >
-                  <CardHeader className="p-3.5 pb-2">
-                    <div className="flex justify-between items-start gap-2">
-                      <div>
-                        <div className="flex items-center gap-2">
-                          <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold">
-                            {item.brand}
-                          </span>
-                          {item.tag && (
-                            <Badge
-                              variant="secondary"
-                              className="text-[10px] px-1.5 py-0 h-4 bg-emerald-500/10 text-emerald-300 border border-emerald-500/20"
-                            >
-                              {item.tag}
-                            </Badge>
-                          )}
-                          {isFocused && (
-                            <Badge className="text-[9px] px-1.5 py-0 h-4 bg-emerald-500/20 text-emerald-300 border border-emerald-500/40 animate-pulse">
-                              Active in 3D
-                            </Badge>
-                          )}
-                        </div>
-                        <CardTitle className="text-sm font-semibold text-white mt-1">
-                          {item.name}
-                        </CardTitle>
-                      </div>
-
-                      <div className="text-right shrink-0">
-                        <div className="text-sm font-bold text-white font-mono">
-                          +{formatPrice(item.weeklyPriceUSD, item.weeklyPriceIDR)}
-                          <span className="text-[10px] text-neutral-400 font-normal">/wk</span>
-                        </div>
-                      </div>
-                    </div>
-                    <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
-                      {item.description}
-                    </CardDescription>
-                  </CardHeader>
-
-                  <CardContent className="p-3.5 pt-1 space-y-3">
-                    <div className="flex flex-wrap gap-1.5">
-                      {item.specs.map((spec, i) => (
-                        <span
-                          key={i}
-                          className="text-[10px] bg-neutral-900 text-neutral-300 px-2 py-0.5 rounded-md border border-white/5"
-                        >
-                          {spec}
-                        </span>
-                      ))}
-                    </div>
-
-                    <Button
-                      size="sm"
-                      variant={isSelected ? "default" : "outline"}
-                      className={`w-full text-xs h-9 ${
-                        isSelected
-                          ? "bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold"
-                          : "border-white/15 text-white hover:bg-white/10"
-                      }`}
-                      onClick={(e) => {
-                        e.stopPropagation();
-                        handleToggleLifestyle(item.id);
-                      }}
-                    >
-                      {isSelected ? (
-                        <span className="flex items-center gap-1.5">
-                          <Check className="w-3.5 h-3.5 stroke-[3]" /> Added to Setup (Click to Remove)
-                        </span>
-                      ) : (
-                        <span className="flex items-center gap-1.5">
-                          <Plus className="w-3.5 h-3.5" /> Add to Bali Setup
-                        </span>
-                      )}
-                    </Button>
-                  </CardContent>
-                </Card>
-              );
-            })}
-          </TabsContent>
+            {/* BALI LIFESTYLE & VILLA EXTRAS */}
+            <TabsContent value="bali-lifestyle" className="space-y-3 m-0 focus-visible:outline-none">
+              <div className="text-xs text-neutral-400">
+                The iconic Bali lifestyle extensions from the concept sketch: Surfboard, Scooter, Bean Bag, Coffee Station, and Monstera Plant.
+              </div>
+              {PRODUCTS.filter((p) => p.category === "bali-lifestyle").map((item) => {
+                const isSelected = isLifestyleActive(item.id);
+                const isFocused = selectedItemId === item.id;
+                return (
+                  <ProductCard
+                    key={item.id}
+                    item={item}
+                    isSelected={isSelected}
+                    isFocused={isFocused}
+                    currency={currency}
+                    pricePrefix="+"
+                    onSelect={() => handleToggleLifestyle(item.id)}
+                    selectedLabel="Added to Setup (Click to Remove)"
+                    unselectedLabel="Add to Bali Setup"
+                  />
+                );
+              })}
+            </TabsContent>
           </div>
         </ScrollArea>
       </Tabs>

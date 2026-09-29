@@ -5,7 +5,7 @@ import { useForm, Controller, useWatch } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import confetti from "canvas-confetti";
 import { WorkspaceConfig, Currency } from "@/types/workspace";
-import { PRODUCTS, BALI_DELIVERY_AREAS } from "@/data/products";
+import { BALI_DELIVERY_AREAS } from "@/data/products";
 import { checkoutFormSchema, CheckoutFormData } from "@/lib/validations/checkout";
 import { Slider } from "@/components/ui/slider";
 import { Badge } from "@/components/ui/badge";
@@ -28,20 +28,17 @@ import {
   ShoppingBag,
 } from "lucide-react";
 import { sound } from "@/lib/audio";
+import {
+  calculateWorkspaceTotals,
+  formatPrice,
+  generateBookingRef,
+  generateWhatsAppOrderUrl,
+} from "@/lib/pricing";
 
 interface CheckoutPanelProps {
   config: WorkspaceConfig;
   currency: Currency;
   onCancel: () => void;
-}
-
-function generateBookingRef(): string {
-  if (typeof crypto !== "undefined" && crypto.getRandomValues) {
-    const array = new Uint32Array(1);
-    crypto.getRandomValues(array);
-    return String(1000 + (array[0] % 9000));
-  }
-  return String(Date.now()).slice(-4);
 }
 
 export function CheckoutPanel({ config, currency, onCancel }: CheckoutPanelProps) {
@@ -72,31 +69,16 @@ export function CheckoutPanel({ config, currency, onCancel }: CheckoutPanelProps
   const durationWeeks = useWatch({ control, name: "durationWeeks" }) ?? 4;
   const selectedAreaId = useWatch({ control, name: "areaId" }) ?? "canggu";
 
-  const selectedDesk = PRODUCTS.find((p) => p.id === config.deskId);
-  const selectedChair = PRODUCTS.find((p) => p.id === config.chairId);
-  const selectedMonitor = PRODUCTS.find((p) => p.id === config.monitorId);
-  const selectedPeripherals = PRODUCTS.find((p) => p.id === config.peripheralsId);
-  const selectedLighting = PRODUCTS.find((p) => p.id === config.lightingId);
-  const selectedPlant = config.plantId ? PRODUCTS.find((p) => p.id === config.plantId) : null;
-  const selectedCoffee = config.coffeeId ? PRODUCTS.find((p) => p.id === config.coffeeId) : null;
-  const selectedOutdoor = config.outdoorId ? PRODUCTS.find((p) => p.id === config.outdoorId) : null;
-  const selectedRelax = config.relaxId ? PRODUCTS.find((p) => p.id === config.relaxId) : null;
-  const selectedLaptopStand = config.laptopStand ? PRODUCTS.find((p) => p.id === "lifestyle-laptop-stand") : null;
-
-  const allSelectedItems = [
-    selectedDesk, selectedChair, selectedMonitor, selectedPeripherals,
-    selectedLighting, selectedPlant, selectedCoffee, selectedOutdoor,
-    selectedRelax, selectedLaptopStand,
-  ].filter(Boolean);
-
-  const baseWeeklyUSD = allSelectedItems.reduce((acc, curr) => acc + (curr?.weeklyPriceUSD || 0), 0);
-  const baseWeeklyIDR = allSelectedItems.reduce((acc, curr) => acc + (curr?.weeklyPriceIDR || 0), 0);
-
-  let discountRate = 0;
-  let discountBadge = "Standard Weekly";
-  if (durationWeeks >= 12) { discountRate = 0.30; discountBadge = "30% Resident Discount"; }
-  else if (durationWeeks >= 8) { discountRate = 0.20; discountBadge = "20% Nomad Discount"; }
-  else if (durationWeeks >= 4) { discountRate = 0.10; discountBadge = "10% Monthly Discount"; }
+  // Centralized calculations
+  const {
+    items,
+    baseWeeklyUSD,
+    baseWeeklyIDR,
+    discountRate,
+    discountBadge,
+    discountedWeeklyUSD,
+    discountedWeeklyIDR,
+  } = calculateWorkspaceTotals(config, durationWeeks);
 
   const deliveryArea = BALI_DELIVERY_AREAS.find((a) => a.id === selectedAreaId) || BALI_DELIVERY_AREAS[0];
   const deliveryFeeUSD = deliveryArea.feeUSD;
@@ -105,42 +87,60 @@ export function CheckoutPanel({ config, currency, onCancel }: CheckoutPanelProps
   const subtotalUSD = baseWeeklyUSD * durationWeeks;
   const discountAmountUSD = Math.round(subtotalUSD * discountRate);
   const totalUSD = subtotalUSD - discountAmountUSD + deliveryFeeUSD;
+
   const subtotalIDR = baseWeeklyIDR * durationWeeks;
   const discountAmountIDR = Math.round(subtotalIDR * discountRate);
   const totalIDR = subtotalIDR - discountAmountIDR + deliveryFeeIDR;
 
-  const fmt = (usd: number, idr: number) =>
-    currency === "IDR" ? `Rp ${idr.toLocaleString()}` : `$${usd}`;
-
   const onValidSubmit = (data: CheckoutFormData) => {
     sound.playFanfare();
-    setBookingRef(generateBookingRef());
+    const ref = generateBookingRef();
+    setBookingRef(ref);
     setSubmittedData(data);
     setOrderConfirmed(true);
-    confetti({ particleCount: 90, spread: 75, origin: { y: 0.6 }, colors: ["#10b981", "#3b82f6", "#f59e0b", "#ec4899"] });
+    confetti({
+      particleCount: 90,
+      spread: 75,
+      origin: { y: 0.6 },
+      colors: ["#10b981", "#3b82f6", "#f59e0b", "#ec4899"],
+    });
   };
 
   const handleCopySummary = () => {
     sound.playClick();
+    const desk = items.find((p) => p.category === "desks");
+    const chair = items.find((p) => p.category === "chairs");
+    const monitor = items.find((p) => p.category === "monitors");
+
     const text = `🌴 My Monis Bali Workspace Setup:
 - Customer: ${submittedData?.fullName || "Bali Nomad"}
-- Desk: ${selectedDesk?.name} (${config.deskFinish})
-- Chair: ${selectedChair?.name} (${config.chairColor})
-- Monitor: ${selectedMonitor?.name}
+- Desk: ${desk?.name} (${config.deskFinish})
+- Chair: ${chair?.name} (${config.chairColor})
+- Monitor: ${monitor?.name || "None"}
 - Rental: ${durationWeeks} weeks in ${deliveryArea.name}
-- Total: ${fmt(totalUSD, totalIDR)} (${discountBadge})
+- Total: ${formatPrice(totalUSD, totalIDR, currency)} (${discountBadge})
 Designed on monis.rent`;
     navigator.clipboard.writeText(text);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2500);
   };
 
+  const whatsappUrl = generateWhatsAppOrderUrl({
+    bookingRef,
+    fullName: submittedData?.fullName || "Bali Nomad",
+    areaName: deliveryArea.name,
+    durationWeeks,
+    totalUSD,
+    totalIDR,
+    items,
+  });
+
   return (
     <div className="w-full h-full flex flex-col bg-neutral-900/70 backdrop-blur-xl border border-white/10 rounded-3xl overflow-hidden shadow-2xl">
       {/* Panel Header */}
-      <div className="flex items-center justify-between px-4 py-3 border-b border-white/10 bg-neutral-950/60 shrink-0">
+      <div className="flex-between px-4 py-3 border-b border-white/10 bg-neutral-950/60 shrink-0">
         <div className="flex items-center gap-2.5">
-          <div className="w-7 h-7 rounded-xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 flex items-center justify-center">
+          <div className="w-7 h-7 rounded-xl bg-emerald-500/15 border border-emerald-500/25 text-emerald-400 flex-center">
             <ShoppingBag className="w-3.5 h-3.5" />
           </div>
           <div>
@@ -158,94 +158,96 @@ Designed on monis.rent`;
           </Badge>
           {!orderConfirmed && (
             <button
-              onClick={onCancel}
-              className="flex items-center gap-1 text-[11px] text-neutral-400 hover:text-white transition-colors px-2 py-1 rounded-lg hover:bg-white/5"
+              onClick={() => {
+                sound.playClick();
+                onCancel();
+              }}
+              className="text-xs text-neutral-400 hover:text-white flex items-center gap-1 transition-colors px-2 py-1 rounded-lg hover:bg-white/5"
             >
               <ChevronLeft className="w-3.5 h-3.5" />
-              <span>Back</span>
+              <span>Designer</span>
             </button>
           )}
         </div>
       </div>
 
       {/* Scrollable Body */}
-      <div className="flex-1 min-h-0 overflow-y-auto custom-scrollbar">
+      <div className="flex-1 overflow-y-auto">
         {orderConfirmed ? (
-          /* ── Confirmed State ── */
-          <div className="p-4 space-y-4">
-            <div className="flex flex-col items-center text-center py-2 space-y-2">
-              <div className="w-14 h-14 rounded-full bg-emerald-500/10 border-2 border-emerald-400 text-emerald-400 flex items-center justify-center shadow-[0_0_30px_rgba(16,185,129,0.3)]">
-                <CheckCircle2 className="w-7 h-7 stroke-[2.5]" />
-              </div>
-              <div>
-                <p className="text-base font-bold text-white">Booking #MN-BALI-{bookingRef}</p>
-                <p className="text-xs text-neutral-400 mt-0.5">
-                  {submittedData?.fullName ? `Hi ${submittedData.fullName}! ` : ""}
-                  Reserved for <span className="text-emerald-400 font-bold">{durationWeeks} weeks</span> in {deliveryArea.name}.
-                </p>
-              </div>
+          /* Confirmation View */
+          <div className="p-5 space-y-5 text-center">
+            <div className="w-14 h-14 rounded-full bg-emerald-500/20 border border-emerald-500/40 text-emerald-400 flex-center mx-auto shadow-lg shadow-emerald-500/20 animate-bounce">
+              <CheckCircle2 className="w-7 h-7" />
             </div>
 
-            {/* Visual Hardware Confirmation Gallery */}
-            <div className="bg-neutral-900/80 rounded-2xl p-3 border border-white/10 space-y-2">
-              <div className="flex items-center justify-between">
-                <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold flex items-center gap-1.5">
-                  <Check className="w-3.5 h-3.5 text-emerald-400" />
-                  Reserved Villa Hardware ({allSelectedItems.length} items)
-                </span>
-                <span className="text-[10px] text-neutral-400 font-mono">Verified Stock</span>
-              </div>
-              <div className="grid grid-cols-4 gap-2 pt-1">
-                {allSelectedItems.map((item, i) => (
-                  <div
-                    key={i}
-                    className="flex flex-col items-center text-center p-1.5 rounded-xl bg-neutral-950/70 border border-white/5"
-                    title={item?.name}
-                  >
-                    <div className="w-10 h-10 flex items-center justify-center mb-1">
-                      {item?.image ? (
-                        <img src={item.image} alt={item.name} className="max-h-full max-w-full object-contain" />
-                      ) : (
-                        <span className="text-base">📦</span>
-                      )}
-                    </div>
-                    <span className="text-[8px] text-white font-medium truncate w-full">{item?.name}</span>
-                  </div>
-                ))}
-              </div>
-            </div>
-
-            <div className="bg-neutral-900/80 rounded-2xl p-3.5 border border-white/10 space-y-2.5">
-              <p className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1.5">
-                <Truck className="w-3.5 h-3.5" /> Next Steps
+            <div className="space-y-1">
+              <h3 className="text-lg font-bold text-white">Setup Reserved!</h3>
+              <p className="text-xs text-neutral-400">
+                Next-day delivery scheduled for your Bali villa.
               </p>
-              {[
-                `Our team will WhatsApp ${submittedData?.whatsapp || "you"} within 15 minutes.`,
-                `Equipment delivery & white-glove setup: ${deliveryArea.estimatedDelivery}.`,
-                "Pay on arrival — Cash, Wise, or Card. No deposit needed.",
-              ].map((step, i) => (
-                <div key={i} className="flex items-start gap-2 text-xs text-neutral-300">
-                  <div className="w-4 h-4 rounded-full bg-neutral-800 flex items-center justify-center text-[9px] text-white shrink-0 mt-0.5">{i + 1}</div>
-                  <span>{step}</span>
-                </div>
-              ))}
             </div>
 
-            <Button
-              className="w-full bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs h-10 gap-2 shadow-[0_0_20px_rgba(37,211,102,0.3)] transition-all"
-              onClick={() => {
-                sound.playClick();
-                const msg = `🌴 Halo Monis Bali! Booking #MN-BALI-${bookingRef}:\n• ${submittedData?.fullName} · ${submittedData?.whatsapp}\n• Villa: ${submittedData?.villaAddress} (${deliveryArea.name})\n• ${durationWeeks} weeks · ${fmt(totalUSD, totalIDR)} (${discountBadge})\n• Items: ${allSelectedItems.map((i) => i?.name).filter(Boolean).join(", ")}\nPlease confirm delivery: ${deliveryArea.estimatedDelivery}!`;
-                window.open(`https://wa.me/6281234567890?text=${encodeURIComponent(msg)}`, "_blank");
-              }}
-            >
-              <MessageCircle className="w-4 h-4 fill-white" /> Open WhatsApp to Confirm Delivery
-            </Button>
+            {/* Booking Card */}
+            <div className="p-4 rounded-2xl bg-neutral-950/80 border border-white/10 text-left space-y-3 font-mono text-xs">
+              <div className="flex-between pb-2 border-b border-white/10">
+                <span className="text-neutral-400 text-[10px] uppercase font-sans">Booking Ref</span>
+                <span className="text-emerald-400 font-bold">#MN-BALI-{bookingRef}</span>
+              </div>
+              <div className="flex-between">
+                <span className="text-neutral-400 text-[10px] font-sans">Guest</span>
+                <span className="text-white truncate max-w-[160px]">{submittedData?.fullName}</span>
+              </div>
+              <div className="flex-between">
+                <span className="text-neutral-400 text-[10px] font-sans">WhatsApp</span>
+                <span className="text-white">{submittedData?.whatsapp}</span>
+              </div>
+              <div className="flex-between">
+                <span className="text-neutral-400 text-[10px] font-sans">Villa Area</span>
+                <span className="text-white">{deliveryArea.name}</span>
+              </div>
+              <div className="flex-between">
+                <span className="text-neutral-400 text-[10px] font-sans">Duration</span>
+                <span className="text-white">{durationWeeks} wks ({discountBadge})</span>
+              </div>
+              <div className="flex-between pt-2 border-t border-white/10 font-bold">
+                <span className="text-white text-[10px] font-sans">Total Rental</span>
+                <span className="text-emerald-400 text-sm">
+                  {formatPrice(totalUSD, totalIDR, currency)}
+                </span>
+              </div>
+            </div>
 
+            {/* Delivery Timeline Pill */}
+            <div className="p-3 bg-neutral-950/60 border border-white/10 rounded-2xl space-y-2 text-left">
+              <p className="text-[10px] font-semibold text-neutral-400 uppercase tracking-wider">What happens next</p>
+              <div className="space-y-2 text-xs">
+                <div className="flex items-start gap-2 text-neutral-300">
+                  <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex-center text-[10px] shrink-0 mt-0.5 font-mono">1</div>
+                  <span>Our dispatch team contacts you on WhatsApp within 1 hour.</span>
+                </div>
+                <div className="flex items-start gap-2 text-neutral-300">
+                  <div className="w-4 h-4 rounded-full bg-emerald-500/20 text-emerald-400 flex-center text-[10px] shrink-0 mt-0.5 font-mono">2</div>
+                  <span>Next-day courier delivery & white-glove assembly at your villa.</span>
+                </div>
+              </div>
+            </div>
+
+            {/* WhatsApp Direct Action Button */}
+            <a
+              href={whatsappUrl}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="w-full bg-[#25D366] hover:bg-[#20ba59] text-neutral-950 font-bold text-xs h-10 rounded-xl flex-center gap-2 shadow-lg shadow-[#25D366]/20 transition-all hover:scale-[1.02] active:scale-[0.98]"
+            >
+              <MessageCircle className="w-4 h-4 fill-neutral-950" />
+              <span>Confirm on WhatsApp Instantly</span>
+            </a>
+
+            {/* Secondary Actions */}
             <div className="flex gap-2">
               <Button
                 variant="outline"
-                className="flex-1 border-white/15 text-white hover:bg-neutral-800 text-xs h-9 gap-1.5"
+                className="flex-1 border-white/15 text-xs h-9 hover:bg-white/5 gap-1.5"
                 onClick={handleCopySummary}
               >
                 {isCopied ? <Check className="w-3.5 h-3.5 text-emerald-400" /> : <Share2 className="w-3.5 h-3.5" />}
@@ -253,43 +255,48 @@ Designed on monis.rent`;
               </Button>
               <Button
                 className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-9"
-                onClick={() => { onCancel(); setOrderConfirmed(false); reset(); }}
+                onClick={() => {
+                  onCancel();
+                  setOrderConfirmed(false);
+                  reset();
+                }}
               >
                 Back to Designer
               </Button>
             </div>
           </div>
         ) : (
-          /* ── Checkout Form ── */
+          /* Checkout Form */
           <form onSubmit={handleSubmit(onValidSubmit)} className="p-4 space-y-5">
-
             {/* Items Summary */}
             <div className="space-y-2">
-              <div className="flex items-center justify-between">
+              <div className="flex-between">
                 <span className="text-[10px] uppercase tracking-wider text-neutral-400 font-semibold">
-                  Your Setup ({allSelectedItems.length} items)
+                  Your Setup ({items.length} items)
                 </span>
-                <span className="text-[11px] text-emerald-400 font-mono">{fmt(baseWeeklyUSD, baseWeeklyIDR)}/wk</span>
+                <span className="text-[11px] text-emerald-400 font-mono">
+                  {formatPrice(baseWeeklyUSD, baseWeeklyIDR, currency)}/wk
+                </span>
               </div>
               <div className="space-y-1">
-                {allSelectedItems.map((item, i) => (
+                {items.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between p-2 rounded-xl bg-neutral-950/60 border border-white/5 text-xs gap-2"
+                    className="flex-between p-2 rounded-xl bg-neutral-950/60 border border-white/5 text-xs gap-2"
                   >
                     <div className="flex items-center gap-2.5 min-w-0">
-                      {item?.image ? (
-                        <div className="w-9 h-9 rounded-lg bg-neutral-900 border border-white/10 shrink-0 overflow-hidden flex items-center justify-center p-0.5">
+                      {item.image ? (
+                        <div className="w-9 h-9 rounded-lg bg-neutral-900 border border-white/10 shrink-0 overflow-hidden flex-center p-0.5">
                           <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
                         </div>
                       ) : null}
                       <div className="truncate mr-1">
-                        <div className="text-white font-medium truncate">{item?.name}</div>
-                        <div className="text-neutral-500 text-[10px] font-mono">{item?.brand}</div>
+                        <div className="text-white font-medium truncate">{item.name}</div>
+                        <div className="text-neutral-500 text-[10px] font-mono">{item.brand}</div>
                       </div>
                     </div>
                     <span className="text-neutral-300 font-mono shrink-0 text-right">
-                      {fmt(item?.weeklyPriceUSD || 0, item?.weeklyPriceIDR || 0)}
+                      {formatPrice(item.weeklyPriceUSD, item.weeklyPriceIDR, currency)}
                       <span className="text-[9px] text-neutral-500">/wk</span>
                     </span>
                   </div>
@@ -299,10 +306,12 @@ Designed on monis.rent`;
 
             {/* Duration Slider */}
             <div className="p-3.5 rounded-2xl bg-neutral-950/60 border border-white/10 space-y-3">
-              <div className="flex justify-between items-center">
+              <div className="flex-between">
                 <Label className="text-xs font-semibold text-white">
                   Duration:{" "}
-                  <span className="text-emerald-400 font-bold font-mono">{durationWeeks} {durationWeeks === 1 ? "wk" : "wks"}</span>
+                  <span className="text-emerald-400 font-bold font-mono">
+                    {durationWeeks} {durationWeeks === 1 ? "wk" : "wks"}
+                  </span>
                   <span className="text-neutral-500 text-[10px] ml-1.5 font-normal">
                     (~{Math.round((durationWeeks / 4.33) * 10) / 10} mo)
                   </span>
@@ -319,7 +328,9 @@ Designed on monis.rent`;
                 render={({ field }) => (
                   <Slider
                     value={[field.value]}
-                    min={1} max={24} step={1}
+                    min={1}
+                    max={24}
+                    step={1}
                     onValueChange={(val) => {
                       sound.playClick();
                       field.onChange(Array.isArray(val) ? val[0] : val);
@@ -329,7 +340,10 @@ Designed on monis.rent`;
                 )}
               />
               <div className="flex justify-between text-[9px] text-neutral-500 font-mono">
-                <span>1 wk</span><span>4 wks −10%</span><span>8 wks −20%</span><span>12+ wks −30%</span>
+                <span>1 wk</span>
+                <span>4 wks −10%</span>
+                <span>8 wks −20%</span>
+                <span>12+ wks −30%</span>
               </div>
             </div>
 
@@ -359,7 +373,7 @@ Designed on monis.rent`;
                         >
                           {BALI_DELIVERY_AREAS.map((a) => (
                             <SelectItem key={a.id} value={a.id} className="text-xs py-2 px-2.5 rounded-xl cursor-pointer">
-                              <div className="flex items-center justify-between w-full gap-3">
+                              <div className="flex-between w-full gap-3">
                                 <span className="font-medium text-white">{a.name}</span>
                                 <span
                                   className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-semibold shrink-0 ${
@@ -392,27 +406,43 @@ Designed on monis.rent`;
               {/* Name + WhatsApp */}
               <div className="grid grid-cols-2 gap-2">
                 <div className="space-y-1">
-                  <Label className="text-[11px] text-neutral-300">Full Name *</Label>
+                  <Label htmlFor="full-name" className="text-[11px] text-neutral-300">
+                    Full Name *
+                  </Label>
                   <Input
+                    id="full-name"
                     {...register("fullName")}
+                    autoComplete="name"
+                    aria-invalid={errors.fullName ? "true" : "false"}
+                    aria-describedby={errors.fullName ? "name-error" : undefined}
                     placeholder="Alex Rivera"
-                    className={`bg-neutral-950 text-xs text-white h-9 ${errors.fullName ? "border-rose-500" : "border-white/15"}`}
+                    className={`bg-neutral-950 text-xs text-white h-9 ${
+                      errors.fullName ? "border-rose-500" : "border-white/15"
+                    }`}
                   />
                   {errors.fullName && (
-                    <p className="text-[10px] text-rose-400 flex items-center gap-1">
+                    <p id="name-error" className="text-[10px] text-rose-400 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> {errors.fullName.message}
                     </p>
                   )}
                 </div>
                 <div className="space-y-1">
-                  <Label className="text-[11px] text-neutral-300">WhatsApp *</Label>
+                  <Label htmlFor="whatsapp-number" className="text-[11px] text-neutral-300">
+                    WhatsApp *
+                  </Label>
                   <Input
+                    id="whatsapp-number"
                     {...register("whatsapp")}
+                    autoComplete="tel"
+                    aria-invalid={errors.whatsapp ? "true" : "false"}
+                    aria-describedby={errors.whatsapp ? "whatsapp-error" : undefined}
                     placeholder="+62 812 ..."
-                    className={`bg-neutral-950 text-xs text-white h-9 ${errors.whatsapp ? "border-rose-500" : "border-white/15"}`}
+                    className={`bg-neutral-950 text-xs text-white h-9 ${
+                      errors.whatsapp ? "border-rose-500" : "border-white/15"
+                    }`}
                   />
                   {errors.whatsapp && (
-                    <p className="text-[10px] text-rose-400 flex items-center gap-1">
+                    <p id="whatsapp-error" className="text-[10px] text-rose-400 flex items-center gap-1">
                       <AlertCircle className="w-3 h-3" /> {errors.whatsapp.message}
                     </p>
                   )}
@@ -421,14 +451,22 @@ Designed on monis.rent`;
 
               {/* Villa Address */}
               <div className="space-y-1">
-                <Label className="text-[11px] text-neutral-300">Villa / Hotel Address *</Label>
+                <Label htmlFor="villa-address" className="text-[11px] text-neutral-300">
+                  Villa / Hotel Address *
+                </Label>
                 <Textarea
+                  id="villa-address"
                   {...register("villaAddress")}
+                  autoComplete="street-address"
+                  aria-invalid={errors.villaAddress ? "true" : "false"}
+                  aria-describedby={errors.villaAddress ? "address-error" : undefined}
                   placeholder="Villa Luna Canggu, Jl. Pantai Batu Bolong No. 12, Room 3"
-                  className={`bg-neutral-950 text-xs text-white h-16 resize-none ${errors.villaAddress ? "border-rose-500" : "border-white/15"}`}
+                  className={`bg-neutral-950 text-xs text-white h-16 resize-none ${
+                    errors.villaAddress ? "border-rose-500" : "border-white/15"
+                  }`}
                 />
                 {errors.villaAddress && (
-                  <p className="text-[10px] text-rose-400 flex items-center gap-1">
+                  <p id="address-error" className="text-[10px] text-rose-400 flex items-center gap-1">
                     <AlertCircle className="w-3 h-3" /> {errors.villaAddress.message}
                   </p>
                 )}
@@ -436,7 +474,7 @@ Designed on monis.rent`;
             </div>
 
             {/* Inclusions strip */}
-            <div className="px-3 py-2 bg-emerald-950/20 border border-emerald-500/20 rounded-xl flex items-center justify-between text-xs text-emerald-300">
+            <div className="px-3 py-2 bg-emerald-950/20 border border-emerald-500/20 rounded-xl flex-between text-xs text-emerald-300">
               <div className="flex items-center gap-1.5">
                 <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                 <span>White-glove setup · Surge protectors included</span>
@@ -446,50 +484,41 @@ Designed on monis.rent`;
 
             {/* Pricing breakdown */}
             <div className="border-t border-white/10 pt-3 space-y-1.5 text-xs font-mono">
-              <div className="flex justify-between text-neutral-400">
+              <div className="flex-between text-neutral-400">
                 <span>Subtotal ({durationWeeks} wks):</span>
-                <span>{fmt(subtotalUSD, subtotalIDR)}</span>
+                <span>{formatPrice(subtotalUSD, subtotalIDR, currency)}</span>
               </div>
               {discountRate > 0 && (
-                <div className="flex justify-between text-emerald-400">
+                <div className="flex-between text-emerald-400">
                   <span>Discount ({discountBadge}):</span>
-                  <span>−{fmt(discountAmountUSD, discountAmountIDR)}</span>
+                  <span>−{formatPrice(discountAmountUSD, discountAmountIDR, currency)}</span>
                 </div>
               )}
-              <div className="flex justify-between text-neutral-400">
+              <div className="flex-between text-neutral-400">
                 <span>Delivery & Assembly:</span>
-                <span>{deliveryFeeUSD === 0 ? "FREE" : fmt(deliveryFeeUSD, deliveryFeeIDR)}</span>
+                <span>
+                  {deliveryFeeUSD === 0 ? "FREE" : formatPrice(deliveryFeeUSD, deliveryFeeIDR, currency)}
+                </span>
               </div>
-              <div className="flex justify-between items-baseline pt-2 border-t border-white/10 text-white">
-                <span className="text-sm font-sans font-bold">Total Due:</span>
-                <div className="text-right">
-                  <div className="text-lg font-bold text-emerald-400">{fmt(totalUSD, totalIDR)}</div>
-                  <div className="text-[9px] text-neutral-500 font-normal">
-                    ≈ {fmt(Math.round(totalUSD / durationWeeks), Math.round(totalIDR / durationWeeks))}/week
-                  </div>
-                </div>
+              <div className="flex-between text-sm font-bold text-white pt-2 border-t border-white/10">
+                <span>Total ({durationWeeks} {durationWeeks === 1 ? "week" : "weeks"}):</span>
+                <span className="text-emerald-400">{formatPrice(totalUSD, totalIDR, currency)}</span>
+              </div>
+              <div className="text-[10px] text-neutral-400 font-sans text-right">
+                (~{formatPrice(discountedWeeklyUSD, discountedWeeklyIDR, currency)}/week)
               </div>
             </div>
 
-            {/* Submit row */}
-            <div className="flex items-center gap-2 pt-1 pb-2">
-              <Button
-                type="button"
-                variant="ghost"
-                onClick={onCancel}
-                className="text-xs text-neutral-400 hover:text-white h-10 px-3 gap-1"
-              >
-                <ChevronLeft className="w-3.5 h-3.5" /> Cancel
-              </Button>
-              <Button
-                type="submit"
-                disabled={isSubmitting}
-                className="flex-1 bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-10 gap-2 shadow-lg hover:shadow-emerald-500/25 transition-all cursor-pointer"
-              >
-                <span>Confirm & Rent Setup</span>
-                <ArrowRight className="w-4 h-4 stroke-[2.5]" />
-              </Button>
-            </div>
+            {/* Submit Button */}
+            <Button
+              type="submit"
+              disabled={isSubmitting}
+              className="w-full bg-emerald-500 hover:bg-emerald-400 text-neutral-950 font-bold text-xs h-10 rounded-xl shadow-lg shadow-emerald-500/20 gap-2 transition-all hover:scale-[1.01] active:scale-[0.99]"
+            >
+              <Truck className="w-4 h-4" />
+              <span>Confirm & Schedule Next-Day Delivery</span>
+              <ArrowRight className="w-3.5 h-3.5" />
+            </Button>
           </form>
         )}
       </div>
