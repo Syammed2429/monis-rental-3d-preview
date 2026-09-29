@@ -1,5 +1,7 @@
 "use client";
 
+import { useEffect, useState } from "react";
+
 interface MonitorRendererProps {
   monitorId: string;
   displayMode: "bali-gradient" | "sunset-surf" | "minimal-clock";
@@ -11,17 +13,95 @@ export function MonitorRenderer({
   displayMode,
   onToggleDisplayMode,
 }: MonitorRendererProps) {
+  // Live Time & Date state (synced to Bali WITA GMT+8)
+  const [timeData, setTimeData] = useState<{
+    hours: string;
+    minutes: string;
+    seconds: string;
+    date: string;
+  }>({
+    hours: "19",
+    minutes: "08",
+    seconds: "00",
+    date: "Tue, Sep 29",
+  });
+
+  useEffect(() => {
+    const update = () => {
+      const now = new Date();
+      try {
+        const hours = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Makassar",
+          hour: "2-digit",
+          hour12: false,
+        }).format(now);
+
+        const minutes = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Makassar",
+          minute: "2-digit",
+        }).format(now);
+
+        const seconds = new Intl.DateTimeFormat("en-GB", {
+          timeZone: "Asia/Makassar",
+          second: "2-digit",
+        }).format(now);
+
+        const date = new Intl.DateTimeFormat("en-US", {
+          timeZone: "Asia/Makassar",
+          weekday: "short",
+          day: "numeric",
+          month: "short",
+        }).format(now);
+
+        setTimeData({ hours, minutes, seconds, date });
+      } catch {
+        // Fallback to local time if timezone format fails
+        const pad = (n: number) => n.toString().padStart(2, "0");
+        setTimeData({
+          hours: pad(now.getHours()),
+          minutes: pad(now.getMinutes()),
+          seconds: pad(now.getSeconds()),
+          date: now.toLocaleDateString("en-US", {
+            weekday: "short",
+            day: "numeric",
+            month: "short",
+          }),
+        });
+      }
+    };
+
+    update();
+    const interval = setInterval(update, 1000);
+    return () => clearInterval(interval);
+  }, []);
+
   // Screen content renderer based on displayMode
   const renderScreenContent = (isUltrawide: boolean = false) => {
     if (displayMode === "minimal-clock") {
       return (
         <div className="flex h-full w-full flex-col items-center justify-center bg-gradient-to-br from-neutral-950 via-stone-950 to-neutral-900 p-2 text-white/95 select-none">
-          <div className="font-mono text-xl leading-none font-light tracking-widest text-emerald-300 drop-shadow-sm sm:text-2xl">
-            14:28
+          {/* Live Digital Clock */}
+          <div className="flex items-baseline justify-center font-mono font-light tracking-widest text-emerald-300 drop-shadow-sm">
+            <span className="text-2xl leading-none font-extralight tracking-wider sm:text-3xl">
+              {timeData.hours}
+            </span>
+            <span className="animate-pulse px-0.5 text-xl leading-none text-emerald-400 sm:text-2xl">
+              :
+            </span>
+            <span className="text-2xl leading-none font-extralight tracking-wider sm:text-3xl">
+              {timeData.minutes}
+            </span>
+            <span className="ml-1 font-mono text-[9px] leading-none text-emerald-400/70 sm:text-[10px]">
+              :{timeData.seconds}
+            </span>
           </div>
-          <div className="mt-1 font-mono text-[7.5px] tracking-widest text-neutral-400 uppercase">
-            Bali • GMT+8
+
+          {/* Live Date and Bali Timezone */}
+          <div className="mt-1 font-mono text-[7.5px] tracking-wider text-neutral-300 uppercase">
+            {timeData.date} • Bali (GMT+8)
           </div>
+
+          {/* Status Badge */}
           <div className="mt-1.5 flex items-center gap-1 rounded-full border border-emerald-500/25 bg-emerald-500/10 px-2 py-0.5 text-[7px] text-emerald-300">
             <span className="h-1 w-1 animate-pulse rounded-full bg-emerald-400" />
             <span>Monis WiFi • 250 Mbps</span>
@@ -35,6 +115,13 @@ export function MonitorRenderer({
         <div className="relative flex h-full w-full flex-col justify-end overflow-hidden bg-gradient-to-b from-rose-500 via-amber-500 to-emerald-800 p-2 select-none">
           <div className="absolute inset-0 bg-gradient-to-t from-stone-950/80 via-transparent to-transparent" />
           <div className="absolute top-1.5 right-3 h-7 w-7 rounded-full bg-amber-200/40 blur-xs" />
+          <div className="absolute top-1.5 left-2 flex items-center gap-1 font-mono text-[6.5px] text-white/90">
+            <span>
+              {timeData.hours}:{timeData.minutes}
+            </span>
+            <span>•</span>
+            <span>{timeData.date}</span>
+          </div>
           <div className="relative z-10 text-white drop-shadow-md">
             <div className="text-[8.5px] font-bold tracking-wide">Echo Beach Sunset</div>
             <div className="text-[7px] text-white/80">28°C • Canggu Bali</div>
@@ -54,7 +141,9 @@ export function MonitorRenderer({
             <span className="h-1 w-1 rounded-full bg-emerald-400" />
             <span>monis.rent</span>
           </div>
-          <span className="font-mono text-[6.5px] opacity-80">Bali Studio</span>
+          <span className="font-mono text-[6.5px] opacity-80">
+            {timeData.hours}:{timeData.minutes} WITA
+          </span>
         </div>
 
         <div className="relative z-10 flex items-end justify-between">
