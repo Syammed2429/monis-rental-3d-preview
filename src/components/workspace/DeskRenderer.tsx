@@ -68,6 +68,10 @@ export function DeskRenderer({
   const heightRatio = Math.max(0, Math.min(1, (currentHeight - 70) / (118 - 70)));
   const elevationY = -(heightRatio * 52);
 
+  // Upper telescoping segment height: starts at 72px (h-18) and grows as the desk rises,
+  // so it always stays plugged into the top of the stationary lower column.
+  const telescopingLegHeight = 72 + Math.abs(elevationY);
+
   return (
     <div
       className="pointer-events-none absolute inset-x-0 bottom-6 flex flex-col items-center select-none"
@@ -236,7 +240,8 @@ export function DeskRenderer({
           {/* Left Upper Telescoping Leg (Centerline: left 80px) */}
           <div className="absolute top-0 left-20 -translate-x-1/2">
             <div
-              className={`h-18 w-9 ${currentFinish.innerLegColor} relative shadow-md transition-colors duration-500`}
+              className={`w-9 ${currentFinish.innerLegColor} relative shadow-md transition-colors duration-500`}
+              style={{ height: telescopingLegHeight }}
             >
               {/* Vertical machining guide stripe */}
               <div className="absolute inset-y-0 left-1 w-0.5 bg-white/10" />
@@ -247,7 +252,8 @@ export function DeskRenderer({
           {/* Right Upper Telescoping Leg (Centerline: right 80px) */}
           <div className="absolute top-0 right-20 translate-x-1/2">
             <div
-              className={`h-18 w-9 ${currentFinish.innerLegColor} relative shadow-md transition-colors duration-500`}
+              className={`w-9 ${currentFinish.innerLegColor} relative shadow-md transition-colors duration-500`}
+              style={{ height: telescopingLegHeight }}
             >
               <div className="absolute inset-y-0 left-1 w-0.5 bg-white/10" />
               <div className="absolute inset-y-0 right-1 w-0.5 bg-black/20" />
