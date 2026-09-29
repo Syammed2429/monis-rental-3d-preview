@@ -156,10 +156,15 @@ Built with zero external audio assets using the native Web Audio API (`src/lib/a
     └── ci.yml               # GitHub Actions CI gate (Lint, Format, Types, Test, Build)
 src/
 ├── app/
+│   ├── apple-icon.tsx       # Dynamic Apple touch icon (180x180)
+│   ├── error.tsx            # Route-level error boundary
+│   ├── favicon.ico          # Custom branded monis.rent 32x32 binary icon
 │   ├── globals.css          # Tailwind v4 theme, font fallbacks & tokens
+│   ├── icon.tsx             # Dynamic 32x32 PNG branded favicon
 │   ├── layout.tsx           # Metadata, OpenGraph & TooltipProvider
+│   ├── not-found.tsx        # Branded Bali 404 recovery stage
 │   ├── opengraph-image.tsx  # Dynamic OG image card generated at build
-│   ├── page.tsx             # Studio workspace page orchestrator
+│   ├── page.tsx             # Server Component (RSC) page orchestrator
 │   ├── robots.ts            # SEO robots.txt handler
 │   └── sitemap.ts           # SEO sitemap.xml handler
 ├── components/
