@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import { TooltipProvider } from "@/components/ui/tooltip";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -40,9 +39,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en" className="dark h-full font-sans antialiased">
-      <body className="flex min-h-full flex-col bg-[#0c0e14] text-neutral-100">
-        <TooltipProvider>{children}</TooltipProvider>
-      </body>
+      <body className="flex min-h-full flex-col bg-[#0c0e14] text-neutral-100">{children}</body>
     </html>
   );
 }

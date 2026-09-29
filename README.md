@@ -31,7 +31,7 @@ Instead of scrolling through a catalog spreadsheet, digital nomads can visually 
 - **State Architecture**: [Zustand](https://github.com/pmndrs/zustand) with reactive deep URL synchronization (`src/lib/config-url.ts`) and safe localStorage fallback
 - **Forms & Validation**: [React Hook Form](https://react-hook-form.com/) + [Zod](https://zod.dev/) (`@hookform/resolvers/zod`)
 - **Styling**: [Tailwind CSS v4](https://tailwindcss.com/) with OKLCH token system and glassmorphism backdrops
-- **UI Components**: [shadcn/ui](https://ui.shadcn.com/) (Radix / Base UI primitives: Dialog, Slider, Tabs, Select, Card, Badge, Tooltip)
+- **UI Components**: [shadcn/ui](https://ui.shadcn.com/) (Radix / Base UI primitives: Dialog, Slider, Tabs, Select, Card, Badge)
 - **Animations**: [Motion](https://motion.dev/) (`motion/react` for physics-based spring elevations and transitions)
 - **Icons**: [Lucide React](https://lucide.dev/)
 - **Tactile Audio**: Custom Web Audio API synthesizer for realistic switch snaps, motor hum, and celebration fanfare
@@ -161,7 +161,7 @@ src/
 │   ├── favicon.ico          # Custom branded monis.rent 32x32 binary icon
 │   ├── globals.css          # Tailwind v4 theme, font fallbacks & tokens
 │   ├── icon.tsx             # Dynamic 32x32 PNG branded favicon
-│   ├── layout.tsx           # Metadata, OpenGraph & TooltipProvider
+│   ├── layout.tsx           # Metadata, OpenGraph & Theme Layout
 │   ├── not-found.tsx        # Branded Bali 404 recovery stage
 │   ├── opengraph-image.tsx  # Dynamic OG image card generated at build
 │   ├── page.tsx             # Server Component (RSC) page orchestrator
