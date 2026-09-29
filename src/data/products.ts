@@ -1,4 +1,4 @@
-import { BaliDeliveryArea, PresetSetup, ProductItem } from "@/types/workspace";
+import type { BaliDeliveryArea, PresetSetup, ProductItem } from "@/types/workspace";
 
 export const PRODUCTS: ProductItem[] = [
   // --- DESKS (4 options) ---

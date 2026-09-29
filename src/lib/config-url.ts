@@ -1,4 +1,4 @@
-import { ChairColor, DeskFinish, TimeOfDay, WorkspaceConfig } from "@/types/workspace";
+import type { ChairColor, DeskFinish, TimeOfDay, WorkspaceConfig } from "@/types/workspace";
 import { PRODUCTS } from "@/data/products";
 
 const VALID_DESK_FINISHES: DeskFinish[] = [

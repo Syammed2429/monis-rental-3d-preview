@@ -1,4 +1,4 @@
-import { Currency, ProductItem, WorkspaceConfig } from "@/types/workspace";
+import type { Currency, ProductItem, WorkspaceConfig } from "@/types/workspace";
 import { PRODUCTS } from "@/data/products";
 
 /**
