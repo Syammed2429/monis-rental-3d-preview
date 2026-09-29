@@ -312,8 +312,8 @@ Designed on monis.rent`;
                     control={control}
                     render={({ field }) => (
                       <Select value={field.value} onValueChange={(v) => v && field.onChange(v)}>
-                        <SelectTrigger className="bg-neutral-950 border-white/15 text-xs text-white h-9 font-sans w-full">
-                          <SelectValue placeholder="Area" />
+                        <SelectTrigger className="bg-neutral-950 border-white/15 text-xs text-white h-9 font-sans w-full px-3">
+                          <SelectValue placeholder="Area">{deliveryArea.name}</SelectValue>
                         </SelectTrigger>
                         <SelectContent
                           align="start"
