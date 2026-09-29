@@ -20,6 +20,24 @@ interface ConfiguratorSidebarProps {
   selectedItemId?: string | null;
 }
 
+function ProductPhotoPreview({ image, name }: { image?: string; name: string }) {
+  if (!image) return null;
+  return (
+    <div className="relative w-full h-32 rounded-xl bg-gradient-to-b from-neutral-900/80 to-neutral-950/90 border border-white/10 overflow-hidden flex items-center justify-center p-2.5 mt-2.5 group-hover:border-white/20 transition-all">
+      <img
+        src={image}
+        alt={name}
+        className="max-h-full max-w-full object-contain drop-shadow-[0_8px_16px_rgba(0,0,0,0.6)] transition-transform duration-300 group-hover:scale-105"
+        loading="lazy"
+      />
+      <div className="absolute top-1.5 right-1.5 bg-black/75 backdrop-blur-md px-2 py-0.5 rounded-full border border-white/10 text-[9px] font-mono text-emerald-400 flex items-center gap-1">
+        <span className="w-1.5 h-1.5 rounded-full bg-emerald-400" />
+        <span>Villa Spec</span>
+      </div>
+    </div>
+  );
+}
+
 export function ConfiguratorSidebar({
   config,
   onChangeConfig,
@@ -320,6 +338,8 @@ export function ConfiguratorSidebar({
                     <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
                       {desk.description}
                     </CardDescription>
+
+                    <ProductPhotoPreview image={desk.image} name={desk.name} />
                   </CardHeader>
 
                   <CardContent className="p-3.5 pt-1 space-y-3">
@@ -451,6 +471,8 @@ export function ConfiguratorSidebar({
                     <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
                       {chair.description}
                     </CardDescription>
+
+                    <ProductPhotoPreview image={chair.image} name={chair.name} />
                   </CardHeader>
 
                   <CardContent className="p-3.5 pt-1 space-y-3">
@@ -582,6 +604,8 @@ export function ConfiguratorSidebar({
                     <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
                       {monitor.description}
                     </CardDescription>
+
+                    <ProductPhotoPreview image={monitor.image} name={monitor.name} />
                   </CardHeader>
 
                   <CardContent className="p-3.5 pt-1 space-y-3">
@@ -683,6 +707,8 @@ export function ConfiguratorSidebar({
                     <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
                       {item.description}
                     </CardDescription>
+
+                    <ProductPhotoPreview image={item.image} name={item.name} />
                   </CardHeader>
 
                   <CardContent className="p-3.5 pt-1 space-y-3">
@@ -784,6 +810,8 @@ export function ConfiguratorSidebar({
                     <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
                       {light.description}
                     </CardDescription>
+
+                    <ProductPhotoPreview image={light.image} name={light.name} />
                   </CardHeader>
 
                   <CardContent className="p-3.5 pt-1 space-y-3">
@@ -925,6 +953,8 @@ export function ConfiguratorSidebar({
                     <CardDescription className="text-xs text-neutral-400 mt-1 line-clamp-2">
                       {item.description}
                     </CardDescription>
+
+                    <ProductPhotoPreview image={item.image} name={item.name} />
                   </CardHeader>
 
                   <CardContent className="p-3.5 pt-1 space-y-3">

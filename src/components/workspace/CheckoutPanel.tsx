@@ -186,6 +186,35 @@ Designed on monis.rent`;
               </div>
             </div>
 
+            {/* Visual Hardware Confirmation Gallery */}
+            <div className="bg-neutral-900/80 rounded-2xl p-3 border border-white/10 space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[10px] uppercase font-mono tracking-wider text-emerald-400 font-semibold flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  Reserved Villa Hardware ({allSelectedItems.length} items)
+                </span>
+                <span className="text-[10px] text-neutral-400 font-mono">Verified Stock</span>
+              </div>
+              <div className="grid grid-cols-4 gap-2 pt-1">
+                {allSelectedItems.map((item, i) => (
+                  <div
+                    key={i}
+                    className="flex flex-col items-center text-center p-1.5 rounded-xl bg-neutral-950/70 border border-white/5"
+                    title={item?.name}
+                  >
+                    <div className="w-10 h-10 flex items-center justify-center mb-1">
+                      {item?.image ? (
+                        <img src={item.image} alt={item.name} className="max-h-full max-w-full object-contain" />
+                      ) : (
+                        <span className="text-base">📦</span>
+                      )}
+                    </div>
+                    <span className="text-[8px] text-white font-medium truncate w-full">{item?.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             <div className="bg-neutral-900/80 rounded-2xl p-3.5 border border-white/10 space-y-2.5">
               <p className="text-[11px] font-semibold text-emerald-400 flex items-center gap-1.5">
                 <Truck className="w-3.5 h-3.5" /> Next Steps
@@ -246,15 +275,22 @@ Designed on monis.rent`;
                 {allSelectedItems.map((item, i) => (
                   <div
                     key={i}
-                    className="flex items-center justify-between px-3 py-2 rounded-xl bg-neutral-950/60 border border-white/5 text-xs"
+                    className="flex items-center justify-between p-2 rounded-xl bg-neutral-950/60 border border-white/5 text-xs gap-2"
                   >
-                    <div className="truncate mr-2">
-                      <span className="text-white font-medium">{item?.name}</span>
-                      <span className="text-neutral-500 ml-1.5 text-[10px]">{item?.brand}</span>
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      {item?.image ? (
+                        <div className="w-9 h-9 rounded-lg bg-neutral-900 border border-white/10 shrink-0 overflow-hidden flex items-center justify-center p-0.5">
+                          <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                        </div>
+                      ) : null}
+                      <div className="truncate mr-1">
+                        <div className="text-white font-medium truncate">{item?.name}</div>
+                        <div className="text-neutral-500 text-[10px] font-mono">{item?.brand}</div>
+                      </div>
                     </div>
-                    <span className="text-neutral-400 font-mono shrink-0">
+                    <span className="text-neutral-300 font-mono shrink-0 text-right">
                       {fmt(item?.weeklyPriceUSD || 0, item?.weeklyPriceIDR || 0)}
-                      <span className="text-[9px] text-neutral-600">/wk</span>
+                      <span className="text-[9px] text-neutral-500">/wk</span>
                     </span>
                   </div>
                 ))}

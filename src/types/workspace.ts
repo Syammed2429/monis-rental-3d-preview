@@ -25,6 +25,7 @@ export interface ProductItem {
   defaultFinish?: string;
   availableFinishes?: { id: string; name: string; hex: string }[];
   popular?: boolean;
+  image?: string;
 }
 
 export interface WorkspaceConfig {
@@ -53,6 +54,7 @@ export interface PresetSetup {
   badge: string;
   tagline: string;
   config: Partial<WorkspaceConfig>;
+  image?: string;
 }
 
 export interface BaliDeliveryArea {

@@ -230,6 +230,35 @@ Designed on monis.rent visual configurator`;
               </p>
             </div>
 
+            {/* Visual Hardware Confirmation Gallery */}
+            <div className="bg-neutral-900/60 rounded-2xl p-4 border border-white/10 text-left space-y-2">
+              <div className="flex items-center justify-between">
+                <span className="text-[11px] font-mono uppercase tracking-wider text-emerald-400 font-semibold flex items-center gap-1.5">
+                  <Check className="w-3.5 h-3.5 text-emerald-400" />
+                  Reserved Villa Hardware ({allSelectedItems.length} items)
+                </span>
+                <span className="text-[10px] text-neutral-400 font-mono">Verified Stock</span>
+              </div>
+              <div className="grid grid-cols-4 sm:grid-cols-5 gap-2.5 pt-1">
+                {allSelectedItems.map((item, idx) => (
+                  <div
+                    key={idx}
+                    className="flex flex-col items-center text-center p-2 rounded-xl bg-neutral-950/70 border border-white/5"
+                    title={item?.name}
+                  >
+                    <div className="w-12 h-12 flex items-center justify-center mb-1">
+                      {item?.image ? (
+                        <img src={item.image} alt={item.name} className="max-h-full max-w-full object-contain" />
+                      ) : (
+                        <span className="text-base">📦</span>
+                      )}
+                    </div>
+                    <span className="text-[9px] text-white font-medium truncate w-full">{item?.name}</span>
+                  </div>
+                ))}
+              </div>
+            </div>
+
             {/* Delivery Timeline Card */}
             <div className="bg-neutral-900/80 rounded-2xl p-4 border border-white/10 text-left space-y-3">
               <div className="flex items-center gap-2 text-xs font-semibold text-emerald-400">
@@ -325,17 +354,24 @@ Please confirm our next-day delivery for ${deliveryArea.estimatedDelivery}!`;
                 {allSelectedItems.map((item, idx) => (
                   <div
                     key={idx}
-                    className="p-2.5 rounded-xl bg-neutral-900/60 border border-white/5 flex items-center justify-between"
+                    className="p-2.5 rounded-xl bg-neutral-900/60 border border-white/5 flex items-center justify-between gap-2.5"
                   >
-                    <div>
-                      <div className="font-medium text-white truncate max-w-[190px]">
-                        {item?.name}
-                      </div>
-                      <div className="text-[10px] text-neutral-400 font-mono">
-                        {item?.brand}
+                    <div className="flex items-center gap-2.5 min-w-0">
+                      {item?.image ? (
+                        <div className="w-10 h-10 rounded-lg bg-neutral-950 border border-white/10 shrink-0 overflow-hidden flex items-center justify-center p-0.5">
+                          <img src={item.image} alt={item.name} className="w-full h-full object-contain" />
+                        </div>
+                      ) : null}
+                      <div className="truncate mr-1">
+                        <div className="font-medium text-white truncate max-w-[170px]">
+                          {item?.name}
+                        </div>
+                        <div className="text-[10px] text-neutral-400 font-mono">
+                          {item?.brand}
+                        </div>
                       </div>
                     </div>
-                    <div className="font-mono text-neutral-300 shrink-0">
+                    <div className="font-mono text-neutral-300 shrink-0 text-right">
                       {formatMoney(item?.weeklyPriceUSD || 0, item?.weeklyPriceIDR || 0)}
                       <span className="text-[9px] text-neutral-500">/wk</span>
                     </div>
