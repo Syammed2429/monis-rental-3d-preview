@@ -467,9 +467,10 @@ Designed on monis.rent`;
                     type="tel"
                     inputMode="tel"
                     autoComplete="tel"
+                    maxLength={20}
                     aria-invalid={errors.whatsapp ? "true" : "false"}
                     aria-describedby={errors.whatsapp ? "whatsapp-error" : undefined}
-                    placeholder="+62 812 ..."
+                    placeholder="+62 812-3456-7890"
                     className={`h-9 bg-neutral-950 text-xs text-white ${
                       errors.whatsapp ? "border-rose-500" : "border-white/15"
                     }`}

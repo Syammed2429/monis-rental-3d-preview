@@ -35,6 +35,9 @@ describe("Checkout Zod Schema Validation (QA & Pentest)", () => {
 
     const invalidNumbers = [
       "123", // too short (<7 chars)
+      "1234567", // only 7 digits (<8 digits)
+      "54542454516464646565353535333", // excessively long (29 digits > 15 ITU-T E.164 max)
+      "+1 234567890123456789", // formatted string > 20 chars
       "call me on signal", // letters only
       "javascript:alert(1)", // XSS payload attempt
     ];
