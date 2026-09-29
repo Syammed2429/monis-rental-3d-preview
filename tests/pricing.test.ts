@@ -121,7 +121,7 @@ describe("Pricing and Discount Business Logic", () => {
       items,
     });
 
-    assert.ok(waUrl.startsWith("https://wa.me/6281234567890?text="));
+    assert.ok(waUrl.startsWith("https://wa.me/6281632129228?text="));
     assert.ok(waUrl.includes(encodeURIComponent("Alex Rivera")));
     assert.ok(waUrl.includes(encodeURIComponent("Canggu")));
     assert.ok(waUrl.includes(encodeURIComponent("8492")));

@@ -114,6 +114,8 @@ export function generateBookingRef(): string {
   return String(Date.now()).slice(-4);
 }
 
+export const MONIS_WHATSAPP_NUMBER = "6281632129228"; // +62 816-3212-9228
+
 /**
  * Generate direct WhatsApp order confirmation URL
  */
@@ -136,5 +138,5 @@ export function generateWhatsAppOrderUrl(params: {
       `📦 *Equipment:*\n${itemListText}\n\n` +
       `Hi Monis Team! I just customized my Bali workspace online and would like to confirm villa delivery.`
   );
-  return `https://wa.me/6281234567890?text=${text}`;
+  return `https://wa.me/${MONIS_WHATSAPP_NUMBER}?text=${text}`;
 }
