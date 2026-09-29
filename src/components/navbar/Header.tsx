@@ -6,6 +6,7 @@ import { Check, ChevronDown, Globe, Share2, Sparkles, Volume2, VolumeX } from "l
 import { Currency, PresetSetup, WorkspaceConfig } from "@/types/workspace";
 import { sound } from "@/lib/audio";
 import { serializeConfigToUrl } from "@/lib/config-url";
+import { copyToClipboard } from "@/lib/utils";
 import { PRESETS } from "@/data/products";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -44,12 +45,12 @@ export function Header({
     if (!nextMuted) sound.playClick();
   };
 
-  const handleShare = () => {
+  const handleShare = async () => {
     sound.playSelect();
     if (typeof window !== "undefined") {
       const shareParams = serializeConfigToUrl(currentConfig);
       const shareUrl = `${window.location.origin}${window.location.pathname}${shareParams.startsWith("?") ? shareParams : ""}`;
-      navigator.clipboard.writeText(shareUrl);
+      await copyToClipboard(shareUrl);
       setCopied(true);
       setTimeout(() => setCopied(false), 2200);
     }

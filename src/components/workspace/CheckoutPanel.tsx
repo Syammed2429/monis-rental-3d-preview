@@ -25,6 +25,7 @@ import {
   generateBookingRef,
   generateWhatsAppOrderUrl,
 } from "@/lib/pricing";
+import { copyToClipboard } from "@/lib/utils";
 import { CheckoutFormData, checkoutFormSchema } from "@/lib/validations/checkout";
 import { BALI_DELIVERY_AREAS } from "@/data/products";
 import { Badge } from "@/components/ui/badge";
@@ -113,7 +114,7 @@ export function CheckoutPanel({ config, currency, onCancel }: CheckoutPanelProps
     });
   };
 
-  const handleCopySummary = () => {
+  const handleCopySummary = async () => {
     sound.playClick();
     const desk = items.find((p) => p.category === "desks");
     const chair = items.find((p) => p.category === "chairs");
@@ -127,7 +128,7 @@ export function CheckoutPanel({ config, currency, onCancel }: CheckoutPanelProps
 - Rental: ${durationWeeks} weeks in ${deliveryArea.name}
 - Total: ${formatPrice(totalUSD, totalIDR, currency)} (${discountBadge})
 Designed on monis.rent`;
-    navigator.clipboard.writeText(text);
+    await copyToClipboard(text);
     setIsCopied(true);
     setTimeout(() => setIsCopied(false), 2500);
   };
