@@ -312,13 +312,29 @@ Designed on monis.rent`;
                     control={control}
                     render={({ field }) => (
                       <Select value={field.value} onValueChange={(v) => v && field.onChange(v)}>
-                        <SelectTrigger className="bg-neutral-950 border-white/15 text-xs text-white h-9">
+                        <SelectTrigger className="bg-neutral-950 border-white/15 text-xs text-white h-9 font-sans w-full">
                           <SelectValue placeholder="Area" />
                         </SelectTrigger>
-                        <SelectContent className="bg-neutral-950 border-neutral-800 text-white">
+                        <SelectContent
+                          align="start"
+                          side="bottom"
+                          sideOffset={6}
+                          className="bg-neutral-950/95 backdrop-blur-xl border border-white/15 text-white min-w-[320px] max-w-[380px] p-1.5 font-sans shadow-2xl rounded-2xl"
+                        >
                           {BALI_DELIVERY_AREAS.map((a) => (
-                            <SelectItem key={a.id} value={a.id} className="text-xs">
-                              {a.name} {a.feeUSD === 0 ? "(Free)" : `(+$${a.feeUSD})`}
+                            <SelectItem key={a.id} value={a.id} className="text-xs py-2 px-2.5 rounded-xl cursor-pointer">
+                              <div className="flex items-center justify-between w-full gap-3">
+                                <span className="font-medium text-white">{a.name}</span>
+                                <span
+                                  className={`text-[10px] font-mono px-1.5 py-0.5 rounded font-semibold shrink-0 ${
+                                    a.feeUSD === 0
+                                      ? "bg-emerald-500/15 text-emerald-400 border border-emerald-500/30"
+                                      : "bg-amber-500/15 text-amber-300 border border-amber-500/30"
+                                  }`}
+                                >
+                                  {a.feeUSD === 0 ? "FREE" : `+$${a.feeUSD}`}
+                                </span>
+                              </div>
                             </SelectItem>
                           ))}
                         </SelectContent>
