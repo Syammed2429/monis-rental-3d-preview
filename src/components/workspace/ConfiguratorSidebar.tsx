@@ -345,44 +345,186 @@ export function ConfiguratorSidebar({
                     unselectedLabel="Equip Lighting"
                   >
                     {isSelected && (
-                      <div className="flex-between border-t border-white/10 pt-2">
-                        <span className="flex items-center gap-1.5 text-xs font-medium text-neutral-300">
-                          <Lightbulb
-                            className={`h-3.5 w-3.5 transition-colors ${
+                      <div className="space-y-2.5 border-t border-white/10 pt-2.5">
+                        <div className="flex-between">
+                          <span className="flex items-center gap-1.5 text-xs font-medium text-neutral-300">
+                            <Lightbulb
+                              className={`h-3.5 w-3.5 transition-colors ${
+                                config.lampPowered
+                                  ? "fill-amber-400/30 text-amber-400"
+                                  : "text-neutral-500"
+                              }`}
+                            />
+                            Lamp Power:
+                          </span>
+                          <Button
+                            type="button"
+                            size="sm"
+                            variant="outline"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              sound.playLamp();
+                              onChangeConfig((prev) => ({
+                                ...prev,
+                                lampPowered: !prev.lampPowered,
+                              }));
+                            }}
+                            className={`h-7 rounded-full px-3 text-xs font-medium transition-all ${
                               config.lampPowered
-                                ? "fill-amber-400/30 text-amber-400"
-                                : "text-neutral-500"
+                                ? "border-amber-400/50 bg-amber-400/20 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.25)] hover:bg-amber-400/30"
+                                : "border-white/15 bg-neutral-900 text-neutral-400 hover:text-white"
                             }`}
-                          />
-                          Lamp Power:
-                        </span>
-                        <Button
-                          type="button"
-                          size="sm"
-                          variant="outline"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            sound.playLamp();
-                            onChangeConfig((prev) => ({
-                              ...prev,
-                              lampPowered: !prev.lampPowered,
-                            }));
-                          }}
-                          className={`h-7 rounded-full px-3 text-xs font-medium transition-all ${
-                            config.lampPowered
-                              ? "border-amber-400/50 bg-amber-400/20 text-amber-300 shadow-[0_0_12px_rgba(251,191,36,0.25)] hover:bg-amber-400/30"
-                              : "border-white/15 bg-neutral-900 text-neutral-400 hover:text-white"
+                          >
+                            <span
+                              className={`mr-1.5 h-2 w-2 rounded-full transition-all ${
+                                config.lampPowered
+                                  ? "bg-amber-400 shadow-[0_0_6px_#fbbf24]"
+                                  : "bg-neutral-600"
+                              }`}
+                            />
+                            {config.lampPowered ? "ON (Turn Off)" : "OFF (Turn On)"}
+                          </Button>
+                        </div>
+
+                        {/* Smart Lamp Color Temperature Selector */}
+                        <div
+                          className={`space-y-1.5 transition-opacity duration-300 ${
+                            config.lampPowered ? "opacity-100" : "pointer-events-none opacity-40"
                           }`}
                         >
-                          <span
-                            className={`mr-1.5 h-2 w-2 rounded-full transition-all ${
-                              config.lampPowered
-                                ? "bg-amber-400 shadow-[0_0_6px_#fbbf24]"
-                                : "bg-neutral-600"
-                            }`}
-                          />
-                          {config.lampPowered ? "ON (Turn Off)" : "OFF (Turn On)"}
-                        </Button>
+                          <div className="flex items-center justify-between text-[11px] text-neutral-400">
+                            <span>Color Temperature</span>
+                            <span className="font-mono text-[10px] font-medium text-amber-400">
+                              {config.lampWarmth === "neutral"
+                                ? "4000K Soft White"
+                                : config.lampWarmth === "daylight"
+                                  ? "6000K Crisp Focus"
+                                  : "2700K Warm Sunset"}
+                            </span>
+                          </div>
+
+                          <div className="grid grid-cols-3 gap-1 rounded-xl border border-white/10 bg-neutral-950/60 p-1">
+                            {/* Warm 2700K */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                sound.playClick();
+                                onChangeConfig((prev) => ({
+                                  ...prev,
+                                  lampWarmth: "warm",
+                                }));
+                              }}
+                              className={`flex flex-col items-center rounded-lg py-1 text-center transition-all ${
+                                config.lampWarmth === "warm" || !config.lampWarmth
+                                  ? "border border-amber-500/50 bg-amber-500/25 text-amber-300 shadow-xs"
+                                  : "border border-transparent text-neutral-400 hover:bg-neutral-800"
+                              }`}
+                            >
+                              <span className="flex items-center gap-1 text-[11px] font-semibold">
+                                <span className="h-1.5 w-1.5 rounded-full bg-amber-400"></span>
+                                Warm
+                              </span>
+                              <span className="text-[9px] opacity-75">2700K</span>
+                            </button>
+
+                            {/* Neutral 4000K */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                sound.playClick();
+                                onChangeConfig((prev) => ({
+                                  ...prev,
+                                  lampWarmth: "neutral",
+                                }));
+                              }}
+                              className={`flex flex-col items-center rounded-lg py-1 text-center transition-all ${
+                                config.lampWarmth === "neutral"
+                                  ? "border border-amber-200/50 bg-amber-100/20 text-amber-100 shadow-xs"
+                                  : "border border-transparent text-neutral-400 hover:bg-neutral-800"
+                              }`}
+                            >
+                              <span className="flex items-center gap-1 text-[11px] font-semibold">
+                                <span className="h-1.5 w-1.5 rounded-full bg-amber-100"></span>
+                                Neutral
+                              </span>
+                              <span className="text-[9px] opacity-75">4000K</span>
+                            </button>
+
+                            {/* Daylight 6000K */}
+                            <button
+                              type="button"
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                sound.playClick();
+                                onChangeConfig((prev) => ({
+                                  ...prev,
+                                  lampWarmth: "daylight",
+                                }));
+                              }}
+                              className={`flex flex-col items-center rounded-lg py-1 text-center transition-all ${
+                                config.lampWarmth === "daylight"
+                                  ? "border border-sky-400/50 bg-sky-500/25 text-sky-200 shadow-xs"
+                                  : "border border-transparent text-neutral-400 hover:bg-neutral-800"
+                              }`}
+                            >
+                              <span className="flex items-center gap-1 text-[11px] font-semibold">
+                                <span className="h-1.5 w-1.5 rounded-full bg-sky-200"></span>
+                                Daylight
+                              </span>
+                              <span className="text-[9px] opacity-75">6000K</span>
+                            </button>
+                          </div>
+                        </div>
+
+                        {/* Brightness / Dimming Slider */}
+                        <div
+                          className={`space-y-1.5 transition-opacity duration-300 ${
+                            config.lampPowered ? "opacity-100" : "pointer-events-none opacity-40"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between text-[11px] text-neutral-400">
+                            <span>Brightness & Dimming</span>
+                            <span className="font-mono text-[10px] font-semibold text-amber-400">
+                              {config.lampBrightness ?? 100}%
+                            </span>
+                          </div>
+
+                          <div
+                            onClick={(e) => e.stopPropagation()}
+                            onPointerDown={(e) => e.stopPropagation()}
+                            onPointerUp={(e) => e.stopPropagation()}
+                            className="flex items-center gap-2.5 rounded-xl border border-white/10 bg-neutral-950/60 px-3 py-2"
+                          >
+                            <span className="font-mono text-[10px] text-neutral-500">20%</span>
+                            <input
+                              type="range"
+                              min="20"
+                              max="100"
+                              step="5"
+                              value={config.lampBrightness ?? 100}
+                              disabled={!config.lampPowered}
+                              onClick={(e) => e.stopPropagation()}
+                              onPointerDown={(e) => e.stopPropagation()}
+                              onPointerUp={(e) => e.stopPropagation()}
+                              onMouseDown={(e) => e.stopPropagation()}
+                              onMouseUp={(e) => e.stopPropagation()}
+                              onTouchStart={(e) => e.stopPropagation()}
+                              onTouchEnd={(e) => e.stopPropagation()}
+                              onChange={(e) => {
+                                e.stopPropagation();
+                                const val = Number(e.target.value);
+                                onChangeConfig((prev) => ({
+                                  ...prev,
+                                  lampBrightness: val,
+                                }));
+                              }}
+                              className="h-1.5 flex-1 cursor-pointer appearance-none rounded-lg bg-neutral-800 accent-amber-400"
+                            />
+                            <span className="font-mono text-[10px] text-amber-400/90">100%</span>
+                          </div>
+                        </div>
                       </div>
                     )}
                   </ProductCard>

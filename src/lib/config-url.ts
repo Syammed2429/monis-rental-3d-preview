@@ -32,6 +32,9 @@ export function serializeConfigToUrl(config: WorkspaceConfig): string {
     if (config.peripheralsId) params.set("peripherals", config.peripheralsId);
     if (config.lightingId) params.set("lighting", config.lightingId);
     if (!config.lampPowered) params.set("lamp", "off");
+    if (config.lampWarmth && config.lampWarmth !== "warm") params.set("warmth", config.lampWarmth);
+    if (config.lampBrightness && config.lampBrightness !== 100)
+      params.set("dim", config.lampBrightness.toString());
     if (!config.laptopStand) params.set("laptop", "none");
     if (config.plantId) params.set("plant", config.plantId);
     if (config.coffeeId) params.set("coffee", config.coffeeId);
@@ -117,6 +120,17 @@ export function parseConfigFromUrl(search: string): Partial<WorkspaceConfig> {
     }
 
     if (params.get("lamp") === "off") result.lampPowered = false;
+    const warmth = params.get("warmth");
+    if (warmth === "warm" || warmth === "neutral" || warmth === "daylight") {
+      result.lampWarmth = warmth;
+    }
+    const dim = params.get("dim");
+    if (dim) {
+      const parsedDim = Number(dim);
+      if (!isNaN(parsedDim) && parsedDim >= 20 && parsedDim <= 100) {
+        result.lampBrightness = Math.round(parsedDim);
+      }
+    }
     if (params.get("laptop") === "none") result.laptopStand = false;
 
     // Validate lifestyle extras

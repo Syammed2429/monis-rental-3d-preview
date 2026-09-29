@@ -108,8 +108,20 @@ export function ProductCard({
           </div>
         )}
 
-        {/* Custom content slot (e.g. FinishPicker, Power toggle, etc.) */}
-        {children}
+        {/* Custom content slot (e.g. FinishPicker, Power toggle, Brightness slider) */}
+        {children && (
+          <div
+            onClick={(e) => e.stopPropagation()}
+            onPointerDown={(e) => e.stopPropagation()}
+            onPointerUp={(e) => e.stopPropagation()}
+            onMouseDown={(e) => e.stopPropagation()}
+            onMouseUp={(e) => e.stopPropagation()}
+            onTouchStart={(e) => e.stopPropagation()}
+            onTouchEnd={(e) => e.stopPropagation()}
+          >
+            {children}
+          </div>
+        )}
 
         {/* Action Button */}
         <Button

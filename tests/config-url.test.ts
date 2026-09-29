@@ -15,6 +15,7 @@ const testConfig: WorkspaceConfig = {
   peripheralsId: "peripherals-mx-combo",
   lightingId: "light-smart-lamp",
   lampPowered: false,
+  lampWarmth: "warm",
   laptopStand: false,
   plantId: "lifestyle-plant-monstera",
   coffeeId: "lifestyle-coffee-nespresso",
@@ -92,6 +93,28 @@ describe("URL Serialization and Security Sanitization", () => {
     it("rejects invalid ambiance modes", () => {
       const invalidAmbiance = parseConfigFromUrl("?ambiance=cyberpunk-neon");
       assert.equal(invalidAmbiance.timeOfDay, undefined);
+    });
+
+    it("validates and parses lamp warmth, rejecting invalid values", () => {
+      const validWarmth = parseConfigFromUrl("?warmth=daylight");
+      assert.equal(validWarmth.lampWarmth, "daylight");
+
+      const invalidWarmth = parseConfigFromUrl("?warmth=toxic_green");
+      assert.equal(invalidWarmth.lampWarmth, undefined, "Invalid lamp warmth must be discarded");
+    });
+
+    it("validates and parses lamp dimming, enforcing bounds [20, 100]", () => {
+      const validDim = parseConfigFromUrl("?dim=65");
+      assert.equal(validDim.lampBrightness, 65);
+
+      const highDim = parseConfigFromUrl("?dim=500");
+      assert.equal(highDim.lampBrightness, undefined, "Out-of-bounds dim must be rejected");
+
+      const lowDim = parseConfigFromUrl("?dim=5");
+      assert.equal(lowDim.lampBrightness, undefined, "Too low dim must be rejected");
+
+      const nanDim = parseConfigFromUrl("?dim=NaN");
+      assert.equal(nanDim.lampBrightness, undefined, "NaN dim must be rejected");
     });
   });
 });

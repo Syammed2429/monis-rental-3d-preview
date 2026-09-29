@@ -2,7 +2,13 @@
 
 import { create } from "zustand";
 import { StateStorage, createJSONStorage, persist } from "zustand/middleware";
-import { Currency, PresetSetup, ProductCategory, WorkspaceConfig } from "@/types/workspace";
+import {
+  Currency,
+  LampWarmth,
+  PresetSetup,
+  ProductCategory,
+  WorkspaceConfig,
+} from "@/types/workspace";
 import { parseConfigFromUrl, serializeConfigToUrl } from "@/lib/config-url";
 import { PRESETS } from "@/data/products";
 
@@ -18,6 +24,8 @@ export const DEFAULT_CONFIG: WorkspaceConfig = {
   peripheralsId: "peripherals-mx-combo",
   lightingId: "light-smart-lamp",
   lampPowered: true,
+  lampWarmth: "warm",
+  lampBrightness: 100,
   laptopStand: true,
   plantId: "lifestyle-plant-monstera",
   coffeeId: "lifestyle-coffee-nespresso",
@@ -44,6 +52,9 @@ export interface WorkspaceStore {
   setSelectedItemId: (id: string | null) => void;
   setCheckoutOpen: (open: boolean) => void;
   selectItem: (category: ProductCategory, itemId?: string) => void;
+  toggleLamp: () => void;
+  setLampWarmth: (warmth: LampWarmth) => void;
+  setLampBrightness: (brightness: number) => void;
   applyPreset: (preset: PresetSetup) => void;
   resetConfig: () => void;
   getShareableUrl: () => string;
@@ -137,6 +148,24 @@ export const useWorkspaceStore = create<WorkspaceStore>()(
           });
         }
       },
+
+      toggleLamp: () =>
+        set((state) => ({
+          config: { ...state.config, lampPowered: !state.config.lampPowered },
+        })),
+
+      setLampWarmth: (lampWarmth) =>
+        set((state) => ({
+          config: { ...state.config, lampWarmth },
+        })),
+
+      setLampBrightness: (lampBrightness) =>
+        set((state) => ({
+          config: {
+            ...state.config,
+            lampBrightness: Math.max(20, Math.min(100, lampBrightness)),
+          },
+        })),
 
       applyPreset: (preset) => {
         get().updateConfig((prev) => ({

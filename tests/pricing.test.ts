@@ -22,6 +22,7 @@ const baseTestConfig: WorkspaceConfig = {
   peripheralsId: "peripherals-mx-combo",
   lightingId: "light-smart-lamp",
   lampPowered: true,
+  lampWarmth: "warm",
   laptopStand: true,
   plantId: "lifestyle-plant-monstera",
   coffeeId: "lifestyle-coffee-nespresso",

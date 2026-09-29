@@ -609,6 +609,8 @@ export function WorkspaceCanvas({
                 peripheralsId={config.peripheralsId}
                 lightingId={config.lightingId}
                 lampPowered={config.lampPowered}
+                lampWarmth={config.lampWarmth}
+                lampBrightness={config.lampBrightness ?? 100}
                 onToggleLamp={handleToggleLamp}
                 laptopStand={config.laptopStand}
                 plantId={config.plantId}

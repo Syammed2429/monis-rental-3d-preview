@@ -22,6 +22,8 @@ export interface ProductItem {
   popular?: boolean;
 }
 
+export type LampWarmth = "warm" | "neutral" | "daylight";
+
 export interface WorkspaceConfig {
   deskId: string;
   deskFinish: DeskFinish;
@@ -34,6 +36,8 @@ export interface WorkspaceConfig {
   peripheralsId: string | null;
   lightingId: string | null;
   lampPowered: boolean;
+  lampWarmth?: LampWarmth;
+  lampBrightness?: number; // 20 to 100 (%)
   laptopStand: boolean;
   plantId: string | null;
   coffeeId: string | null;
